@@ -1,5 +1,6 @@
 const initialState = {
   playerShips: {
+    filledPositions: [],
     battleship: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -12,6 +13,7 @@ const initialState = {
     vedetteForth: null,
   },
   computerShips: {
+    filledPositions: [],
     battleship: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -28,19 +30,21 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_FILLED_POSITIONS":
+      return {
+        ...state,
+        computerShips: {
+          ...state.computerShips,
+          filledPositions: action.payload,
+        },
+      };
     case "SET_COMPUTER_BATTLESHIP":
-      console.log(action.payload);
       return {
         ...state,
         computerShips: {
           ...state.computerShips,
           battleship: action.payload,
         },
-      };
-    case "SET_TESTING_PURPOSES":
-      return {
-        ...state,
-        test: !state.test,
       };
     default:
       return state;
