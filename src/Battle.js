@@ -99,9 +99,8 @@ const Battle = ({
     return shipDirection;
   };
 
-  const addShipToDatabase = (database, shipPosition) => {
+  const addShipToDatabase = (shipPosition) => {
     shipPosition.forEach((x) => {
-      database.push(x);
       freeCells[x] = false;
       if (freeCells[`${x[0]}${Number(x[1]) + 1}`])
         freeCells[`${x[0]}${Number(x[1]) + 1}`] = false;
@@ -152,39 +151,67 @@ const Battle = ({
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(x[1]) + 1}`
         ] = false;
     });
-    return database;
   };
 
   const generateComputer = () => {
     let battleshipPosition = [];
     let occupiedPositions = [];
+    // generate first point of first ship - battleship
     let firstBattleshipPoint = randomPosition();
+    console.log("First point of battleship", firstBattleshipPoint);
     battleshipPosition.push(firstBattleshipPoint);
     let battleshipDirection = direction;
+    // check how is possible to position the battleship
     battleshipDirection = whereTurnShip(
       "battleship",
       firstBattleshipPoint,
       battleshipDirection
     );
+    // generate direction of position of battleship
     const randomBattleshipDirection =
       battleshipDirection[
         Math.floor(Math.random() * battleshipDirection.length)
       ];
+    // position battleship on map
     battleshipPosition = placeShipOnMap(
       "battleship",
       battleshipPosition,
       randomBattleshipDirection
     );
-    setComputerBattleship(battleshipPosition);
-    occupiedPositions = addShipToDatabase(
-      occupiedPositions,
-      battleshipPosition
-    );
-    setFilledPositions(occupiedPositions);
-    let cruiserFirstPosition = randomPosition();
-    while (occupiedPositions.includes(cruiserFirstPosition)) {
-      cruiserFirstPosition = randomPosition();
+    console.log("Battleship coordinats", battleshipPosition);
+    // setComputerBattleship(battleshipPosition);
+    // add battleship to database of free cells
+    addShipToDatabase(battleshipPosition);
+    // setFilledPositions(occupiedPositions);
+
+    // generate first point of first cruiser
+    let cruiserFirstPoint = randomPosition();
+    console.log("Cruiser First point before check", cruiserFirstPoint);
+    while (freeCells[cruiserFirstPoint]) {
+      cruiserFirstPoint = randomPosition();
     }
+    console.log("Cruiser First point after check", cruiserFirstPoint);
+    // check how is possible to position the first cruiser
+    let cruiserFirstDirection = direction;
+    let cruiserFirstPosition = [];
+    cruiserFirstDirection = whereTurnShip(
+      "cruiser",
+      cruiserFirstPoint,
+      cruiserFirstDirection
+    );
+    // generate direction of position of cruiser
+    const randomCruiserFirstDirection =
+      cruiserFirstDirection[
+        Math.floor(Math.random() * cruiserFirstDirection.length)
+      ];
+    // position cruiser on map
+    cruiserFirstPosition = placeShipOnMap(
+      "cruiser",
+      cruiserFirstPosition,
+      randomCruiserFirstDirection
+    );
+    console.log("Cruiser coordinats", cruiserFirstPosition);
+    console.log("Database of cells", freeCells);
   };
 
   const map = (player, button = false) => {
