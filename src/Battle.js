@@ -1,14 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button } from "@material-ui/core";
-import { setFilledPositions, setComputerBattleship } from "./actions/index";
-import { rows, columns, ships, direction, freeCells } from "./database";
+import { setComputerShip, setComputerCells } from "./actions/index";
+import { rows, columns, shipNames, shipTypes, direction } from "./database";
 
-const Battle = ({
-  computerShips,
-  setFilledPositions,
-  setComputerBattleship,
-}) => {
+const Battle = ({ computer, setComputerShip, freeCells }) => {
   const cellStyle = {
     height: 50,
     width: 50,
@@ -36,9 +32,9 @@ const Battle = ({
 
   const calculateShipLength = (ship) => {
     let shipLength = 1;
-    if (ship === "battleship") shipLength = 4;
-    if (ship === "cruiser") shipLength = 3;
-    if (ship === "destroyer") shipLength = 2;
+    if (ship[0] === "b") shipLength = 4;
+    if (ship[0] === "c") shipLength = 3;
+    if (ship[0] === "d") shipLength = 2;
     return shipLength;
   };
 
@@ -185,7 +181,9 @@ const Battle = ({
       // add rest of ship coordinates to array
       shipPosition = placeShipOnMap(ship, shipPosition, shipDirection);
     }
+    setComputerShip(ship, shipPosition);
     console.log(shipPosition);
+    console.log("Object in state", computer);
     // add ship to database of free cells to consider ship posiiton and ship borders
     addShipToDatabase(shipPosition);
     console.log(freeCells);
@@ -193,14 +191,7 @@ const Battle = ({
 
   const generateComputer = () => {
     generateShip("battleship");
-    generateShip("cruiser");
-    generateShip("cruiser");
-    for (let i = 1; i <= 3; i++) {
-      generateShip("destroyer");
-    }
-    for (let i = 1; i <= 4; i++) {
-      generateShip("vedette");
-    }
+    shipNames.forEach((ship) => generateShip(ship));
   };
 
   const map = (player, button = false) => {
@@ -265,7 +256,7 @@ const Battle = ({
         justify="center"
         style={{ marginTop: 20 }}
       >
-        {ships.map((x) => {
+        {shipTypes.map((x) => {
           return (
             <Grid item key={x} style={shipStyle} onClick={() => console.log(x)}>
               <Grid container direction="row" justify="center">
@@ -280,14 +271,16 @@ const Battle = ({
 };
 
 const mapStateToProps = (state) => {
-  const { computerShips } = state;
-  return { computerShips };
+  const {
+    computer: { freeCells },
+  } = state;
+  return { freeCells };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  setComputerBattleship: (position) =>
-    dispatch(setComputerBattleship(position)),
-  setFilledPositions: (database) => dispatch(setFilledPositions(database)),
+  setComputerShip: (ship, position) =>
+    dispatch(setComputerShip(ship, position)),
+  setComputerCells: (database) => dispatch(setComputerCells(database)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

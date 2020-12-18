@@ -9,7 +9,19 @@ const generateFreeCells = (obj) => {
 
 export const rows = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 export const columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-export const ships = ["battleship", "cruiser", "destroyer", "vedette"];
+export const shipNames = [
+  "battleship",
+  "cruiserFirst",
+  "cruiserSecond",
+  "destroyerFirst",
+  "destroyerSecond",
+  "destroyerThird",
+  "vedetteFirst",
+  "vedetteSecond",
+  "vedetteThird",
+  "vedetteForth",
+];
+export const shipTypes = ["battleship", "cruiser", "destroyer", "vedette"];
 export const direction = ["up", "down", "left", "right"];
 export const freeCells = {};
 

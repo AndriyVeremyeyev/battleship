@@ -1,13 +1,13 @@
-export const setFilledPositions = (database) => {
+export const setComputerCells = (database) => {
   return {
-    type: "SET_FILLED_POSITIONS",
+    type: "SET_COMPUTER_CELLS",
     payload: database,
   };
 };
 
-export const setComputerBattleship = (position) => {
+export const setComputerShip = (ship, position) => {
   return {
-    type: "SET_COMPUTER_BATTLESHIP",
-    payload: position,
+    type: "SET_COMPUTER_SHIP",
+    payload: { ship, position },
   };
 };
