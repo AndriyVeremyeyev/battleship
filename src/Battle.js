@@ -43,6 +43,8 @@ const Battle = ({
   };
 
   const placeShipOnMap = (ship, arr, direction) => {
+    console.log(direction);
+    const number = arr[0].length === 3 ? arr[0][1] + arr[0][2] : arr[0][1];
     const shipLength = calculateShipLength(ship);
     if (direction === "up") {
       for (let i = 1; i < shipLength; i++) {
@@ -57,14 +59,14 @@ const Battle = ({
     if (direction === "left") {
       for (let i = 1; i < shipLength; i++) {
         arr.push(
-          `${String.fromCharCode(arr[0][0].charCodeAt(0) - i)}${arr[0][1]}`
+          `${String.fromCharCode(arr[0][0].charCodeAt(0) - i)}${number}`
         );
       }
     }
     if (direction === "right") {
       for (let i = 1; i < shipLength; i++) {
         arr.push(
-          `${String.fromCharCode(arr[0][0].charCodeAt(0) + i)}${arr[0][1]}`
+          `${String.fromCharCode(arr[0][0].charCodeAt(0) + i)}${number}`
         );
       }
     }
@@ -153,65 +155,52 @@ const Battle = ({
     });
   };
 
-  const generateComputer = () => {
-    let battleshipPosition = [];
-    let occupiedPositions = [];
-    // generate first point of first ship - battleship
-    let firstBattleshipPoint = randomPosition();
-    console.log("First point of battleship", firstBattleshipPoint);
-    battleshipPosition.push(firstBattleshipPoint);
-    let battleshipDirection = direction;
-    // check how is possible to position the battleship
-    battleshipDirection = whereTurnShip(
-      "battleship",
-      firstBattleshipPoint,
-      battleshipDirection
-    );
-    // generate direction of position of battleship
-    const randomBattleshipDirection =
-      battleshipDirection[
-        Math.floor(Math.random() * battleshipDirection.length)
-      ];
-    // position battleship on map
-    battleshipPosition = placeShipOnMap(
-      "battleship",
-      battleshipPosition,
-      randomBattleshipDirection
-    );
-    console.log("Battleship coordinats", battleshipPosition);
-    // setComputerBattleship(battleshipPosition);
-    // add battleship to database of free cells
-    addShipToDatabase(battleshipPosition);
-    // setFilledPositions(occupiedPositions);
-
-    // generate first point of first cruiser
-    let cruiserFirstPoint = randomPosition();
-    console.log("Cruiser First point before check", cruiserFirstPoint);
-    while (freeCells[cruiserFirstPoint]) {
-      cruiserFirstPoint = randomPosition();
+  const generateShip = (ship) => {
+    // generate first cell of first ship
+    let firstShipCell = randomPosition();
+    let shipPosition = [];
+    let shipPossibleDirections = direction;
+    // make sure that cell is not occupied
+    while (!freeCells[firstShipCell]) {
+      firstShipCell = randomPosition();
     }
-    console.log("Cruiser First point after check", cruiserFirstPoint);
-    // check how is possible to position the first cruiser
-    let cruiserFirstDirection = direction;
-    let cruiserFirstPosition = [];
-    cruiserFirstDirection = whereTurnShip(
-      "cruiser",
-      cruiserFirstPoint,
-      cruiserFirstDirection
-    );
-    // generate direction of position of cruiser
-    const randomCruiserFirstDirection =
-      cruiserFirstDirection[
-        Math.floor(Math.random() * cruiserFirstDirection.length)
-      ];
-    // position cruiser on map
-    cruiserFirstPosition = placeShipOnMap(
-      "cruiser",
-      cruiserFirstPosition,
-      randomCruiserFirstDirection
-    );
-    console.log("Cruiser coordinats", cruiserFirstPosition);
-    console.log("Database of cells", freeCells);
+    console.log(firstShipCell);
+    // add cell to array of ship coordinats
+    shipPosition.push(firstShipCell);
+    // check how we can turn the ship on map
+
+    // if ship is vedette we don't need to turn it and to add more cells
+    if (ship !== "vedette") {
+      shipPossibleDirections = whereTurnShip(
+        ship,
+        firstShipCell,
+        shipPossibleDirections
+      );
+      console.log(shipPossibleDirections);
+      // choose random direction of ship
+      const shipDirection =
+        shipPossibleDirections[
+          Math.floor(Math.random() * shipPossibleDirections.length)
+        ];
+      // add rest of ship coordinates to array
+      shipPosition = placeShipOnMap(ship, shipPosition, shipDirection);
+    }
+    console.log(shipPosition);
+    // add ship to database of free cells to consider ship posiiton and ship borders
+    addShipToDatabase(shipPosition);
+    console.log(freeCells);
+  };
+
+  const generateComputer = () => {
+    generateShip("battleship");
+    generateShip("cruiser");
+    generateShip("cruiser");
+    for (let i = 1; i <= 3; i++) {
+      generateShip("destroyer");
+    }
+    for (let i = 1; i <= 4; i++) {
+      generateShip("vedette");
+    }
   };
 
   const map = (player, button = false) => {
