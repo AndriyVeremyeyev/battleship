@@ -36,7 +36,7 @@ const initialState = {
     vedetteThird: [],
     vedetteForth: [],
   },
-  test: false,
+  color: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -44,16 +44,15 @@ const reducer = (state = initialState, action) => {
     case "SET_COMPUTER_CELLS":
       return {
         ...state,
-        computerShips: {
-          ...state.computerShips,
+        computer: {
+          ...state.computer,
           freeCells: {
-            ...state.computerShips.freeCells,
-            [action.payload]: !state.computerShips.freeCells[action.payload],
+            ...state.computer.freeCells,
+            [action.payload]: false,
           },
         },
       };
     case "SET_COMPUTER_SHIP":
-      console.log(action);
       return {
         ...state,
         computer: {
@@ -63,6 +62,11 @@ const reducer = (state = initialState, action) => {
             ...action.payload.position,
           ],
         },
+      };
+    case "CHANGE_COLOR":
+      return {
+        ...state,
+        color: !state.color,
       };
     default:
       return state;
