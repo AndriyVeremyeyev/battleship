@@ -40,6 +40,8 @@ const Battle = ({
     return randomLetter + randomNumber;
   };
 
+  let generalNumber = 0;
+
   const calculateShipLength = (ship) => {
     let shipLength = 1;
     if (ship[0] === "b") shipLength = 4;
@@ -234,11 +236,6 @@ const Battle = ({
     addShipToDatabase(shipPosition);
   };
 
-  const generateComputer = () => {
-    generateShip("battleship");
-    // shipNames.forEach((ship) => generateShip(ship));
-  };
-
   const map = (player, button = false) => {
     return (
       <Grid item>
@@ -281,14 +278,18 @@ const Battle = ({
             })}
           </Grid>
           {button ? (
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginTop: 20 }}
-              onClick={generateComputer}
-            >
-              Generate Computer
-            </Button>
+            <Grid container direction="row">
+              {shipNames.map((ship) => (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ marginTop: 20 }}
+                  onClick={() => generateShip(ship)}
+                >
+                  {ship}
+                </Button>
+              ))}
+            </Grid>
           ) : null}
         </Grid>
       </Grid>
