@@ -18,3 +18,17 @@ export const setPageStatus = (pageStatus) => {
     payload: pageStatus,
   };
 };
+
+export const setLegendLineOne = (legend) => {
+  return {
+    type: "SET_LEGEND_LINE_ONE",
+    payload: legend,
+  };
+};
+
+export const setLegendLineTwo = (legend) => {
+  return {
+    type: "SET_LEGEND_LINE_TWO",
+    payload: legend,
+  };
+};

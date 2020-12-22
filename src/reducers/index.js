@@ -11,6 +11,8 @@ const generateFreeCells = (obj) => {
 
 const initialState = {
   pageStatus: "startGame",
+  legendLineOne: "",
+  legendLineTwo: "",
   player: {
     freeCells: generateFreeCells({}),
     battleship: [],
@@ -68,6 +70,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         pageStatus: action.payload,
+      };
+    case "SET_LEGEND_LINE_ONE":
+      return {
+        ...state,
+        legendLineOne: action.payload,
+      };
+    case "SET_LEGEND_LINE_TWO":
+      return {
+        ...state,
+        legendLineTwo: action.payload,
       };
     default:
       return state;

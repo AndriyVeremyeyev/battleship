@@ -1,45 +1,47 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setPageStatus } from "./actions/index";
+import { setLegendLineOne, setPageStatus } from "./actions/index";
 import strings from "./strings";
 import { Grid, Typography, Button } from "@material-ui/core";
 
-const StartGame = ({ pageStatus, setPageStatus }) => {
+const StartGame = ({ setPageStatus, setLegendLineOne }) => {
+  const startButtonOnClick = () => {
+    setPageStatus(strings.battle.title);
+    setLegendLineOne(strings.battle.greeting);
+  };
+
   return (
     <Grid
       container
       direction="column"
       justify="center"
       alignItems="center"
-      style={{ height: 1000 }}
+      style={{ height: 800 }}
     >
-      <Grid item>
-        <Typography variant="h4">{strings.startGame.greeting}</Typography>
-      </Grid>
       <Grid item>
         <Button
           variant="contained"
           color="primary"
           style={{ marginTop: 20 }}
-          onClick={() => setPageStatus("battle")}
+          onClick={startButtonOnClick}
         >
           {strings.startGame.button}
-          {console.log(pageStatus)}
         </Button>
       </Grid>
     </Grid>
   );
 };
 
-const mapStateToProps = (state) => {
-  const { pageStatus } = state;
-  return {
-    pageStatus,
-  };
-};
+// const mapStateToProps = (state) => {
+//   const { pageStatus } = state;
+//   return {
+//     pageStatus,
+//   };
+// };
 
 const mapDispatchToProps = (dispatch) => ({
   setPageStatus: (pageStatus) => dispatch(setPageStatus(pageStatus)),
+  setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(StartGame);
+export default connect(null, mapDispatchToProps)(StartGame);

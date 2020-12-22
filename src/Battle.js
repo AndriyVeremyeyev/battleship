@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { setComputerShip, setComputerCells } from "./actions/index";
 import { rows, columns, shipNames, shipTypes, direction } from "./database";
+import strings from "./strings";
 
 const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
   const cellStyle = {
@@ -194,7 +195,12 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
   };
 
   const generateComputer = () => {
-    shipNames.forEach((ship) => generateShip(ship));
+    shipNames.forEach((ship, index) => {
+      let number = index + 1;
+      setTimeout(() => {
+        generateShip(ship);
+      }, number * 1000);
+    });
   };
 
   const map = (player, button = false) => {
@@ -237,19 +243,14 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
             })}
           </Grid>
           {button ? (
-            <Grid container direction="row">
-              {shipNames.map((ship, index) => (
-                <Button
-                  key={`${ship}${index}`}
-                  variant="contained"
-                  color="primary"
-                  style={{ marginTop: 20 }}
-                  onClick={() => generateShip(ship)}
-                >
-                  {ship}
-                </Button>
-              ))}
-            </Grid>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginTop: 20 }}
+              onClick={generateComputer}
+            >
+              Generate computer
+            </Button>
           ) : null}
         </Grid>
       </Grid>
@@ -261,43 +262,6 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
       <Grid container direction="row" spacing={5} justify="center">
         {map("player")}
         {map("computer", true)}
-      </Grid>
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        style={{ marginTop: 20 }}
-      >
-        {shipTypes.map((x) => {
-          return (
-            <Grid item key={x} style={shipStyle} onClick={() => console.log(x)}>
-              <Grid container direction="row" justify="center">
-                <Typography variant="subtitle1">{x}</Typography>
-              </Grid>
-            </Grid>
-          );
-        })}
-      </Grid>
-      <Grid container direction="column" alignItems="center">
-        <Grid
-          item
-          style={{
-            height: 100,
-            width: 100,
-            marginTop: 20,
-            border: "solid",
-            borderWidth: 0.5,
-            backgroundColor: "green",
-          }}
-        ></Grid>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginTop: 20 }}
-          onClick={generateComputer}
-        >
-          Change color
-        </Button>
       </Grid>
     </React.Fragment>
   );
