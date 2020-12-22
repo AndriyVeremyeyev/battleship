@@ -1,12 +1,10 @@
 import React from "react";
-import Header from "./Header";
-import Battle from "./Battle";
+import GameController from "./GameController";
 
 function App() {
   return (
     <React.Fragment>
-      <Header />
-      <Battle />
+      <GameController />
     </React.Fragment>
   );
 }

@@ -1,20 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button } from "@material-ui/core";
-import {
-  setComputerShip,
-  setComputerCells,
-  changeColor,
-} from "./actions/index";
+import { setComputerShip, setComputerCells } from "./actions/index";
 import { rows, columns, shipNames, shipTypes, direction } from "./database";
 
-const Battle = ({
-  setComputerShip,
-  setComputerCells,
-  freeCells,
-  changeColor,
-  color,
-}) => {
+const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
   const cellStyle = {
     height: 50,
     width: 50,
@@ -39,8 +29,6 @@ const Battle = ({
     const randomNumber = columns[Math.floor(Math.random() * columns.length)];
     return randomLetter + randomNumber;
   };
-
-  let generalNumber = 0;
 
   const calculateShipLength = (ship) => {
     let shipLength = 1;
@@ -86,38 +74,16 @@ const Battle = ({
     const number =
       firstPoint.length === 3 ? firstPoint[1] + firstPoint[2] : firstPoint[1];
     for (let i = 1; i < shipLength; i++) {
-      // console.log("Up:", !freeCells[`${firstPoint[0]}${Number(number) - i}`]);
       if (!freeCells[`${firstPoint[0]}${Number(number) - i}`])
         shipDirection = shipDirection.filter((x) => x !== "up");
-      // console.log("Down:", !freeCells[`${firstPoint[0]}${Number(number) + i}`]);
       if (!freeCells[`${firstPoint[0]}${Number(number) + i}`])
         shipDirection = shipDirection.filter((x) => x !== "down");
-      // console.log(
-      //   "Left:",
-      //   `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
-      // );
-      // console.log(
-      //   "Left:",
-      //   !freeCells[
-      //     `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
-      //   ]
-      // );
       if (
         !freeCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
         ]
       )
         shipDirection = shipDirection.filter((x) => x !== "left");
-      // console.log(
-      //   "Right:",
-      //   `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
-      // );
-      // console.log(
-      //   "Right:",
-      //   !freeCells[
-      //     `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
-      //   ]
-      // );
       if (
         !freeCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
@@ -131,55 +97,52 @@ const Battle = ({
 
   const addShipToDatabase = (shipPosition) => {
     shipPosition.forEach((x) => {
-      if (freeCells[x]) setComputerCells(x);
-      // if (freeCells[`${x[0]}${Number(x[1]) + 1}`])
-      //   setComputerCells([`${x[0]}${Number(x[1]) + 1}`]);
-      // if (freeCells[`${x[0]}${Number(x[1]) - 1}`])
-      //   freeCells[`${x[0]}${Number(x[1]) - 1}`] = false;
-      // if (freeCells[`${x[0]}${Number(x[1]) + 1}`])
-      //   freeCells[`${x[0]}${Number(x[1]) + 1}`] = false;
-      // if (freeCells[`${x[0]}${Number(x[1]) - 1}`])
-      //   freeCells[`${x[0]}${Number(x[1]) - 1}`] = false;
-      // if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) - 1)}${x[1]}`])
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${x[1]}`
-      //   ] = false;
-      // if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) + 1)}${x[1]}`])
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${x[1]}`
-      //   ] = false;
-      // if (
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(x[1]) - 1}`
-      //   ]
-      // )
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(x[1]) - 1}`
-      //   ] = false;
-      // if (
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(x[1]) + 1}`
-      //   ]
-      // )
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(x[1]) + 1}`
-      //   ] = false;
-      // if (
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(x[1]) - 1}`
-      //   ]
-      // )
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(x[1]) - 1}`
-      //   ] = false;
-      // if (
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(x[1]) + 1}`
-      //   ]
-      // )
-      //   freeCells[
-      //     `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(x[1]) + 1}`
-      //   ] = false;
+      const number = x.length === 3 ? x[1] + x[2] : x[1];
+      setComputerCells(x);
+      if (freeCells[`${x[0]}${Number(number) + 1}`])
+        setComputerCells([`${x[0]}${Number(number) + 1}`]);
+      if (freeCells[`${x[0]}${Number(number) - 1}`])
+        setComputerCells([`${x[0]}${Number(number) - 1}`]);
+      if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`])
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`,
+        ]);
+      if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`])
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`,
+        ]);
+      if (
+        freeCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`
+        ]
+      )
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
+        ]);
+      if (
+        freeCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`
+        ]
+      )
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
+        ]);
+      if (
+        freeCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`
+        ]
+      )
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
+        ]);
+      if (
+        freeCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`
+        ]
+      )
+        setComputerCells([
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
+        ]);
     });
   };
 
@@ -188,7 +151,6 @@ const Battle = ({
     let firstShipCell = randomPosition();
     let shipPosition = [];
     let shipPossibleDirections = whereTurnShip(ship, firstShipCell, direction);
-    let whileNumber = 0;
     console.log(shipPossibleDirections.length);
     // make sure that cell is not occupied and you can turn ship somewhere
     console.log(`First option of first cell of ${ship}:`, firstShipCell);
@@ -204,13 +166,8 @@ const Battle = ({
         (freeCells[firstShipCell] && shipPossibleDirections.length === 0)
       ) {
         firstShipCell = randomPosition();
-        shipPossibleDirections = whereTurnShip(
-          ship,
-          firstShipCell,
-          shipPossibleDirections
-        );
-        whileNumber++;
-        if (whileNumber > 10) return;
+        shipPossibleDirections = whereTurnShip(ship, firstShipCell, direction);
+        console.log(firstShipCell, shipPossibleDirections);
       }
     }
     shipPosition.push(firstShipCell);
@@ -236,6 +193,10 @@ const Battle = ({
     addShipToDatabase(shipPosition);
   };
 
+  const generateComputer = () => {
+    shipNames.forEach((ship) => generateShip(ship));
+  };
+
   const map = (player, button = false) => {
     return (
       <Grid item>
@@ -253,7 +214,6 @@ const Battle = ({
                   <Grid container direction="row">
                     {rows.map((y) => {
                       const cellNumber = `${y}${x}`;
-                      const nameClass = `${player}${cellNumber}`;
                       return (
                         <Grid
                           item
@@ -262,10 +222,9 @@ const Battle = ({
                             ...cellStyle,
                             backgroundColor:
                               player === "computer" && freeCells[`${y}${x}`]
-                                ? "white"
-                                : "grey",
+                                ? "grey"
+                                : "white",
                           }}
-                          className={nameClass}
                           onClick={() => vasya(cellNumber)}
                         >
                           {cellNumber}
@@ -279,8 +238,9 @@ const Battle = ({
           </Grid>
           {button ? (
             <Grid container direction="row">
-              {shipNames.map((ship) => (
+              {shipNames.map((ship, index) => (
                 <Button
+                  key={`${ship}${index}`}
                   variant="contained"
                   color="primary"
                   style={{ marginTop: 20 }}
@@ -327,14 +287,14 @@ const Battle = ({
             marginTop: 20,
             border: "solid",
             borderWidth: 0.5,
-            backgroundColor: color ? "green" : "red",
+            backgroundColor: "green",
           }}
         ></Grid>
         <Button
           variant="contained"
           color="primary"
           style={{ marginTop: 20 }}
-          onClick={changeColor}
+          onClick={generateComputer}
         >
           Change color
         </Button>
@@ -354,7 +314,6 @@ const mapDispatchToProps = (dispatch) => ({
   setComputerShip: (ship, position) =>
     dispatch(setComputerShip(ship, position)),
   setComputerCells: (cell) => dispatch(setComputerCells(cell)),
-  changeColor: () => dispatch(changeColor()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

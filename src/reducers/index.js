@@ -10,6 +10,7 @@ const generateFreeCells = (obj) => {
 };
 
 const initialState = {
+  pageStatus: "startGame",
   player: {
     freeCells: generateFreeCells({}),
     battleship: [],
@@ -63,10 +64,10 @@ const reducer = (state = initialState, action) => {
           ],
         },
       };
-    case "CHANGE_COLOR":
+    case "SET_PAGE_STATUS":
       return {
         ...state,
-        color: !state.color,
+        pageStatus: action.payload,
       };
     default:
       return state;

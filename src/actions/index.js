@@ -12,8 +12,9 @@ export const setComputerShip = (ship, position) => {
   };
 };
 
-export const changeColor = () => {
+export const setPageStatus = (pageStatus) => {
   return {
-    type: "CHANGE_COLOR",
+    type: "SET_PAGE_STATUS",
+    payload: pageStatus,
   };
 };
