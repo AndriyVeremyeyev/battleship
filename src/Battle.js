@@ -5,9 +5,18 @@ import {
   setShip,
   setShipsCells,
   setShipsShadowsCells,
+  setLegendLineOne,
   setLegendLineTwo,
 } from "./actions/index";
-import { rows, columns, shipNames, direction } from "./database";
+import {
+  rows,
+  columns,
+  shipNames,
+  direction,
+  shipTypes,
+  shipLengths,
+  shipNicknames,
+} from "./database";
 import strings from "./strings";
 
 const Battle = ({
@@ -15,12 +24,17 @@ const Battle = ({
   setShipsCells,
   setShipsShadowsCells,
   computer,
+  setLegendLineOne,
   setLegendLineTwo,
   player,
 }) => {
   useEffect(() => {
+    drawPossibleDirections();
+  }, [player]);
+
+  useEffect(() => {
     setTimeout(() => {
-      setLegendLineTwo(`${strings.battle.proposition} ${shipNames[0]}`);
+      setLegendLineTwo(strings.battle.proposition.replace("{}", shipTypes[0]));
     }, 2000);
   }, [setLegendLineTwo]);
 
@@ -49,95 +63,102 @@ const Battle = ({
   };
 
   const placePlayerShipOnMap = (cellNumber) => {
-    const {
-      battleShip,
-      cruiserFirst,
-      cruiserSecond,
-      destroyerFirst,
-      destroyerSecond,
-      destroyerThird,
-      vedetteFirst,
-      vedetteSecond,
-      vedetteThird,
-      vedetteForth,
-    } = player;
-    if (battleShip?.length < 4 && player.shipsCells[cellNumber]) {
+    if (player.battleShip?.length < 4 && player.shipsCells[cellNumber]) {
       setShip("player", shipNames[0], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
+
     if (
-      battleShip?.length === 4 &&
-      cruiserFirst?.length < 3 &&
+      player.battleShip?.length === 4 &&
+      player.cruiserFirst?.length < 3 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[1], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      cruiserFirst?.length === 3 &&
-      cruiserSecond?.length < 3 &&
+      player.cruiserFirst?.length === 3 &&
+      player.cruiserSecond?.length < 3 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[2], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      cruiserSecond?.length === 3 &&
-      destroyerFirst?.length < 2 &&
+      player.cruiserSecond?.length === 3 &&
+      player.destroyerFirst?.length < 2 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[3], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      destroyerFirst?.length === 2 &&
-      destroyerSecond?.length < 2 &&
+      player.destroyerFirst?.length === 2 &&
+      player.destroyerSecond?.length < 2 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[4], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      destroyerSecond?.length === 2 &&
-      destroyerThird?.length < 2 &&
+      player.destroyerSecond?.length === 2 &&
+      player.destroyerThird?.length < 2 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[5], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      destroyerThird?.length === 2 &&
-      vedetteFirst?.length < 1 &&
+      player.destroyerThird?.length === 2 &&
+      player.vedetteFirst?.length < 1 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[6], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      vedetteFirst?.length === 1 &&
-      vedetteSecond?.length < 1 &&
+      player.vedetteFirst?.length === 1 &&
+      player.vedetteSecond?.length < 1 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[7], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      vedetteSecond?.length === 1 &&
-      vedetteThird?.length < 1 &&
+      player.vedetteSecond?.length === 1 &&
+      player.vedetteThird?.length < 1 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[8], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     if (
-      vedetteThird?.length === 1 &&
-      vedetteForth?.length < 1 &&
+      player.vedetteThird?.length === 1 &&
+      player.vedetteForth?.length < 1 &&
       player.shipsCells[cellNumber]
     ) {
       setShip("player", shipNames[9], [cellNumber]);
       setShipsCells("player", cellNumber);
     }
     console.log(player);
+  };
+
+  const replaceLegends = (nameOne, nameTwo) => {
+    setLegendLineOne(strings.battle.completed.replace("{}", nameOne));
+    setLegendLineTwo(strings.battle.proposition.replace("{}", nameTwo));
+  };
+
+  const drawPossibleDirections = () => {
+    shipNames.forEach((ship, index) => {
+      if (player[ship]?.length === shipLengths[index]) {
+        if (index < shipNames.length - 1)
+          replaceLegends(shipNicknames[index], shipNicknames[index + 1]);
+        else {
+          setLegendLineOne(strings.battle.placementCompleted);
+          setLegendLineTwo("");
+        }
+      }
+    });
   };
 
   const placeShipOnMap = (ship, arr, direction) => {
@@ -197,63 +218,31 @@ const Battle = ({
     return shipDirection;
   };
 
+  const setCertainShadow = (cell) => {
+    if (shipsShadowsCells[cell]) setShipsShadowsCells(cell);
+  };
+
   const addShipToDatabase = (shipPosition) => {
     shipPosition.forEach((x) => {
       const number = x.length === 3 ? x[1] + x[2] : x[1];
       setShipsCells("computer", x);
+      setCertainShadow();
+
       setShipsShadowsCells(x);
-      if (shipsShadowsCells[`${x[0]}${Number(number) + 1}`])
-        setShipsShadowsCells([`${x[0]}${Number(number) + 1}`]);
-      if (shipsShadowsCells[`${x[0]}${Number(number) - 1}`])
-        setShipsShadowsCells([`${x[0]}${Number(number) - 1}`]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`,
-        ]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`,
-        ]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
-        ]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
-        ]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
-        ]);
-      if (
-        shipsShadowsCells[
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`
-        ]
-      )
-        setShipsShadowsCells([
-          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
-        ]);
+      setCertainShadow(`${x[0]}${Number(number) + 1}`);
+
+      const neighbourCells = [
+        `${x[0]}${Number(number) + 1}`,
+        `${x[0]}${Number(number) - 1}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
+        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
+      ];
+
+      neighbourCells.forEach((cell) => setCertainShadow(cell));
     });
   };
 
@@ -418,6 +407,7 @@ const mapDispatchToProps = (dispatch) => ({
   setShipsCells: (player, cell) => dispatch(setShipsCells(player, cell)),
   setShipsShadowsCells: (cell) => dispatch(setShipsShadowsCells(cell)),
   setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
+  setLegendLineOne: (lelend) => dispatch(setLegendLineOne(lelend)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

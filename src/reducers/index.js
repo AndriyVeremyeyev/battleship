@@ -15,6 +15,8 @@ const initialState = {
   legendLineTwo: "",
   player: {
     shipsCells: generateFreeCells({}),
+    shipsShadowsCells: generateFreeCells({}),
+    possibleDirections: {},
     battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -65,6 +67,13 @@ const reducer = (state = initialState, action) => {
             ...state.computer.shipsShadowsCells,
             [action.payload]: false,
           },
+        },
+      };
+    case "SET_POSSIBLE_DIRECTIONS":
+      return {
+        ...state,
+        player: {
+          possibleDirections: action.payload,
         },
       };
     case "SET_SHIP":

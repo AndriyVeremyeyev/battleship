@@ -1,4 +1,4 @@
-const generateFreeCells = (obj) => {
+export const generateFreeCells = (obj) => {
   for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < columns.length; j++) {
       obj[`${rows[i]}${columns[j]}`] = true;
@@ -21,7 +21,20 @@ export const shipNames = [
   "vedetteThird",
   "vedetteForth",
 ];
-export const shipTypes = ["battleShip", "cruiser", "destroyer", "vedette"];
+export const shipTypes = ["Battleship", "Cruiser", "Destroyer", "Vedette"];
+export const shipNicknames = [
+  "Battleship",
+  "1st Cruiser",
+  "2nd Cruiser",
+  "1st Destroyer",
+  "2nd Destroyer",
+  "3rd Destroyer",
+  "1th Vedette",
+  "2nd Vedette",
+  "3rd Vedette",
+  "4th Vedette",
+];
+export const shipLengths = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 export const direction = ["up", "down", "left", "right"];
 export const freeCells = {};
 

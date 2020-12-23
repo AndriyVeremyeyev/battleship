@@ -25,7 +25,7 @@ const Header = ({ legendLineOne, legendLineTwo }) => {
           alignItems="center"
           style={{ marginTop: 10 }}
         >
-          <Typography variant="h6">{legendLineOne}</Typography>
+          <Typography variant="subtitle1">{legendLineOne}</Typography>
           <Typography variant="subtitle1">{legendLineTwo}</Typography>
         </Grid>
       </Grid>

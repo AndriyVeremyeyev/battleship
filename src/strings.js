@@ -10,7 +10,9 @@ const strings = {
     title: "battle",
     toComputer: "Switch to Computer",
     greeting: "Welcome to Battle Mode",
-    proposition: "Choose some cell on player map to place start point of",
+    proposition: "Choose cell on player map to place start point of {}",
+    completed: "{} is completed",
+    placementCompleted: "You completed the placement of all ships",
   },
 };
 

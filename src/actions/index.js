@@ -1,3 +1,5 @@
+import { direction } from "../database";
+
 export const setShipsCells = (player, cell) => {
   return {
     type: "SET_SHIPS_CELLS",
@@ -37,5 +39,12 @@ export const setLegendLineTwo = (legend) => {
   return {
     type: "SET_LEGEND_LINE_TWO",
     payload: legend,
+  };
+};
+
+export const setPossibleDirections = (directions) => {
+  return {
+    type: "SET_POSSIBLE_DIRECTIONS",
+    payload: directions,
   };
 };
