@@ -1,19 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import strings from "./strings";
-import { setLegendLineOne, setLegendLineTwo } from "./actions/index";
 import { Grid, Typography } from "@material-ui/core";
 
-const Header = ({
-  legendLineOne,
-  legendLineTwo,
-  setLegendLineOne,
-  setLegendLineTwo,
-}) => {
-  useEffect(() => {
-    setLegendLineOne(strings.startGame.greeting);
-  }, []);
-
+const Header = ({ legendLineOne, legendLineTwo }) => {
   return (
     <Grid container direction="column" alignItems="center">
       <Typography variant="h2">{strings.header.title}</Typography>
@@ -22,7 +12,7 @@ const Header = ({
         style={{
           border: "solid",
           borderWidth: 1,
-          height: 70,
+          height: 80,
           width: 500,
           marginTop: 20,
           marginBottom: 20,
@@ -33,10 +23,10 @@ const Header = ({
           direction="row"
           justify="center"
           alignItems="center"
-          style={{ marginTop: 15 }}
+          style={{ marginTop: 10 }}
         >
           <Typography variant="h6">{legendLineOne}</Typography>
-          <Typography variant="h6">{legendLineTwo}</Typography>
+          <Typography variant="subtitle1">{legendLineTwo}</Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -51,9 +41,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
-  setLegendLineTwo: (legend) => dispatch(setLegendLineTwo(legend)),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
+//   setLegendLineTwo: (legend) => dispatch(setLegendLineTwo(legend)),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps)(Header);

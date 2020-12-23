@@ -1,14 +1,21 @@
-export const setComputerCells = (cell) => {
+export const setShipsCells = (player, cell) => {
   return {
-    type: "SET_COMPUTER_CELLS",
+    type: "SET_SHIPS_CELLS",
+    payload: { player, cell },
+  };
+};
+
+export const setShipsShadowsCells = (cell) => {
+  return {
+    type: "SET_SHIPS_SHADOWS_CELLS",
     payload: cell,
   };
 };
 
-export const setComputerShip = (ship, position) => {
+export const setShip = (player, ship, position) => {
   return {
-    type: "SET_COMPUTER_SHIP",
-    payload: { ship, position },
+    type: "SET_SHIP",
+    payload: { player, ship, position },
   };
 };
 

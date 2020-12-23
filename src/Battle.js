@@ -1,28 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button } from "@material-ui/core";
-import { setComputerShip, setComputerCells } from "./actions/index";
-import { rows, columns, shipNames, shipTypes, direction } from "./database";
+import {
+  setShip,
+  setShipsCells,
+  setShipsShadowsCells,
+  setLegendLineTwo,
+} from "./actions/index";
+import { rows, columns, shipNames, direction } from "./database";
 import strings from "./strings";
 
-const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
+const Battle = ({
+  setShip,
+  setShipsCells,
+  setShipsShadowsCells,
+  computer,
+  setLegendLineTwo,
+  player,
+}) => {
+  useEffect(() => {
+    setTimeout(() => {
+      setLegendLineTwo(`${strings.battle.proposition} ${shipNames[0]}`);
+    }, 2000);
+  }, [setLegendLineTwo]);
+
+  const { shipsCells, shipsShadowsCells } = computer;
+
   const cellStyle = {
     height: 50,
     width: 50,
     border: "solid",
     borderWidth: 0.5,
-  };
-
-  const shipStyle = {
-    height: 50,
-    width: 100,
-    border: "solid",
-    borderWidth: 0.5,
-    paddingTop: 10,
-  };
-
-  const vasya = (number) => {
-    console.log(number);
+    cursor: "pointer",
   };
 
   const randomPosition = () => {
@@ -37,6 +46,98 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
     if (ship[0] === "c") shipLength = 3;
     if (ship[0] === "d") shipLength = 2;
     return shipLength;
+  };
+
+  const placePlayerShipOnMap = (cellNumber) => {
+    const {
+      battleShip,
+      cruiserFirst,
+      cruiserSecond,
+      destroyerFirst,
+      destroyerSecond,
+      destroyerThird,
+      vedetteFirst,
+      vedetteSecond,
+      vedetteThird,
+      vedetteForth,
+    } = player;
+    if (battleShip?.length < 4 && player.shipsCells[cellNumber]) {
+      setShip("player", shipNames[0], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      battleShip?.length === 4 &&
+      cruiserFirst?.length < 3 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[1], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      cruiserFirst?.length === 3 &&
+      cruiserSecond?.length < 3 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[2], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      cruiserSecond?.length === 3 &&
+      destroyerFirst?.length < 2 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[3], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      destroyerFirst?.length === 2 &&
+      destroyerSecond?.length < 2 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[4], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      destroyerSecond?.length === 2 &&
+      destroyerThird?.length < 2 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[5], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      destroyerThird?.length === 2 &&
+      vedetteFirst?.length < 1 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[6], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      vedetteFirst?.length === 1 &&
+      vedetteSecond?.length < 1 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[7], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      vedetteSecond?.length === 1 &&
+      vedetteThird?.length < 1 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[8], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    if (
+      vedetteThird?.length === 1 &&
+      vedetteForth?.length < 1 &&
+      player.shipsCells[cellNumber]
+    ) {
+      setShip("player", shipNames[9], [cellNumber]);
+      setShipsCells("player", cellNumber);
+    }
+    console.log(player);
   };
 
   const placeShipOnMap = (ship, arr, direction) => {
@@ -75,18 +176,18 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
     const number =
       firstPoint.length === 3 ? firstPoint[1] + firstPoint[2] : firstPoint[1];
     for (let i = 1; i < shipLength; i++) {
-      if (!freeCells[`${firstPoint[0]}${Number(number) - i}`])
+      if (!shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
         shipDirection = shipDirection.filter((x) => x !== "up");
-      if (!freeCells[`${firstPoint[0]}${Number(number) + i}`])
+      if (!shipsShadowsCells[`${firstPoint[0]}${Number(number) + i}`])
         shipDirection = shipDirection.filter((x) => x !== "down");
       if (
-        !freeCells[
+        !shipsShadowsCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
         ]
       )
         shipDirection = shipDirection.filter((x) => x !== "left");
       if (
-        !freeCells[
+        !shipsShadowsCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
         ]
       )
@@ -99,49 +200,58 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
   const addShipToDatabase = (shipPosition) => {
     shipPosition.forEach((x) => {
       const number = x.length === 3 ? x[1] + x[2] : x[1];
-      setComputerCells(x);
-      if (freeCells[`${x[0]}${Number(number) + 1}`])
-        setComputerCells([`${x[0]}${Number(number) + 1}`]);
-      if (freeCells[`${x[0]}${Number(number) - 1}`])
-        setComputerCells([`${x[0]}${Number(number) - 1}`]);
-      if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`])
-        setComputerCells([
+      setShipsCells("computer", x);
+      setShipsShadowsCells(x);
+      if (shipsShadowsCells[`${x[0]}${Number(number) + 1}`])
+        setShipsShadowsCells([`${x[0]}${Number(number) + 1}`]);
+      if (shipsShadowsCells[`${x[0]}${Number(number) - 1}`])
+        setShipsShadowsCells([`${x[0]}${Number(number) - 1}`]);
+      if (
+        shipsShadowsCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`
+        ]
+      )
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`,
         ]);
-      if (freeCells[`${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`])
-        setComputerCells([
+      if (
+        shipsShadowsCells[
+          `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`
+        ]
+      )
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`,
         ]);
       if (
-        freeCells[
+        shipsShadowsCells[
           `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`
         ]
       )
-        setComputerCells([
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
         ]);
       if (
-        freeCells[
+        shipsShadowsCells[
           `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`
         ]
       )
-        setComputerCells([
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
         ]);
       if (
-        freeCells[
+        shipsShadowsCells[
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`
         ]
       )
-        setComputerCells([
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
         ]);
       if (
-        freeCells[
+        shipsShadowsCells[
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`
         ]
       )
-        setComputerCells([
+        setShipsShadowsCells([
           `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
         ]);
     });
@@ -155,16 +265,17 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
     console.log(shipPossibleDirections.length);
     // make sure that cell is not occupied and you can turn ship somewhere
     console.log(`First option of first cell of ${ship}:`, firstShipCell);
-    console.log(!freeCells[firstShipCell]);
+    console.log(!shipsShadowsCells[firstShipCell]);
     // Object.values(freeCells).forEach((x) => console.log(x));
     if (ship[0] === "v") {
-      while (!freeCells[firstShipCell]) {
+      while (!shipsShadowsCells[firstShipCell]) {
         firstShipCell = randomPosition();
       }
     } else {
       while (
-        !freeCells[firstShipCell] ||
-        (freeCells[firstShipCell] && shipPossibleDirections.length === 0)
+        !shipsShadowsCells[firstShipCell] ||
+        (shipsShadowsCells[firstShipCell] &&
+          shipPossibleDirections.length === 0)
       ) {
         firstShipCell = randomPosition();
         shipPossibleDirections = whereTurnShip(ship, firstShipCell, direction);
@@ -187,27 +298,22 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
       // add rest of ship coordinates to array
       shipPosition = placeShipOnMap(ship, shipPosition, shipDirection);
     }
-    setComputerShip(ship, shipPosition);
+    setShip("computer", ship, shipPosition);
     console.log(shipPosition);
-    // console.log("Object in state", freeCells);
+    console.log("Object in state", shipsCells);
     // add ship to database of free cells to consider ship posiiton and ship borders
     addShipToDatabase(shipPosition);
   };
 
   const generateComputer = () => {
-    shipNames.forEach((ship, index) => {
-      let number = index + 1;
-      setTimeout(() => {
-        generateShip(ship);
-      }, number * 1000);
-    });
+    console.log("vasya");
   };
 
-  const map = (player, button = false) => {
+  const map = (side, button = false) => {
     return (
       <Grid item>
         <Grid container direction="column" alignItems="center">
-          <Typography variant="h4">{player}</Typography>
+          <Typography variant="h4">{side}</Typography>
           <Grid
             container
             direction="column"
@@ -220,18 +326,37 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
                   <Grid container direction="row">
                     {rows.map((y) => {
                       const cellNumber = `${y}${x}`;
+                      const cellColor = () => {
+                        if (side === "computer" && !shipsCells[`${y}${x}`]) {
+                          return "#696969";
+                        }
+                        if (
+                          side === "computer" &&
+                          !shipsShadowsCells[`${y}${x}`]
+                        ) {
+                          return "#D3D3D3";
+                        }
+                        if (
+                          side === "player" &&
+                          player.shipsCells &&
+                          !player.shipsCells[`${y}${x}`]
+                        )
+                          return "#696969";
+                        return null;
+                      };
                       return (
                         <Grid
                           item
                           key={cellNumber}
                           style={{
                             ...cellStyle,
-                            backgroundColor:
-                              player === "computer" && freeCells[`${y}${x}`]
-                                ? "grey"
-                                : "white",
+                            backgroundColor: cellColor(),
                           }}
-                          onClick={() => vasya(cellNumber)}
+                          onClick={
+                            side === "player"
+                              ? () => placePlayerShipOnMap(cellNumber)
+                              : () => console.log(cellNumber)
+                          }
                         >
                           {cellNumber}
                         </Grid>
@@ -263,21 +388,36 @@ const Battle = ({ setComputerShip, setComputerCells, freeCells }) => {
         {map("player")}
         {map("computer", true)}
       </Grid>
+      <Grid container direction="row" justify="center">
+        {shipNames.map((ship, index) => {
+          return (
+            <Button
+              key={`${index}${ship}`}
+              variant="contained"
+              color="primary"
+              style={{ marginTop: 20 }}
+              onClick={() => generateShip(ship)}
+            >
+              {ship}
+            </Button>
+          );
+        })}
+      </Grid>
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
-  const {
-    computer: { freeCells },
-  } = state;
-  return { freeCells };
+  const { player, computer } = state;
+  return { player, computer };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  setComputerShip: (ship, position) =>
-    dispatch(setComputerShip(ship, position)),
-  setComputerCells: (cell) => dispatch(setComputerCells(cell)),
+  setShip: (player, ship, position) =>
+    dispatch(setShip(player, ship, position)),
+  setShipsCells: (player, cell) => dispatch(setShipsCells(player, cell)),
+  setShipsShadowsCells: (cell) => dispatch(setShipsShadowsCells(cell)),
+  setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

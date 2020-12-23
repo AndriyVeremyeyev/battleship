@@ -10,6 +10,7 @@ const strings = {
     title: "battle",
     toComputer: "Switch to Computer",
     greeting: "Welcome to Battle Mode",
+    proposition: "Choose some cell on player map to place start point of",
   },
 };
 

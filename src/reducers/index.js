@@ -14,8 +14,8 @@ const initialState = {
   legendLineOne: "",
   legendLineTwo: "",
   player: {
-    freeCells: generateFreeCells({}),
-    battleship: [],
+    shipsCells: generateFreeCells({}),
+    battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
     destroyerFirst: [],
@@ -27,8 +27,9 @@ const initialState = {
     vedetteForth: [],
   },
   computer: {
-    freeCells: generateFreeCells({}),
-    battleship: [],
+    shipsCells: generateFreeCells({}),
+    shipsShadowsCells: generateFreeCells({}),
+    battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
     destroyerFirst: [],
@@ -44,24 +45,35 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_COMPUTER_CELLS":
+    case "SET_SHIPS_CELLS":
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          shipsCells: {
+            ...state[action.payload.player].shipsCells,
+            [action.payload.cell]: false,
+          },
+        },
+      };
+    case "SET_SHIPS_SHADOWS_CELLS":
       return {
         ...state,
         computer: {
           ...state.computer,
-          freeCells: {
-            ...state.computer.freeCells,
+          shipsShadowsCells: {
+            ...state.computer.shipsShadowsCells,
             [action.payload]: false,
           },
         },
       };
-    case "SET_COMPUTER_SHIP":
+    case "SET_SHIP":
       return {
         ...state,
-        computer: {
-          ...state.computer,
+        [action.payload.player]: {
+          ...state[action.payload.player],
           [action.payload.ship]: [
-            ...state.computer[action.payload.ship],
+            ...state[action.payload.player][action.payload.ship],
             ...action.payload.position,
           ],
         },

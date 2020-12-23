@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { setLegendLineOne, setPageStatus } from "./actions/index";
 import strings from "./strings";
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 
 const StartGame = ({ setPageStatus, setLegendLineOne }) => {
+  useEffect(() => {
+    setLegendLineOne(strings.startGame.greeting);
+  }, [setLegendLineOne]);
+
   const startButtonOnClick = () => {
     setPageStatus(strings.battle.title);
     setLegendLineOne(strings.battle.greeting);
