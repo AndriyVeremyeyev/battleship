@@ -1,5 +1,3 @@
-import { direction } from "../database";
-
 export const setShipsCells = (player, cell) => {
   return {
     type: "SET_SHIPS_CELLS",
@@ -46,5 +44,24 @@ export const setPossibleDirections = (directions) => {
   return {
     type: "SET_POSSIBLE_DIRECTIONS",
     payload: directions,
+  };
+};
+
+export const setInput = () => {
+  return {
+    type: "SET_INPUT",
+  };
+};
+
+export const setSillyButtons = () => {
+  return {
+    type: "SET_SILLY_BUTTONS",
+  };
+};
+
+export const setShipsStatus = (player, ship, status) => {
+  return {
+    type: "SET_SHIPS_STATUS",
+    payload: { player, ship, status },
   };
 };

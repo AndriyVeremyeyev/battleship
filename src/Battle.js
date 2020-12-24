@@ -1,19 +1,21 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button, TextField } from "@material-ui/core";
 import {
   setShip,
   setShipsCells,
   setShipsShadowsCells,
   setLegendLineOne,
   setLegendLineTwo,
+  setInput,
+  setSillyButtons,
+  setShipsStatus,
 } from "./actions/index";
 import {
   rows,
   columns,
   shipNames,
   direction,
-  shipTypes,
   shipLengths,
   shipNicknames,
 } from "./database";
@@ -27,17 +29,11 @@ const Battle = ({
   setLegendLineOne,
   setLegendLineTwo,
   player,
+  setSillyButtons,
+  setInput,
+  sillyButtons,
+  setShipsStatus,
 }) => {
-  useEffect(() => {
-    drawPossibleDirections();
-  }, [player]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLegendLineTwo(strings.battle.proposition.replace("{}", shipTypes[0]));
-    }, 2000);
-  }, [setLegendLineTwo]);
-
   const { shipsCells, shipsShadowsCells } = computer;
 
   const cellStyle = {
@@ -63,103 +59,44 @@ const Battle = ({
   };
 
   const placePlayerShipOnMap = (cellNumber) => {
-    if (player.battleShip?.length < 4 && player.shipsCells[cellNumber]) {
-      setShip("player", shipNames[0], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-
-    if (
-      player.battleShip?.length === 4 &&
-      player.cruiserFirst?.length < 3 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[1], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.cruiserFirst?.length === 3 &&
-      player.cruiserSecond?.length < 3 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[2], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.cruiserSecond?.length === 3 &&
-      player.destroyerFirst?.length < 2 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[3], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.destroyerFirst?.length === 2 &&
-      player.destroyerSecond?.length < 2 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[4], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.destroyerSecond?.length === 2 &&
-      player.destroyerThird?.length < 2 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[5], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.destroyerThird?.length === 2 &&
-      player.vedetteFirst?.length < 1 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[6], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.vedetteFirst?.length === 1 &&
-      player.vedetteSecond?.length < 1 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[7], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.vedetteSecond?.length === 1 &&
-      player.vedetteThird?.length < 1 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[8], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    if (
-      player.vedetteThird?.length === 1 &&
-      player.vedetteForth?.length < 1 &&
-      player.shipsCells[cellNumber]
-    ) {
-      setShip("player", shipNames[9], [cellNumber]);
-      setShipsCells("player", cellNumber);
-    }
-    console.log(player);
-  };
-
-  const replaceLegends = (nameOne, nameTwo) => {
-    setLegendLineOne(strings.battle.completed.replace("{}", nameOne));
-    setLegendLineTwo(strings.battle.proposition.replace("{}", nameTwo));
+    shipNames.forEach((ship, index) => {
+      if (player.shipsCells[cellNumber]) {
+        if (
+          (index === 0 && player[ship]?.length < shipLengths[index]) ||
+          (index > 0 &&
+            player[shipNames[index - 1]]?.length === shipLengths[index - 1] &&
+            player[ship]?.length < shipLengths[index])
+        ) {
+          setShip("player", shipNames[index], [cellNumber]);
+          setShipsCells("player", cellNumber);
+        }
+      }
+    });
   };
 
   const drawPossibleDirections = () => {
     shipNames.forEach((ship, index) => {
       if (player[ship]?.length === shipLengths[index]) {
-        if (index < shipNames.length - 1)
-          replaceLegends(shipNicknames[index], shipNicknames[index + 1]);
-        else {
+        if (index < shipNames.length - 1) {
+          setLegendLineOne(
+            strings.battle.completed.replace("{}", shipNicknames[index])
+          );
+          setLegendLineTwo(
+            strings.battle.proposition.replace("{}", shipNicknames[index + 1])
+          );
+        } else {
           setLegendLineOne(strings.battle.placementCompleted);
           setLegendLineTwo("");
         }
+        setShipsStatus("player", ship, true);
       }
     });
+    console.log(player.shipsStatus);
   };
+
+  useEffect(() => {
+    drawPossibleDirections();
+  }, [player.shipsCells]);
 
   const placeShipOnMap = (ship, arr, direction) => {
     console.log(direction);
@@ -295,68 +232,98 @@ const Battle = ({
   };
 
   const generateComputer = () => {
-    console.log("vasya");
+    setSillyButtons();
   };
 
-  const map = (side, button = false) => {
+  const map = (side) => {
     return (
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
-          <Typography variant="h4">{side}</Typography>
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            style={{ marginTop: 20 }}
-          >
-            {columns.map((x) => {
-              return (
-                <Grid item key={x}>
-                  <Grid container direction="row">
-                    {rows.map((y) => {
-                      const cellNumber = `${y}${x}`;
-                      const cellColor = () => {
-                        if (side === "computer" && !shipsCells[`${y}${x}`]) {
-                          return "#696969";
+      <React.Fragment>
+        <Typography variant="h4">{side}</Typography>
+        <Grid
+          container
+          direction="column"
+          alignItems="center"
+          style={{ marginTop: 20 }}
+        >
+          {columns.map((x) => {
+            return (
+              <Grid item key={x}>
+                <Grid container direction="row">
+                  {rows.map((y) => {
+                    const cellNumber = `${y}${x}`;
+                    const cellColor = () => {
+                      if (side === "computer" && !shipsCells[`${y}${x}`]) {
+                        return "#696969";
+                      }
+                      if (
+                        side === "computer" &&
+                        !shipsShadowsCells[`${y}${x}`]
+                      ) {
+                        return "#D3D3D3";
+                      }
+                      if (
+                        side === "player" &&
+                        player.shipsCells &&
+                        !player.shipsCells[`${y}${x}`]
+                      )
+                        return "#696969";
+                      return null;
+                    };
+                    return (
+                      <Grid
+                        item
+                        key={cellNumber}
+                        style={{
+                          ...cellStyle,
+                          backgroundColor: cellColor(),
+                        }}
+                        onClick={
+                          side === "player"
+                            ? () => placePlayerShipOnMap(cellNumber)
+                            : () => console.log(cellNumber)
                         }
-                        if (
-                          side === "computer" &&
-                          !shipsShadowsCells[`${y}${x}`]
-                        ) {
-                          return "#D3D3D3";
-                        }
-                        if (
-                          side === "player" &&
-                          player.shipsCells &&
-                          !player.shipsCells[`${y}${x}`]
-                        )
-                          return "#696969";
-                        return null;
-                      };
-                      return (
-                        <Grid
-                          item
-                          key={cellNumber}
-                          style={{
-                            ...cellStyle,
-                            backgroundColor: cellColor(),
-                          }}
-                          onClick={
-                            side === "player"
-                              ? () => placePlayerShipOnMap(cellNumber)
-                              : () => console.log(cellNumber)
-                          }
-                        >
-                          {cellNumber}
-                        </Grid>
-                      );
-                    })}
+                      >
+                        {cellNumber}
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </React.Fragment>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <Grid container direction="row" spacing={5} justify="center">
+        <Grid item>
+          <Grid container direction="column" alignItems="center">
+            {map("player")}
+            {Object.values(player.shipsStatus).every((x) => x) ? (
+              <Grid item style={{ marginTop: 20 }}>
+                <Grid container direction="row" spacing={2} justify="center">
+                  <Grid item>
+                    <TextField
+                      variant="outlined"
+                      style={{ width: 70, height: 10 }}
+                    />
+                  </Grid>
+                  <Grid item style={{ marginTop: 10 }}>
+                    <Button variant="contained" color="primary">
+                      Enter cell
+                    </Button>
                   </Grid>
                 </Grid>
-              );
-            })}
+              </Grid>
+            ) : null}
           </Grid>
-          {button ? (
+        </Grid>
+        <Grid item>
+          <Grid container direction="column" alignItems="center">
+            {map("computer")}
             <Button
               variant="contained"
               color="primary"
@@ -365,40 +332,35 @@ const Battle = ({
             >
               Generate computer
             </Button>
-          ) : null}
+          </Grid>
         </Grid>
       </Grid>
-    );
-  };
-
-  return (
-    <React.Fragment>
-      <Grid container direction="row" spacing={5} justify="center">
-        {map("player")}
-        {map("computer", true)}
-      </Grid>
-      <Grid container direction="row" justify="center">
-        {shipNames.map((ship, index) => {
-          return (
-            <Button
-              key={`${index}${ship}`}
-              variant="contained"
-              color="primary"
-              style={{ marginTop: 20 }}
-              onClick={() => generateShip(ship)}
-            >
-              {ship}
-            </Button>
-          );
-        })}
+      <Grid container direction="row" justify="center" spacing={1}>
+        {sillyButtons
+          ? shipNames.map((ship, index) => {
+              return (
+                <Grid item>
+                  <Button
+                    key={`${index}${ship}`}
+                    variant="contained"
+                    color="primary"
+                    style={{ marginTop: 20 }}
+                    onClick={() => generateShip(ship)}
+                  >
+                    {ship}
+                  </Button>
+                </Grid>
+              );
+            })
+          : null}
       </Grid>
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
-  const { player, computer } = state;
-  return { player, computer };
+  const { player, computer, sillyButtons } = state;
+  return { player, computer, sillyButtons };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -408,6 +370,10 @@ const mapDispatchToProps = (dispatch) => ({
   setShipsShadowsCells: (cell) => dispatch(setShipsShadowsCells(cell)),
   setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
   setLegendLineOne: (lelend) => dispatch(setLegendLineOne(lelend)),
+  setInput: () => dispatch(setInput()),
+  setSillyButtons: () => dispatch(setSillyButtons()),
+  setShipsStatus: (player, ship, status) =>
+    dispatch(setShipsStatus(player, ship, status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

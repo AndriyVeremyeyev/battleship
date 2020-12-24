@@ -1,10 +1,15 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { setLegendLineOne, setPageStatus } from "./actions/index";
+import {
+  setLegendLineOne,
+  setPageStatus,
+  setLegendLineTwo,
+} from "./actions/index";
+import { shipTypes } from "./database";
 import strings from "./strings";
 import { Grid, Button } from "@material-ui/core";
 
-const StartGame = ({ setPageStatus, setLegendLineOne }) => {
+const StartGame = ({ setPageStatus, setLegendLineOne, setLegendLineTwo }) => {
   useEffect(() => {
     setLegendLineOne(strings.startGame.greeting);
   }, [setLegendLineOne]);
@@ -12,6 +17,7 @@ const StartGame = ({ setPageStatus, setLegendLineOne }) => {
   const startButtonOnClick = () => {
     setPageStatus(strings.battle.title);
     setLegendLineOne(strings.battle.greeting);
+    setLegendLineTwo(strings.battle.proposition.replace("{}", shipTypes[0]));
   };
 
   return (
@@ -46,6 +52,7 @@ const StartGame = ({ setPageStatus, setLegendLineOne }) => {
 const mapDispatchToProps = (dispatch) => ({
   setPageStatus: (pageStatus) => dispatch(setPageStatus(pageStatus)),
   setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
+  setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
 });
 
 export default connect(null, mapDispatchToProps)(StartGame);

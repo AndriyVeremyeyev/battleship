@@ -7,6 +7,11 @@ export const generateFreeCells = (obj) => {
   return obj;
 };
 
+export const generateShipsStatus = (obj) => {
+  shipNames.forEach((ship) => (obj[ship] = false));
+  return obj;
+};
+
 export const rows = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 export const columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export const shipNames = [

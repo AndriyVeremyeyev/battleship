@@ -1,21 +1,14 @@
-import { rows, columns } from "../database";
-
-const generateFreeCells = (obj) => {
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < columns.length; j++) {
-      obj[`${rows[i]}${columns[j]}`] = true;
-    }
-  }
-  return obj;
-};
+import { generateFreeCells, generateShipsStatus } from "../database";
 
 const initialState = {
   pageStatus: "startGame",
   legendLineOne: "",
   legendLineTwo: "",
   player: {
+    input: false,
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
+    shipsStatus: generateShipsStatus({}),
     possibleDirections: {},
     battleShip: [],
     cruiserFirst: [],
@@ -42,7 +35,7 @@ const initialState = {
     vedetteThird: [],
     vedetteForth: [],
   },
-  color: false,
+  sillyButtons: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -101,6 +94,30 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         legendLineTwo: action.payload,
+      };
+    case "SET_INPUT":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          input: !state.player.input,
+        },
+      };
+    case "SET_SILLY_BUTTONS":
+      return {
+        ...state,
+        sillyButtons: !state.sillyButtons,
+      };
+    case "SET_SHIPS_STATUS":
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          shipsStatus: {
+            ...state[action.payload.player].shipsStatus,
+            [action.payload.ship]: action.payload.status,
+          },
+        },
       };
     default:
       return state;
