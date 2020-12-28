@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button, TextField } from "@material-ui/core";
+import cross from "./images/01.jpg";
 import {
   setShip,
   setShipsCells,
@@ -10,6 +11,11 @@ import {
   setInput,
   setSillyButtons,
   setShipsStatus,
+  setWrongAttempts,
+  setAttempts,
+  setShowComputer,
+  setKilledCells,
+  removeShipCell,
 } from "./actions/index";
 import {
   rows,
@@ -33,8 +39,12 @@ const Battle = ({
   setInput,
   sillyButtons,
   setShipsStatus,
+  setShowComputer,
+  showComputer,
+  setKilledCells,
+  removeShipCell,
 }) => {
-  const { shipsCells, shipsShadowsCells } = computer;
+  const [value, setValue] = useState("");
 
   const cellStyle = {
     height: 50,
@@ -42,6 +52,38 @@ const Battle = ({
     border: "solid",
     borderWidth: 0.5,
     cursor: "pointer",
+  };
+
+  const checkPlayerAttempt = (value) => {
+    console.log(value);
+    console.log(computer.shipsCells);
+    console.log(computer.shipsCells[value]);
+    setLegendLineTwo("");
+    if (!computer.shipsCells[value]) {
+      console.log("vasya");
+      setLegendLineOne("You catch the ship");
+      setKilledCells("computer", value);
+      checkShip(value);
+    } else {
+      if (!computer.wrongAttempts.some((cell) => cell)) {
+        setLegendLineOne("You missed any of ships");
+        setWrongAttempts("computer", value);
+        setAttempts("computer");
+      }
+    }
+  };
+
+  const checkShip = (value) => {
+    shipNames.forEach((ship, index) => {
+      if (computer[ship].includes(value)) {
+        console.log(computer[ship]);
+        removeShipCell("computer", ship, value);
+        console.log(computer[ship].length);
+        if (computer[ship].length === 1) {
+          setLegendLineTwo(`You completely destroyed ${shipNicknames[index]}`);
+        }
+      }
+    });
   };
 
   const randomPosition = () => {
@@ -91,7 +133,6 @@ const Battle = ({
         setShipsStatus("player", ship, true);
       }
     });
-    console.log(player.shipsStatus);
   };
 
   useEffect(() => {
@@ -134,18 +175,18 @@ const Battle = ({
     const number =
       firstPoint.length === 3 ? firstPoint[1] + firstPoint[2] : firstPoint[1];
     for (let i = 1; i < shipLength; i++) {
-      if (!shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
+      if (!computer.shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
         shipDirection = shipDirection.filter((x) => x !== "up");
-      if (!shipsShadowsCells[`${firstPoint[0]}${Number(number) + i}`])
+      if (!computer.shipsShadowsCells[`${firstPoint[0]}${Number(number) + i}`])
         shipDirection = shipDirection.filter((x) => x !== "down");
       if (
-        !shipsShadowsCells[
+        !computer.shipsShadowsCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
         ]
       )
         shipDirection = shipDirection.filter((x) => x !== "left");
       if (
-        !shipsShadowsCells[
+        !computer.shipsShadowsCells[
           `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
         ]
       )
@@ -156,7 +197,7 @@ const Battle = ({
   };
 
   const setCertainShadow = (cell) => {
-    if (shipsShadowsCells[cell]) setShipsShadowsCells(cell);
+    if (computer.shipsShadowsCells[cell]) setShipsShadowsCells(cell);
   };
 
   const addShipToDatabase = (shipPosition) => {
@@ -191,16 +232,16 @@ const Battle = ({
     console.log(shipPossibleDirections.length);
     // make sure that cell is not occupied and you can turn ship somewhere
     console.log(`First option of first cell of ${ship}:`, firstShipCell);
-    console.log(!shipsShadowsCells[firstShipCell]);
+    console.log(!computer.shipsShadowsCells[firstShipCell]);
     // Object.values(freeCells).forEach((x) => console.log(x));
     if (ship[0] === "v") {
-      while (!shipsShadowsCells[firstShipCell]) {
+      while (!computer.shipsShadowsCells[firstShipCell]) {
         firstShipCell = randomPosition();
       }
     } else {
       while (
-        !shipsShadowsCells[firstShipCell] ||
-        (shipsShadowsCells[firstShipCell] &&
+        !computer.shipsShadowsCells[firstShipCell] ||
+        (computer.shipsShadowsCells[firstShipCell] &&
           shipPossibleDirections.length === 0)
       ) {
         firstShipCell = randomPosition();
@@ -226,7 +267,7 @@ const Battle = ({
     }
     setShip("computer", ship, shipPosition);
     console.log(shipPosition);
-    console.log("Object in state", shipsCells);
+    console.log("Object in state", computer.shipsCells);
     // add ship to database of free cells to consider ship posiiton and ship borders
     addShipToDatabase(shipPosition);
   };
@@ -252,21 +293,26 @@ const Battle = ({
                   {rows.map((y) => {
                     const cellNumber = `${y}${x}`;
                     const cellColor = () => {
-                      if (side === "computer" && !shipsCells[`${y}${x}`]) {
-                        return "#696969";
-                      }
-                      if (
-                        side === "computer" &&
-                        !shipsShadowsCells[`${y}${x}`]
-                      ) {
-                        return "#D3D3D3";
-                      }
                       if (
                         side === "player" &&
                         player.shipsCells &&
                         !player.shipsCells[`${y}${x}`]
                       )
                         return "#696969";
+                      if (showComputer) {
+                        if (
+                          side === "computer" &&
+                          !computer.shipsCells[`${y}${x}`]
+                        ) {
+                          return "#696969";
+                        }
+                        if (
+                          side === "computer" &&
+                          !computer.shipsShadowsCells[`${y}${x}`]
+                        ) {
+                          return "#D3D3D3";
+                        }
+                      }
                       return null;
                     };
                     return (
@@ -276,6 +322,13 @@ const Battle = ({
                         style={{
                           ...cellStyle,
                           backgroundColor: cellColor(),
+                          backgroundSize: "cover",
+                          backgroundImage: `url(${
+                            side === "computer" &&
+                            computer.killedCells[cellNumber] === true
+                              ? cross
+                              : null
+                          })`,
                         }}
                         onClick={
                           side === "player"
@@ -309,10 +362,15 @@ const Battle = ({
                     <TextField
                       variant="outlined"
                       style={{ width: 70, height: 10 }}
+                      onChange={(event) => setValue(event.target.value)}
                     />
                   </Grid>
                   <Grid item style={{ marginTop: 10 }}>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => checkPlayerAttempt(value)}
+                    >
                       Enter cell
                     </Button>
                   </Grid>
@@ -324,14 +382,28 @@ const Battle = ({
         <Grid item>
           <Grid container direction="column" alignItems="center">
             {map("computer")}
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginTop: 20 }}
-              onClick={generateComputer}
-            >
-              Generate computer
-            </Button>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: 20 }}
+                onClick={setShowComputer}
+              >
+                {showComputer ? "Hide Ships" : "Show Ships"}
+              </Button>
+            </Grid>
+            {showComputer ? (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ marginTop: 20 }}
+                  onClick={generateComputer}
+                >
+                  Generate computer
+                </Button>
+              </Grid>
+            ) : null}
           </Grid>
         </Grid>
       </Grid>
@@ -339,9 +411,8 @@ const Battle = ({
         {sillyButtons
           ? shipNames.map((ship, index) => {
               return (
-                <Grid item>
+                <Grid item key={`${index}${ship}`}>
                   <Button
-                    key={`${index}${ship}`}
                     variant="contained"
                     color="primary"
                     style={{ marginTop: 20 }}
@@ -359,8 +430,8 @@ const Battle = ({
 };
 
 const mapStateToProps = (state) => {
-  const { player, computer, sillyButtons } = state;
-  return { player, computer, sillyButtons };
+  const { player, computer, sillyButtons, showComputer } = state;
+  return { player, computer, sillyButtons, showComputer };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -372,8 +443,12 @@ const mapDispatchToProps = (dispatch) => ({
   setLegendLineOne: (lelend) => dispatch(setLegendLineOne(lelend)),
   setInput: () => dispatch(setInput()),
   setSillyButtons: () => dispatch(setSillyButtons()),
+  setShowComputer: () => dispatch(setShowComputer()),
   setShipsStatus: (player, ship, status) =>
     dispatch(setShipsStatus(player, ship, status)),
+  setKilledCells: (player, cell) => dispatch(setKilledCells(player, cell)),
+  removeShipCell: (player, ship, cell) =>
+    dispatch(removeShipCell(player, ship, cell)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

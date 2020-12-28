@@ -1,7 +1,7 @@
-export const generateFreeCells = (obj) => {
+export const generateFreeCells = (obj, status = true) => {
   for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < columns.length; j++) {
-      obj[`${rows[i]}${columns[j]}`] = true;
+      obj[`${rows[i]}${columns[j]}`] = status;
     }
   }
   return obj;

@@ -65,3 +65,37 @@ export const setShipsStatus = (player, ship, status) => {
     payload: { player, ship, status },
   };
 };
+
+export const setAttempts = (player) => {
+  return {
+    type: "SET_ATTEMPTS",
+    payload: player,
+  };
+};
+
+export const setWrongAttempts = (player, attempt) => {
+  return {
+    type: "SET_WRONG_ATTEMPTS",
+    payload: { player, attempt },
+  };
+};
+
+export const setKilledCells = (player, cell) => {
+  return {
+    type: "SET_KILLED_CELLS",
+    payload: { player, cell },
+  };
+};
+
+export const setShowComputer = () => {
+  return {
+    type: "SET_SHOW_COMPUTER",
+  };
+};
+
+export const removeShipCell = (player, ship, cell) => {
+  return {
+    type: "REMOVE_SHIP_CELL",
+    payload: { player, ship, cell },
+  };
+};

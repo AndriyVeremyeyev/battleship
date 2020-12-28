@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import strings from "./strings";
-import { Grid, Typography } from "@material-ui/core";
+import { Divider, Grid, Typography } from "@material-ui/core";
 
 const Header = ({ legendLineOne, legendLineTwo }) => {
   return (
@@ -26,6 +26,7 @@ const Header = ({ legendLineOne, legendLineTwo }) => {
           style={{ marginTop: 10 }}
         >
           <Typography variant="subtitle1">{legendLineOne}</Typography>
+          <Divider />
           <Typography variant="subtitle1">{legendLineTwo}</Typography>
         </Grid>
       </Grid>

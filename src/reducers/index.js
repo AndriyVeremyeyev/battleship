@@ -6,6 +6,8 @@ const initialState = {
   legendLineTwo: "",
   player: {
     input: false,
+    attempts: 0,
+    wrongAttempts: [],
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
     shipsStatus: generateShipsStatus({}),
@@ -22,8 +24,10 @@ const initialState = {
     vedetteForth: [],
   },
   computer: {
+    killedCells: generateFreeCells({}, false),
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
+    wrongAttempts: [],
     battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -36,10 +40,22 @@ const initialState = {
     vedetteForth: [],
   },
   sillyButtons: false,
+  showComputer: false,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_KILLED_CELLS":
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          killedCells: {
+            ...state[action.payload.player].killedCells,
+            [action.payload.cell]: true,
+          },
+        },
+      };
     case "SET_SHIPS_CELLS":
       return {
         ...state,
@@ -80,6 +96,17 @@ const reducer = (state = initialState, action) => {
           ],
         },
       };
+    case "REMOVE_SHIP_CELL":
+      const newArray = state[action.payload.player][action.payload.ship].filter(
+        (cell) => cell !== action.payload.cell
+      );
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          [action.payload.ship]: newArray,
+        },
+      };
     case "SET_PAGE_STATUS":
       return {
         ...state,
@@ -108,6 +135,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         sillyButtons: !state.sillyButtons,
       };
+    case "SET_SHOW_COMPUTER":
+      return {
+        ...state,
+        showComputer: !state.showComputer,
+      };
     case "SET_SHIPS_STATUS":
       return {
         ...state,
@@ -117,6 +149,25 @@ const reducer = (state = initialState, action) => {
             ...state[action.payload.player].shipsStatus,
             [action.payload.ship]: action.payload.status,
           },
+        },
+      };
+    case "SET_ATTEMPTS":
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          attempts: state[action.payload.player].attempts + 1,
+        },
+      };
+    case "SET_WRONG_ATTEMPTS":
+      return {
+        ...state,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          wrongAttempts: [
+            ...state[action.payload.player].wrongAttempts,
+            action.payload.attempt,
+          ],
         },
       };
     default:
