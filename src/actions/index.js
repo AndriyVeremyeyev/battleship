@@ -99,3 +99,9 @@ export const setPossibleDirections = (cell) => {
     payload: cell,
   };
 };
+
+export const removePossibleDirections = () => {
+  return {
+    type: "REMOVE_POSSIBLE_DIRECTIONS",
+  };
+};

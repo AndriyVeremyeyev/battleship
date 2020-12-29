@@ -16,6 +16,8 @@ import {
   setShowComputer,
   setKilledCells,
   removeShipCell,
+  setPossibleDirections,
+  removePossibleDirections,
 } from "./actions/index";
 import {
   rows,
@@ -44,6 +46,8 @@ const Battle = ({
   setKilledCells,
   removeShipCell,
   setWrongAttempts,
+  setPossibleDirections,
+  removePossibleDirections,
 }) => {
   const [value, setValue] = useState("");
 
@@ -60,7 +64,6 @@ const Battle = ({
   const checkPlayerAttempt = (value) => {
     setLegendLineTwo("");
     if (computer.shipsCells[value] === undefined) {
-      console.log("vasya");
       setLegendLineOne("Provided cell doesn't exist");
       setLegendLineTwo("Please provide cell from existing range of cells");
       setAttempts("player");
@@ -131,11 +134,44 @@ const Battle = ({
               cellNumber,
               direction
             );
-            console.log(directions);
+            directions.forEach((dir) => {
+              const shipPos = fillShipArray(ship, [cellNumber], dir);
+              shipPos.forEach((cell, cellIndex) => {
+                if (cellIndex > 0) setPossibleDirections(cell);
+              });
+            });
+          }
+          if (player[ship]?.length === 1 && index < 6) {
+            removePossibleDirections();
+            const dir = determineDirection(player[ship][0], cellNumber);
+            const shipPos = fillShipArray(ship, [player[ship][0]], dir);
+            console.log(dir);
+            console.log(shipPos);
+            shipPos.forEach((cell, cellIndex) => {
+              if (cellIndex > 1) setPossibleDirections(cell);
+            });
           }
         }
       }
     });
+  };
+
+  // method to determine number part of cell consist of 1 or 2 digits (e.g d9 or d10)
+  const excludeCellNumber = (cell) => {
+    return cell.length === 3 ? cell[1] + cell[2] : cell[1];
+  };
+
+  // method to determine ship direction based on started and second points
+  const determineDirection = (cellFirst, cellSecond) => {
+    const cellFirstNumber = excludeCellNumber(cellFirst);
+    const cellSecondNumber = excludeCellNumber(cellSecond);
+    return cellFirst[0] === cellSecond[0]
+      ? Number(cellFirstNumber) > Number(cellSecondNumber)
+        ? "up"
+        : "down"
+      : String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
+      ? "left"
+      : "right";
   };
 
   // method to draw possible directions of ship once start position is determined
@@ -167,7 +203,7 @@ const Battle = ({
   // method to fill ship array based on choosen direction
   const fillShipArray = (ship, arr, direction) => {
     // console.log(direction);
-    const number = arr[0].length === 3 ? arr[0][1] + arr[0][2] : arr[0][1];
+    const number = excludeCellNumber(arr[0]);
     const shipLength = calculateShipLength(ship);
     if (direction === "up") {
       for (let i = 1; i < shipLength; i++) {
@@ -200,8 +236,7 @@ const Battle = ({
   // reorganize to be universal for player and for computer as well
   const whereTurnShip = (side, ship, firstPoint, shipDirections) => {
     const shipLength = calculateShipLength(ship);
-    const number =
-      firstPoint.length === 3 ? firstPoint[1] + firstPoint[2] : firstPoint[1];
+    const number = excludeCellNumber(firstPoint);
     for (let i = 1; i < shipLength; i++) {
       if (!side.shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
         shipDirections = shipDirections.filter((x) => x !== "up");
@@ -229,6 +264,7 @@ const Battle = ({
       setShipsShadowsCells("computer", cell);
   };
 
+  // method to add ship to database together with it's shadow
   const addShipToDatabase = (shipPosition) => {
     shipPosition.forEach((x) => {
       const number = x.length === 3 ? x[1] + x[2] : x[1];
@@ -263,10 +299,10 @@ const Battle = ({
       firstShipCell,
       direction
     );
-    console.log(shipPossibleDirections.length);
+    // console.log(shipPossibleDirections.length);
     // make sure that cell is not occupied and you can turn ship somewhere
-    console.log(`First option of first cell of ${ship}:`, firstShipCell);
-    console.log(!computer.shipsShadowsCells[firstShipCell]);
+    // console.log(`First option of first cell of ${ship}:`, firstShipCell);
+    // console.log(!computer.shipsShadowsCells[firstShipCell]);
     // Object.values(freeCells).forEach((x) => console.log(x));
     if (ship[0] === "v") {
       while (!computer.shipsShadowsCells[firstShipCell]) {
@@ -285,17 +321,17 @@ const Battle = ({
           firstShipCell,
           direction
         );
-        console.log(firstShipCell, shipPossibleDirections);
+        // console.log(firstShipCell, shipPossibleDirections);
       }
     }
     shipPosition.push(firstShipCell);
-    console.log(`Last option of first cell of ${ship}:`, firstShipCell);
+    // console.log(`Last option of first cell of ${ship}:`, firstShipCell);
     // add cell to array of ship coordinats
     // check how we can turn the ship on map
 
     // if ship is vedette we don't need to turn it and to add more cells
     if (ship[0] !== "v") {
-      console.log(shipPossibleDirections);
+      // console.log(shipPossibleDirections);
       // choose random direction of ship
       const shipDirection =
         shipPossibleDirections[
@@ -305,8 +341,8 @@ const Battle = ({
       shipPosition = fillShipArray(ship, shipPosition, shipDirection);
     }
     setShip("computer", ship, shipPosition);
-    console.log(shipPosition);
-    console.log("Object in state", computer.shipsCells);
+    // console.log(shipPosition);
+    // console.log("Object in state", computer.shipsCells);
     // add ship to database of free cells to consider ship posiiton and ship borders
     addShipToDatabase(shipPosition);
   };
@@ -335,6 +371,11 @@ const Battle = ({
                       if (side === "player") {
                         if (player.shipsCells && !player.shipsCells[`${y}${x}`])
                           return "#696969";
+                        if (
+                          player.possibleDirections &&
+                          player.possibleDirections[`${y}${x}`]
+                        )
+                          return "#D3D3D3";
                       }
                       if (side === "computer") {
                         if (showComputer) {
@@ -490,6 +531,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removeShipCell(player, ship, cell)),
   setWrongAttempts: (player, attempt) =>
     dispatch(setWrongAttempts(player, attempt)),
+  setPossibleDirections: (cell) => dispatch(setPossibleDirections(cell)),
+  removePossibleDirections: () => dispatch(removePossibleDirections()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

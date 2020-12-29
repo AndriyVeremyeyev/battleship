@@ -175,6 +175,14 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case "REMOVE_POSSIBLE_DIRECTIONS":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          possibleDirections: generateFreeCells({}, false),
+        },
+      };
     default:
       return state;
   }
