@@ -134,25 +134,25 @@ const Battle = ({
               cellNumber,
               direction
             );
-            directions.forEach((dir) => {
-              const shipPos = fillShipArray(ship, [cellNumber], dir);
-              shipPos.forEach((cell, cellIndex) => {
-                if (cellIndex > 0) setPossibleDirections(cell);
-              });
-            });
+            directions.forEach((dir) =>
+              fillPossibleDirection(ship, [cellNumber], dir)
+            );
           }
           if (player[ship]?.length === 1 && index < 6) {
             removePossibleDirections();
             const dir = determineDirection(player[ship][0], cellNumber);
-            const shipPos = fillShipArray(ship, [player[ship][0]], dir);
-            console.log(dir);
-            console.log(shipPos);
-            shipPos.forEach((cell, cellIndex) => {
-              if (cellIndex > 1) setPossibleDirections(cell);
-            });
+            fillPossibleDirection(ship, [player[ship][0]], dir);
           }
         }
       }
+    });
+  };
+
+  // method to fill possible directions
+  const fillPossibleDirection = (ship, cell, direction) => {
+    const shipPosition = fillShipArray(ship, cell, direction);
+    shipPosition.forEach((shipCell, cellIndex) => {
+      if (cellIndex > 0) setPossibleDirections(shipCell);
     });
   };
 
@@ -351,6 +351,30 @@ const Battle = ({
     setSillyButtons();
   };
 
+  const shipsCondition = () => {
+    const condition = (ship, index) => {
+      let response = "";
+      if (computer[ship].length === shipLengths[index]) response = "целый";
+      else if (computer[ship].length === 0) response = "потонул";
+      else response = "подбитый";
+      return response;
+    };
+
+    return (
+      <React.Fragment>
+        {shipNicknames.map((ship, index) => {
+          console.log(shipNames[index]);
+          return (
+            <Typography variant="subtitle2">{`${index + 1}.${ship}: ${condition(
+              shipNames[index],
+              index
+            )}`}</Typography>
+          );
+        })}
+      </React.Fragment>
+    );
+  };
+
   const map = (side) => {
     return (
       <React.Fragment>
@@ -484,6 +508,7 @@ const Battle = ({
               </Grid>
             ) : null}
           </Grid>
+          <Grid item>{shipsCondition()}</Grid>
         </Grid>
       </Grid>
       <Grid container direction="row" justify="center" spacing={1}>
