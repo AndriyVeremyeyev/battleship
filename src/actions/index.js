@@ -5,10 +5,10 @@ export const setShipsCells = (player, cell) => {
   };
 };
 
-export const setShipsShadowsCells = (cell) => {
+export const setShipsShadowsCells = (player, cell) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS",
-    payload: cell,
+    payload: { player, cell },
   };
 };
 
@@ -37,13 +37,6 @@ export const setLegendLineTwo = (legend) => {
   return {
     type: "SET_LEGEND_LINE_TWO",
     payload: legend,
-  };
-};
-
-export const setPossibleDirections = (directions) => {
-  return {
-    type: "SET_POSSIBLE_DIRECTIONS",
-    payload: directions,
   };
 };
 
@@ -97,5 +90,12 @@ export const removeShipCell = (player, ship, cell) => {
   return {
     type: "REMOVE_SHIP_CELL",
     payload: { player, ship, cell },
+  };
+};
+
+export const setPossibleDirections = (cell) => {
+  return {
+    type: "SET_POSSIBLE_DIRECTIONS",
+    payload: cell,
   };
 };

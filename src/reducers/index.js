@@ -7,11 +7,11 @@ const initialState = {
   player: {
     input: false,
     attempts: 0,
-    wrongAttempts: [],
+    wrongAttempts: generateFreeCells({}, false),
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
     shipsStatus: generateShipsStatus({}),
-    possibleDirections: {},
+    possibleDirections: generateFreeCells({}, false),
     battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -70,21 +70,15 @@ const reducer = (state = initialState, action) => {
     case "SET_SHIPS_SHADOWS_CELLS":
       return {
         ...state,
-        computer: {
-          ...state.computer,
+        [action.payload.player]: {
+          ...state[action.payload.player],
           shipsShadowsCells: {
-            ...state.computer.shipsShadowsCells,
-            [action.payload]: false,
+            ...state[action.payload.player].shipsShadowsCells,
+            [action.payload.cell]: false,
           },
         },
       };
-    case "SET_POSSIBLE_DIRECTIONS":
-      return {
-        ...state,
-        player: {
-          possibleDirections: action.payload,
-        },
-      };
+
     case "SET_SHIP":
       return {
         ...state,
@@ -164,10 +158,21 @@ const reducer = (state = initialState, action) => {
         ...state,
         [action.payload.player]: {
           ...state[action.payload.player],
-          wrongAttempts: [
+          wrongAttempts: {
             ...state[action.payload.player].wrongAttempts,
-            action.payload.attempt,
-          ],
+            [action.payload.attempt]: true,
+          },
+        },
+      };
+    case "SET_POSSIBLE_DIRECTIONS":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          possibleDirections: {
+            ...state.player.possibleDirections,
+            [action.payload]: true,
+          },
         },
       };
     default:
