@@ -8,6 +8,7 @@ const initialState = {
     input: false,
     attempts: 0,
     wrongAttempts: generateFreeCells({}, false),
+    killedCells: generateFreeCells({}, false),
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
     shipsStatus: generateShipsStatus({}),
@@ -25,9 +26,10 @@ const initialState = {
   },
   computer: {
     killedCells: generateFreeCells({}, false),
+    attempts: 0,
+    wrongAttempts: generateFreeCells({}, false),
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
-    wrongAttempts: [],
     battleShip: [],
     cruiserFirst: [],
     cruiserSecond: [],
@@ -148,9 +150,9 @@ const reducer = (state = initialState, action) => {
     case "SET_ATTEMPTS":
       return {
         ...state,
-        [action.payload.player]: {
-          ...state[action.payload.player],
-          attempts: state[action.payload.player].attempts + 1,
+        [action.payload]: {
+          ...state[action.payload],
+          attempts: state[action.payload].attempts + 1,
         },
       };
     case "SET_WRONG_ATTEMPTS":

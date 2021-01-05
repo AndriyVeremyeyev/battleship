@@ -48,6 +48,7 @@ const Battle = ({
   setWrongAttempts,
   setPossibleDirections,
   removePossibleDirections,
+  setAttempts,
 }) => {
   const [value, setValue] = useState("");
 
@@ -60,40 +61,70 @@ const Battle = ({
   };
 
   // method to check was attempt wrong or not
-  // need to refactor for computer attempt as well
   const checkPlayerAttempt = (value) => {
+    const correctedValue = value.toLowerCase();
     setLegendLineTwo("");
-    if (computer.shipsCells[value] === undefined) {
+    setAttempts("player");
+    console.log(computer.shipsCells);
+    console.log(computer.shipsCells[correctedValue]);
+    if (computer.shipsCells[correctedValue] === undefined) {
       setLegendLineOne("Provided cell doesn't exist");
       setLegendLineTwo("Please provide cell from existing range of cells");
-      setAttempts("player");
     } else {
-      if (!computer.shipsCells[value]) {
+      if (!computer.shipsCells[correctedValue]) {
         setLegendLineOne("You catch the ship");
-        setKilledCells("computer", value);
-        checkShip(value);
+        setKilledCells("computer", correctedValue);
+        checkShip("computer", correctedValue);
       } else {
-        if (!computer.wrongAttempts.some((cell) => cell)) {
-          setLegendLineOne("You missed any of ships");
-          setWrongAttempts("player", value);
-          setAttempts("player");
-        }
+        setLegendLineOne("You missed any of ships");
+        if (!player.wrongAttempts[value])
+          setWrongAttempts("player", correctedValue);
+        setTimeout(() => {
+          checkComputerAttempt();
+        }, 2000);
       }
+    }
+  };
+
+  // method for computer attempt after player attempt
+  const checkComputerAttempt = () => {
+    let computerAttempt = randomPosition();
+    while (computer.wrongAttempts[computerAttempt])
+      setWrongAttempts("computer", computerAttempt);
+    setAttempts("computer");
+    setLegendLineOne(`Now is computer's turn. Attempt is: ${computerAttempt}`);
+    if (!player.shipsCells[computerAttempt]) {
+      setLegendLineTwo(`Computer catched some of your ships`);
+      setKilledCells("player", computerAttempt);
+      checkShip("player", computerAttempt);
+      setTimeout(() => {
+        checkComputerAttempt();
+      }, 2000);
+    } else {
+      setLegendLineTwo("Computer missed all of your ships");
+      if (!computer.wrongAttempts[computerAttempt])
+        setWrongAttempts("computer", computerAttempt);
     }
   };
 
   // method to remove cell from attempt from corresponding ship array
   // and check was ship completely destroyed or not
-  const checkShip = (value) => {
+  const checkShip = (side, value) => {
+    const sideObj = side === "player" ? player : computer;
     shipNames.forEach((ship, index) => {
-      if (computer[ship].includes(value)) {
-        console.log(computer[ship]);
-        removeShipCell("computer", ship, value);
-        console.log(computer[ship].length);
-        if (computer[ship].length === 1) {
-          setLegendLineOne(
-            `Congratulations! You completely destroyed ${shipNicknames[index]}`
-          );
+      if (sideObj[ship].includes(value)) {
+        // console.log(computer[ship]);
+        removeShipCell(side, ship, value);
+        // console.log(computer[ship].length);
+        if (sideObj[ship].length === 1) {
+          if (side === "player")
+            setLegendLineOne(
+              `Oops. Your ${shipNicknames[index]} was completely destroyed`
+            );
+          else
+            setLegendLineOne(
+              `Congratulations! You completely destroyed ${shipNicknames[index]}`
+            );
         }
       }
     });
@@ -118,7 +149,9 @@ const Battle = ({
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber) => {
     shipNames.forEach((ship, index) => {
+      // check if cell is not occupied already
       if (player.shipsCells[cellNumber]) {
+        //
         if (
           (index === 0 && player[ship]?.length < shipLengths[index]) ||
           (index > 0 &&
@@ -259,30 +292,31 @@ const Battle = ({
     return shipDirections;
   };
 
+  // method to add cell to shadow database
   const setCertainShadow = (cell) => {
     if (computer.shipsShadowsCells[cell])
       setShipsShadowsCells("computer", cell);
   };
 
   // method to add ship to database together with it's shadow
-  const addShipToDatabase = (shipPosition) => {
-    shipPosition.forEach((x) => {
-      const number = x.length === 3 ? x[1] + x[2] : x[1];
-      setShipsCells("computer", x);
-      setCertainShadow();
+  const addShipToDatabase = (side, shipPosition) => {
+    shipPosition.forEach((pos) => {
+      const number = excludeCellNumber(pos);
+      setShipsCells(side, pos);
+      setCertainShadow(pos);
 
-      setShipsShadowsCells("computer", x);
-      setCertainShadow(`${x[0]}${Number(number) + 1}`);
+      setShipsShadowsCells(side, pos);
+      setCertainShadow(`${pos[0]}${Number(number) + 1}`);
 
       const neighbourCells = [
-        `${x[0]}${Number(number) + 1}`,
-        `${x[0]}${Number(number) - 1}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${number}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${number}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(x[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
+        `${pos[0]}${Number(number) + 1}`,
+        `${pos[0]}${Number(number) - 1}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${number}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${number}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
+        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
       ];
 
       neighbourCells.forEach((cell) => setCertainShadow(cell));
@@ -344,7 +378,7 @@ const Battle = ({
     // console.log(shipPosition);
     // console.log("Object in state", computer.shipsCells);
     // add ship to database of free cells to consider ship posiiton and ship borders
-    addShipToDatabase(shipPosition);
+    addShipToDatabase("computer", shipPosition);
   };
 
   const generateComputer = () => {
@@ -363,9 +397,11 @@ const Battle = ({
     return (
       <React.Fragment>
         {shipNicknames.map((ship, index) => {
-          console.log(shipNames[index]);
           return (
-            <Typography variant="subtitle2">{`${index + 1}.${ship}: ${condition(
+            <Typography
+              key={`shipsCondition${ship}${index}`}
+              variant="subtitle2"
+            >{`${index + 1}.${ship}: ${condition(
               shipNames[index],
               index
             )}`}</Typography>
@@ -396,8 +432,9 @@ const Battle = ({
                         if (player.shipsCells && !player.shipsCells[`${y}${x}`])
                           return "#696969";
                         if (
-                          player.possibleDirections &&
-                          player.possibleDirections[`${y}${x}`]
+                          (player.possibleDirections &&
+                            player.possibleDirections[`${y}${x}`]) ||
+                          computer.wrongAttempts[`${y}${x}`]
                         )
                           return "#D3D3D3";
                       }
@@ -423,8 +460,10 @@ const Battle = ({
                           backgroundColor: cellColor(),
                           backgroundSize: "cover",
                           backgroundImage: `url(${
-                            side === "computer" &&
-                            computer.killedCells[cellNumber] === true
+                            (side === "computer" &&
+                              computer.killedCells[cellNumber] === true) ||
+                            (side === "player" &&
+                              player.killedCells[cellNumber] === true)
                               ? cross
                               : null
                           })`,
@@ -477,7 +516,7 @@ const Battle = ({
                 <Typography
                   style={{ marginTop: 20 }}
                   variant="h6"
-                >{`Quantity of attempts: ${player.attempts}`}</Typography>
+                >{`Quantity of your attempts: ${player.attempts}`}</Typography>
               </Grid>
             ) : null}
           </Grid>
@@ -508,6 +547,10 @@ const Battle = ({
               </Grid>
             ) : null}
           </Grid>
+          <Typography
+            style={{ marginTop: 20 }}
+            variant="h6"
+          >{`Quantity of computer attempts: ${computer.attempts}`}</Typography>
           <Grid item>{shipsCondition()}</Grid>
         </Grid>
       </Grid>
@@ -558,6 +601,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setWrongAttempts(player, attempt)),
   setPossibleDirections: (cell) => dispatch(setPossibleDirections(cell)),
   removePossibleDirections: () => dispatch(removePossibleDirections()),
+  setAttempts: (player) => dispatch(setAttempts(player)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);
