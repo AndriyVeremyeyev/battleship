@@ -146,11 +146,29 @@ const Battle = ({
     return shipLength;
   };
 
+  useEffect(() => {
+    shipNames.forEach((ship) => {
+      if (player[ship].length === shipLengths[0])
+        addShipToDatabase("player", player[ship]);
+    });
+  }, [
+    player.battleShip,
+    player.cruiserFirst,
+    player.cruiserSecond,
+    player.destroyerFirst,
+    player.destroyerSecond,
+    player.destroyerThird,
+    player.vedetteFirst,
+    player.vedetteSecond,
+    player.vedetteThird,
+    player.vedetteForth,
+  ]);
+
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber) => {
     shipNames.forEach((ship, index) => {
       // check if cell is not occupied already
-      if (player.shipsCells[cellNumber]) {
+      if (player.shipsShadowsCells[cellNumber]) {
         //
         if (
           (index === 0 && player[ship]?.length < shipLengths[index]) ||
@@ -293,9 +311,9 @@ const Battle = ({
   };
 
   // method to add cell to shadow database
-  const setCertainShadow = (cell) => {
-    if (computer.shipsShadowsCells[cell])
-      setShipsShadowsCells("computer", cell);
+  const setCertainShadow = (side, cell) => {
+    const sideObj = side === "player" ? player : computer;
+    if (sideObj.shipsShadowsCells[cell]) setShipsShadowsCells(side, cell);
   };
 
   // method to add ship to database together with it's shadow
@@ -303,10 +321,9 @@ const Battle = ({
     shipPosition.forEach((pos) => {
       const number = excludeCellNumber(pos);
       setShipsCells(side, pos);
-      setCertainShadow(pos);
+      setCertainShadow(side, pos);
 
       setShipsShadowsCells(side, pos);
-      setCertainShadow(`${pos[0]}${Number(number) + 1}`);
 
       const neighbourCells = [
         `${pos[0]}${Number(number) + 1}`,
@@ -319,7 +336,7 @@ const Battle = ({
         `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
       ];
 
-      neighbourCells.forEach((cell) => setCertainShadow(cell));
+      neighbourCells.forEach((cell) => setCertainShadow(side, cell));
     });
   };
 
