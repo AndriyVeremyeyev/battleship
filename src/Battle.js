@@ -67,8 +67,6 @@ const Battle = ({
     const correctedValue = value.toLowerCase();
     setLegendLineTwo("");
     setAttempts("player");
-    console.log(computer.shipsCells);
-    console.log(computer.shipsCells[correctedValue]);
     if (computer.shipsCells[correctedValue] === undefined) {
       setLegendLineOne("Provided cell doesn't exist");
       setLegendLineTwo("Please provide cell from existing range of cells");
@@ -115,9 +113,7 @@ const Battle = ({
     const sideObj = side === "player" ? player : computer;
     shipNames.forEach((ship, index) => {
       if (sideObj[ship].includes(value)) {
-        // console.log(computer[ship]);
         removeShipCell(side, ship, value);
-        // console.log(computer[ship].length);
         if (sideObj[ship].length === 1) {
           if (side === "player")
             setLegendLineOne(
@@ -146,7 +142,6 @@ const Battle = ({
     shipNames.forEach((ship, index) => {
       // check if cell is not occupied already
       if (player.shipsShadowsCells[cellNumber]) {
-        //
         if (
           (index === 0 && player[ship]?.length < shipLengths[index]) ||
           (index > 0 &&
@@ -155,9 +150,18 @@ const Battle = ({
         ) {
           setShip("player", shipNames[index], [cellNumber]);
           setShipsCells("player", cellNumber);
+          if (player[ship]?.length === shipLengths[index] - 1) {
+            const currentShipShadow = fillShipArrayWithShadows(
+              [...player[ship], cellNumber],
+              player.shipsShadowsCells
+            );
+            currentShipShadow.forEach((cell) =>
+              setShipsShadowsCells("player", cell)
+            );
+          }
           if (player[ship]?.length === 0 && index < 6) {
             const directions = whereTurnShip(
-              player,
+              player.shipsShadowsCells,
               ship,
               cellNumber,
               direction
@@ -261,7 +265,6 @@ const Battle = ({
 
   // method to fill ship array based on choosen direction
   const fillShipArray = (ship, arr, direction) => {
-    // console.log(direction);
     const number = considerCellNumber(arr[0]);
     const shipLength = calculateShipLength(ship);
     if (direction === "up") {
@@ -433,6 +436,8 @@ const Battle = ({
                           computer.wrongAttempts[`${y}${x}`]
                         )
                           return "#D3D3D3";
+                        if (!player.shipsShadowsCells[`${y}${x}`])
+                          return "#DCDCDC";
                       }
                       if (side === "computer") {
                         if (showComputer) {
