@@ -54,12 +54,6 @@ export const setLegendLineTwo = (legend) => {
   };
 };
 
-export const setInput = () => {
-  return {
-    type: "SET_INPUT",
-  };
-};
-
 export const setShipsStatus = (player, ship, status) => {
   return {
     type: "SET_SHIPS_STATUS",
@@ -111,5 +105,11 @@ export const setPossibleDirections = (cell) => {
 export const removePossibleDirections = () => {
   return {
     type: "REMOVE_POSSIBLE_DIRECTIONS",
+  };
+};
+
+export const removeShadows = () => {
+  return {
+    type: "REMOVE_SHADOWS",
   };
 };

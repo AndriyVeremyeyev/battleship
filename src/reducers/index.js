@@ -5,7 +5,6 @@ const initialState = {
   legendLineOne: "",
   legendLineTwo: "",
   player: {
-    input: false,
     attempts: 0,
     wrongAttempts: generateFreeCells({}, false),
     killedCells: generateFreeCells({}, false),
@@ -132,14 +131,6 @@ const reducer = (state = initialState, action) => {
         ...state,
         legendLineTwo: action.payload,
       };
-    case "SET_INPUT":
-      return {
-        ...state,
-        player: {
-          ...state.player,
-          input: !state.player.input,
-        },
-      };
     case "SET_SHOW_COMPUTER":
       return {
         ...state,
@@ -192,6 +183,15 @@ const reducer = (state = initialState, action) => {
         player: {
           ...state.player,
           possibleDirections: generateFreeCells({}, false),
+        },
+      };
+    case "REMOVE_SHADOWS":
+      const cleanShadows = generateFreeCells({});
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          shipsShadowsCells: cleanShadows,
         },
       };
     default:
