@@ -60,12 +60,6 @@ export const setInput = () => {
   };
 };
 
-export const setSillyButtons = () => {
-  return {
-    type: "SET_SILLY_BUTTONS",
-  };
-};
-
 export const setShipsStatus = (player, ship, status) => {
   return {
     type: "SET_SHIPS_STATUS",

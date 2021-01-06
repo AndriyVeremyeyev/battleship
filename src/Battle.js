@@ -9,7 +9,6 @@ import {
   setLegendLineOne,
   setLegendLineTwo,
   setInput,
-  setSillyButtons,
   setShipsStatus,
   setWrongAttempts,
   setAttempts,
@@ -40,9 +39,7 @@ const Battle = ({
   setLegendLineOne,
   setLegendLineTwo,
   player,
-  setSillyButtons,
   setInput,
-  sillyButtons,
   setShipsStatus,
   setShowComputer,
   showComputer,
@@ -576,23 +573,21 @@ const Battle = ({
                 variant="contained"
                 color="primary"
                 style={{ marginTop: 20 }}
+                onClick={generateComputerMap}
+              >
+                Generate computer
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: 20 }}
                 onClick={setShowComputer}
               >
                 {showComputer ? "Hide Ships" : "Show Ships"}
               </Button>
             </Grid>
-            {showComputer ? (
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ marginTop: 20 }}
-                  onClick={generateComputerMap}
-                >
-                  Generate computer
-                </Button>
-              </Grid>
-            ) : null}
           </Grid>
           <Typography
             style={{ marginTop: 20 }}
@@ -601,31 +596,13 @@ const Battle = ({
           <Grid item>{shipsCondition()}</Grid>
         </Grid>
       </Grid>
-      <Grid container direction="row" justify="center" spacing={1}>
-        {sillyButtons
-          ? shipNames.map((ship, index) => {
-              return (
-                <Grid item key={`${index}${ship}`}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginTop: 20 }}
-                    onClick={() => generateShip(ship)}
-                  >
-                    {ship}
-                  </Button>
-                </Grid>
-              );
-            })
-          : null}
-      </Grid>
     </React.Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
-  const { player, computer, sillyButtons, showComputer } = state;
-  return { player, computer, sillyButtons, showComputer };
+  const { player, computer, showComputer } = state;
+  return { player, computer, showComputer };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -638,7 +615,6 @@ const mapDispatchToProps = (dispatch) => ({
   setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
   setLegendLineOne: (lelend) => dispatch(setLegendLineOne(lelend)),
   setInput: () => dispatch(setInput()),
-  setSillyButtons: () => dispatch(setSillyButtons()),
   setShowComputer: () => dispatch(setShowComputer()),
   setShipsStatus: (player, ship, status) =>
     dispatch(setShipsStatus(player, ship, status)),

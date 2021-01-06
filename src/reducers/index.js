@@ -41,7 +41,6 @@ const initialState = {
     vedetteThird: [],
     vedetteForth: [],
   },
-  sillyButtons: false,
   showComputer: false,
 };
 
@@ -142,11 +141,6 @@ const reducer = (state = initialState, action) => {
           ...state.player,
           input: !state.player.input,
         },
-      };
-    case "SET_SILLY_BUTTONS":
-      return {
-        ...state,
-        sillyButtons: !state.sillyButtons,
       };
     case "SET_SHOW_COMPUTER":
       return {
