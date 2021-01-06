@@ -130,13 +130,6 @@ const Battle = ({
     });
   };
 
-  // method to generate random position on map
-  const randomPosition = () => {
-    const randomLetter = rows[Math.floor(Math.random() * rows.length)];
-    const randomNumber = columns[Math.floor(Math.random() * columns.length)];
-    return randomLetter + randomNumber;
-  };
-
   // method to calculate length of ship based on it's name
   const calculateShipLength = (ship) => {
     let shipLength = 1;
@@ -251,6 +244,47 @@ const Battle = ({
     drawPossibleDirections();
   }, [player.shipsCells]);
 
+  // method to add cell to shadow database
+  const setCertainShadow = (side, cell) => {
+    const sideObj = side === "player" ? player : computer;
+    if (sideObj.shipsShadowsCells[cell]) setShipsShadowsCells(side, cell);
+  };
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // multifunctional methods necessary for player and computer as well
+
+  // method to generate random position on map
+  const randomPosition = () => {
+    const randomLetter = rows[Math.floor(Math.random() * rows.length)];
+    const randomNumber = columns[Math.floor(Math.random() * columns.length)];
+    return randomLetter + randomNumber;
+  };
+
+  // method to determine possible ship directions based on starting point and free cells around
+  const whereTurnShip = (side, ship, firstPoint, shipDirections) => {
+    const shipLength = calculateShipLength(ship);
+    const number = excludeCellNumber(firstPoint);
+    for (let i = 1; i < shipLength; i++) {
+      if (!side.shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
+        shipDirections = shipDirections.filter((x) => x !== "up");
+      if (!side.shipsShadowsCells[`${firstPoint[0]}${Number(number) + i}`])
+        shipDirections = shipDirections.filter((x) => x !== "down");
+      if (
+        !side.shipsShadowsCells[
+          `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
+        ]
+      )
+        shipDirections = shipDirections.filter((x) => x !== "left");
+      if (
+        !side.shipsShadowsCells[
+          `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
+        ]
+      )
+        shipDirections = shipDirections.filter((x) => x !== "right");
+    }
+    return shipDirections;
+  };
+
   // method to fill ship array based on choosen direction
   const fillShipArray = (ship, arr, direction) => {
     // console.log(direction);
@@ -283,39 +317,6 @@ const Battle = ({
     return arr;
   };
 
-  // method to determine possible ship directions based on free cells
-  // reorganize to be universal for player and for computer as well
-  const whereTurnShip = (side, ship, firstPoint, shipDirections) => {
-    const shipLength = calculateShipLength(ship);
-    const number = excludeCellNumber(firstPoint);
-    for (let i = 1; i < shipLength; i++) {
-      if (!side.shipsShadowsCells[`${firstPoint[0]}${Number(number) - i}`])
-        shipDirections = shipDirections.filter((x) => x !== "up");
-      if (!side.shipsShadowsCells[`${firstPoint[0]}${Number(number) + i}`])
-        shipDirections = shipDirections.filter((x) => x !== "down");
-      if (
-        !side.shipsShadowsCells[
-          `${String.fromCharCode(firstPoint[0].charCodeAt(0) - i)}${number}`
-        ]
-      )
-        shipDirections = shipDirections.filter((x) => x !== "left");
-      if (
-        !side.shipsShadowsCells[
-          `${String.fromCharCode(firstPoint[0].charCodeAt(0) + i)}${number}`
-        ]
-      )
-        shipDirections = shipDirections.filter((x) => x !== "right");
-    }
-
-    return shipDirections;
-  };
-
-  // method to add cell to shadow database
-  const setCertainShadow = (side, cell) => {
-    const sideObj = side === "player" ? player : computer;
-    if (sideObj.shipsShadowsCells[cell]) setShipsShadowsCells(side, cell);
-  };
-
   // method to add ship to database together with it's shadow
   const addShipToDatabase = (side, shipPosition) => {
     shipPosition.forEach((pos) => {
@@ -340,49 +341,44 @@ const Battle = ({
     });
   };
 
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // generate computer ships and all related methods
+
+  // method to generate starting point
+  // this method only checks if point is not occupied
+  const generateStartingPoint = () => {
+    // generate first attempt of ship starting point
+    let startingPoint = randomPosition();
+    // if starting point is occupied we need to generate another one
+    while (!computer.shipsShadowsCells[startingPoint]) {
+      startingPoint = randomPosition();
+    }
+    return startingPoint;
+  };
+
   const generateShip = (ship) => {
     // generate first cell of first ship
-    let firstShipCell = randomPosition();
+    let firstCell = generateStartingPoint();
     let shipPosition = [];
-    let shipPossibleDirections = whereTurnShip(
-      computer,
-      ship,
-      firstShipCell,
-      direction
-    );
-    // console.log(shipPossibleDirections.length);
-    // make sure that cell is not occupied and you can turn ship somewhere
-    // console.log(`First option of first cell of ${ship}:`, firstShipCell);
-    // console.log(!computer.shipsShadowsCells[firstShipCell]);
-    // Object.values(freeCells).forEach((x) => console.log(x));
-    if (ship[0] === "v") {
-      while (!computer.shipsShadowsCells[firstShipCell]) {
-        firstShipCell = randomPosition();
-      }
-    } else {
-      while (
-        !computer.shipsShadowsCells[firstShipCell] ||
-        (computer.shipsShadowsCells[firstShipCell] &&
-          shipPossibleDirections.length === 0)
-      ) {
-        firstShipCell = randomPosition();
+    shipPosition.push(firstCell);
+    // if it's not 1cell ship make sure that you can turn ship somewhere
+    if (ship[0] !== "v") {
+      let shipPossibleDirections = whereTurnShip(
+        computer,
+        ship,
+        firstCell,
+        direction
+      );
+      while (shipPossibleDirections.length === 0) {
+        firstCell = randomPosition();
         shipPossibleDirections = whereTurnShip(
           computer,
           ship,
-          firstShipCell,
+          firstCell,
           direction
         );
-        // console.log(firstShipCell, shipPossibleDirections);
       }
-    }
-    shipPosition.push(firstShipCell);
-    // console.log(`Last option of first cell of ${ship}:`, firstShipCell);
-    // add cell to array of ship coordinats
-    // check how we can turn the ship on map
-
-    // if ship is vedette we don't need to turn it and to add more cells
-    if (ship[0] !== "v") {
-      // console.log(shipPossibleDirections);
+      shipPosition[0] = firstCell;
       // choose random direction of ship
       const shipDirection =
         shipPossibleDirections[
@@ -391,15 +387,10 @@ const Battle = ({
       // add rest of ship coordinates to array
       shipPosition = fillShipArray(ship, shipPosition, shipDirection);
     }
+    //
     setShip("computer", ship, shipPosition);
-    // console.log(shipPosition);
-    // console.log("Object in state", computer.shipsCells);
-    // add ship to database of free cells to consider ship posiiton and ship borders
+    // add ship to database of free cells to consider ship position and ship shadows
     addShipToDatabase("computer", shipPosition);
-  };
-
-  const generateComputer = () => {
-    setSillyButtons();
   };
 
   const shipsCondition = () => {
@@ -557,7 +548,7 @@ const Battle = ({
                   variant="contained"
                   color="primary"
                   style={{ marginTop: 20 }}
-                  onClick={generateComputer}
+                  onClick={setSillyButtons}
                 >
                   Generate computer
                 </Button>
