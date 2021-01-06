@@ -69,6 +69,15 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
+    case "SET_SHIPS_CELLS_TOTAL":
+      console.log("vasya");
+      return {
+        ...state,
+        computer: {
+          ...state.computer,
+          shipsCells: action.payload,
+        },
+      };
     case "SET_SHIPS_SHADOWS_CELLS":
       return {
         ...state,
@@ -80,7 +89,15 @@ const reducer = (state = initialState, action) => {
           },
         },
       };
-
+    case "SET_SHIPS_SHADOWS_CELLS_TOTAL":
+      console.log("petya");
+      return {
+        ...state,
+        computer: {
+          ...state.computer,
+          shipsShadowsCells: action.payload,
+        },
+      };
     case "SET_SHIP":
       return {
         ...state,

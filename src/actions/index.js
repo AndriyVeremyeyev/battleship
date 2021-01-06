@@ -1,14 +1,28 @@
-export const setShipsCells = (player, cell, status) => {
+export const setShipsCells = (player, cell) => {
   return {
     type: "SET_SHIPS_CELLS",
-    payload: { player, cell, status },
+    payload: { player, cell },
   };
 };
 
-export const setShipsShadowsCells = (player, cell, status) => {
+export const setShipsCellsTotal = (obj) => {
+  return {
+    type: "SET_SHIPS_CELLS_TOTAL",
+    payload: obj,
+  };
+};
+
+export const setShipsShadowsCells = (player, cell) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS",
-    payload: { player, cell, status },
+    payload: { player, cell },
+  };
+};
+
+export const setShipsShadowsCellsTotal = (obj) => {
+  return {
+    type: "SET_SHIPS_SHADOWS_CELLS_TOTAL",
+    payload: obj,
   };
 };
 
