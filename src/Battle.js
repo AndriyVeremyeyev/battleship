@@ -141,24 +141,6 @@ const Battle = ({
     return shipLength;
   };
 
-  useEffect(() => {
-    shipNames.forEach((ship) => {
-      if (player[ship].length === shipLengths[0])
-        addShipToDatabase("player", player[ship]);
-    });
-  }, [
-    player.battleShip,
-    player.cruiserFirst,
-    player.cruiserSecond,
-    player.destroyerFirst,
-    player.destroyerSecond,
-    player.destroyerThird,
-    player.vedetteFirst,
-    player.vedetteSecond,
-    player.vedetteThird,
-    player.vedetteForth,
-  ]);
-
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber) => {
     shipNames.forEach((ship, index) => {
@@ -333,36 +315,6 @@ const Battle = ({
     return [...new Set(shipPositionWithShadows)];
   };
 
-  // method to add cell to shadow database only if cell exists
-  const setCertainShadow = (side, cell) => {
-    const sideObj = side === "player" ? player : computer;
-    if (sideObj.shipsShadowsCells[cell]) setShipsShadowsCells(side, cell);
-  };
-
-  // method to add ship to database together with it's shadow
-  const addShipToDatabase = (side, shipPosition) => {
-    shipPosition.forEach((pos) => {
-      const number = considerCellNumber(pos);
-      setShipsCells(side, pos);
-      setCertainShadow(side, pos);
-
-      setShipsShadowsCells(side, pos);
-
-      const neighbourCells = [
-        `${pos[0]}${Number(number) + 1}`,
-        `${pos[0]}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${number}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${number}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
-      ];
-
-      neighbourCells.forEach((cell) => setCertainShadow(side, cell));
-    });
-  };
-
   ///////////////////////////////////////////////////////////////////////////////////////
   // generate computer ships and all related methods
 
@@ -377,12 +329,14 @@ const Battle = ({
     return startingPoint;
   };
 
+  // method to generate complete computer map of ships
   const generateComputerMap = () => {
+    // object to storage ships positions
     const ships = {};
+    // object to storage ships positions with ships shadows
     const shipsShadows = {};
     generateFreeCells(ships);
     generateFreeCells(shipsShadows);
-
     shipNames.forEach((ship) => {
       const shipPosition = generateShip(ship, shipsShadows);
       setShip("computer", ship, shipPosition);
@@ -393,6 +347,7 @@ const Battle = ({
       shipPosition.forEach((pos) => (ships[pos] = false));
       shipPositionWithArrays.forEach((pos) => (shipsShadows[pos] = false));
     });
+    // pass objects with information to corresponding reducers
     setShipsCellsTotal(ships);
     setShipsShadowsCellsTotal(shipsShadows);
   };
@@ -423,9 +378,6 @@ const Battle = ({
       // add rest of ship coordinates to array to have full shape of ship
       shipPosition = fillShipArray(ship, shipPosition, shipDirection);
     }
-    // add ship coordinates to their own array in reducer
-    // add ship to database of free cells to consider ship position and ship shadows
-    // addShipToDatabase("computer", shipPosition);
     return shipPosition;
   };
 
