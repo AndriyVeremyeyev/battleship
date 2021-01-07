@@ -73,6 +73,14 @@ const Battle = ({
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows();
+    if (
+      Object.values(player.shipsStatus).every((status) => !status) &&
+      !firstTime
+    ) {
+      setLegendLineOne("Unfortunately you lost the game");
+      setLegendLineTwo("");
+      setPlayAgain(true);
+    }
   }, [player.shipsStatus]);
 
   useEffect(() => {
@@ -112,6 +120,10 @@ const Battle = ({
     clearEverything();
     generateComputerMap();
     setPlayAgain(false);
+    setLegendLineOne("Glad that you decided to keep playing in the game");
+    setLegendLineTwo(
+      "Choose cell on player map to place start point of Battleship"
+    );
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -159,25 +171,36 @@ const Battle = ({
     return shipDirections;
   };
 
+  // method to create neighbour cells array considering non existing cells
+  const createNeighbourCellsArray = (cell) => {
+    const number = considerCellNumber(cell);
+    // create empty board to know which cells are exist
+    const board = generateFreeCells({});
+    // create array of all possble neigbour cells
+    const neighbourCells = [
+      `${cell[0]}${Number(number) + 1}`,
+      `${cell[0]}${Number(number) - 1}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${number}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${number}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
+      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
+    ];
+    // return only filtered existing cells
+    return neighbourCells.filter((pos) => board[pos]);
+  };
+
   // create array of ship cells together with shadows based on ship array
-  const fillShipArrayWithShadows = (shipPosition, obj) => {
-    const shipPositionWithShadows = [];
+  const fillShipArrayWithShadows = (shipPosition) => {
+    let shipPositionWithShadows = [];
     shipPosition.forEach((pos) => {
-      const number = considerCellNumber(pos);
-      const neighbourCells = [
+      const neighbourCells = createNeighbourCellsArray(pos);
+      shipPositionWithShadows = [
+        ...shipPositionWithShadows,
         pos,
-        `${pos[0]}${Number(number) + 1}`,
-        `${pos[0]}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${number}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${number}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
-        `${String.fromCharCode(pos[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
+        ...neighbourCells,
       ];
-      neighbourCells.forEach((cell) => {
-        if (obj[cell]) shipPositionWithShadows.push(cell);
-      });
     });
     // return only unique cells
     return [...new Set(shipPositionWithShadows)];
@@ -273,10 +296,7 @@ const Battle = ({
       const shipPosition = generateShip(ship, shipsShadows);
       setShip("computer", ship, shipPosition);
       setShipsStatus("computer", ship, true);
-      const shipPositionWithArrays = fillShipArrayWithShadows(
-        shipPosition,
-        shipsShadows
-      );
+      const shipPositionWithArrays = fillShipArrayWithShadows(shipPosition);
       shipPosition.forEach((pos) => (ships[pos] = false));
       shipPositionWithArrays.forEach((pos) => (shipsShadows[pos] = false));
     });
@@ -302,10 +322,10 @@ const Battle = ({
           setShip("player", shipNames[index], [cellNumber]);
           setShipsCells("player", cellNumber);
           if (player[ship]?.length === shipLengths[index] - 1) {
-            const currentShipShadow = fillShipArrayWithShadows(
-              [...player[ship], cellNumber],
-              player.shipsShadowsCells
-            );
+            const currentShipShadow = fillShipArrayWithShadows([
+              ...player[ship],
+              cellNumber,
+            ]);
             currentShipShadow.forEach((cell) =>
               setShipsShadowsCells("player", cell)
             );
@@ -358,8 +378,8 @@ const Battle = ({
   };
 
   // method for computer attempt after player attempt
-  const checkComputerAttempt = () => {
-    let computerAttempt = randomPosition();
+  const checkComputerAttempt = (cell = randomPosition()) => {
+    let computerAttempt = cell;
     while (computer.wrongAttempts[computerAttempt]) {
       computerAttempt = randomPosition();
     }
@@ -370,14 +390,28 @@ const Battle = ({
       setLegendLineTwo(`Computer catched some of your ships`);
       setKilledCells("player", computerAttempt);
       checkShip("player", computerAttempt);
+      const randomNeigbourCell = searchNeighbourCells(computerAttempt);
       setTimeout(() => {
-        checkComputerAttempt();
+        checkComputerAttempt(randomNeigbourCell);
       }, 2000);
     } else {
       setLegendLineTwo("Computer missed all of your ships");
       if (!computer.wrongAttempts[computerAttempt])
         setWrongAttempts("computer", computerAttempt);
     }
+  };
+
+  // method to provide random neighbour cell
+  const searchNeighbourCells = (cell) => {
+    const neighbourCells = createNeighbourCellsArray(cell);
+    let randomNeigbourCell =
+      neighbourCells[Math.floor(Math.random() * neighbourCells.length)];
+    // make sure that we not tried this cell before
+    while (computer.wrongAttempts[randomNeigbourCell]) {
+      randomNeigbourCell =
+        neighbourCells[Math.floor(Math.random() * neighbourCells.length)];
+    }
+    return randomNeigbourCell;
   };
 
   // method to remove cell from attempt from corresponding ship array
