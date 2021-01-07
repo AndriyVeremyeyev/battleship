@@ -108,8 +108,22 @@ export const removePossibleDirections = () => {
   };
 };
 
-export const removeShadows = () => {
+export const removeShadows = (player) => {
   return {
     type: "REMOVE_SHADOWS",
+    payload: player,
+  };
+};
+
+export const removeShips = (player) => {
+  return {
+    type: "REMOVE_SHIPS",
+    payload: player,
+  };
+};
+
+export const setPlayAgain = () => {
+  return {
+    type: "SET_PLAY_AGAIN",
   };
 };

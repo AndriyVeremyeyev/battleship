@@ -41,9 +41,12 @@ const initialState = {
     vedetteForth: [],
   },
   showComputer: false,
+  playAgain: false,
 };
 
 const reducer = (state = initialState, action) => {
+  const cleanCells = generateFreeCells({});
+
   switch (action.type) {
     case "SET_KILLED_CELLS":
       return {
@@ -186,13 +189,25 @@ const reducer = (state = initialState, action) => {
         },
       };
     case "REMOVE_SHADOWS":
-      const cleanShadows = generateFreeCells({});
       return {
         ...state,
-        player: {
-          ...state.player,
-          shipsShadowsCells: cleanShadows,
+        [action.payload]: {
+          ...state[action.payload],
+          shipsShadowsCells: cleanCells,
         },
+      };
+    case "REMOVE_SHIPS":
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          shipsCells: cleanCells,
+        },
+      };
+    case "SET_PLAY_AGAIN":
+      return {
+        ...state,
+        playAgain: !state.playAgain,
       };
     default:
       return state;

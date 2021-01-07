@@ -19,6 +19,8 @@ import {
   setShipsCellsTotal,
   setShipsShadowsCellsTotal,
   removeShadows,
+  setPlayAgain,
+  removeShips,
 } from "./actions/index";
 import {
   rows,
@@ -51,6 +53,9 @@ const Battle = ({
   setShipsCellsTotal,
   setShipsShadowsCellsTotal,
   removeShadows,
+  setPlayAgain,
+  playAgain,
+  removeShips,
 }) => {
   // to generate computer map once battle is mounted
   useEffect(() => {
@@ -64,7 +69,7 @@ const Battle = ({
 
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((ship) => ship))
-      removeShadows();
+      removeShadows("player");
     if (Object.values(player.shipsStatus).every((ship) => !ship)) {
       setLegendLineOne("Congratulations! You won the game");
       setLegendLineTwo("");
@@ -79,6 +84,12 @@ const Battle = ({
     border: "solid",
     borderWidth: 0.5,
     cursor: "pointer",
+  };
+
+  const oneMoreTimeGame = () => {
+    removeShips("player");
+    removeShips("computer");
+    removeShadows("computer");
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -443,6 +454,28 @@ const Battle = ({
     );
   };
 
+  const showPlayAgainBlock = () => {
+    return (
+      <Grid item>
+        <Typography variant="subtitle1">
+          Do you want to play one more time?
+        </Typography>
+        <Grid container direction="row" spacing={2}>
+          <Button variant="contained" color="primary" onClick={oneMoreTimeGame}>
+            Yes
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={console.log("Don't want to play")}
+          >
+            No
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  };
+
   const map = (side) => {
     return (
       <React.Fragment>
@@ -523,6 +556,14 @@ const Battle = ({
 
   return (
     <React.Fragment>
+      <Grid
+        container
+        style={{ marginBottom: 20 }}
+        direction="column"
+        alignItems="center"
+      >
+        {playAgain ? showPlayAgainBlock() : null}
+      </Grid>
       <Grid container direction="row" spacing={5} justify="center">
         <Grid item>
           <Grid container direction="column" alignItems="center">
@@ -586,8 +627,8 @@ const Battle = ({
 };
 
 const mapStateToProps = (state) => {
-  const { player, computer, showComputer } = state;
-  return { player, computer, showComputer };
+  const { player, computer, showComputer, playAgain } = state;
+  return { player, computer, showComputer, playAgain };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -612,7 +653,9 @@ const mapDispatchToProps = (dispatch) => ({
   setAttempts: (player) => dispatch(setAttempts(player)),
   setShipsCellsTotal: (obj) => dispatch(setShipsCellsTotal(obj)),
   setShipsShadowsCellsTotal: (obj) => dispatch(setShipsShadowsCellsTotal(obj)),
-  removeShadows: () => dispatch(removeShadows()),
+  removeShadows: (player) => dispatch(removeShadows(player)),
+  setPlayAgain: () => dispatch(setPlayAgain()),
+  removeShips: (player) => dispatch(removeShips(player)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);
