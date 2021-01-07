@@ -178,10 +178,10 @@ const Battle = ({
     const board = generateFreeCells({});
     // create array of all possble neigbour cells
     const neighbourCells = [
-      `${cell[0]}${Number(number) + 1}`,
-      `${cell[0]}${Number(number) - 1}`,
-      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${number}`,
-      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${number}`,
+      upperNeighbour(cell),
+      downNeighbour(cell),
+      leftNeighbour(cell),
+      rightNeighbour(cell),
       `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
       `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
       `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
@@ -207,8 +207,24 @@ const Battle = ({
   };
 
   // method to return corresponding object based on string
-  const whatTheSide = (side) => {
-    return side === "player" ? player : computer;
+  const whatTheSide = (side) => (side === "player" ? player : computer);
+
+  // methods to determine neighbour cells
+  const upperNeighbour = (cell) => {
+    const number = considerCellNumber(cell);
+    return `${cell[0]}${Number(number) + 1}`;
+  };
+  const downNeighbour = (cell) => {
+    const number = considerCellNumber(cell);
+    return `${cell[0]}${Number(number) - 1}`;
+  };
+  const leftNeighbour = (cell) => {
+    const number = considerCellNumber(cell);
+    return `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${number}`;
+  };
+  const rightNeighbour = (cell) => {
+    const number = considerCellNumber(cell);
+    return `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${number}`;
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -364,7 +380,7 @@ const Battle = ({
         setLegendLineOne("Nice job. You catch the ship");
         setLegendLineTwo("You have one more try to catch enemy ship");
         setKilledCells("computer", correctedValue);
-        checkShip("computer", correctedValue);
+        checkShipDestroyed("computer", correctedValue);
       } else {
         setLegendLineOne("You missed any of ships");
         setLegendLineTwo("");
@@ -377,28 +393,66 @@ const Battle = ({
     }
   };
 
+  //
+
   // method for computer attempt after player attempt
-  const checkComputerAttempt = (cell = randomPosition()) => {
-    let computerAttempt = cell;
-    while (computer.wrongAttempts[computerAttempt]) {
-      computerAttempt = randomPosition();
+  const checkComputerAttempt = (
+    currentAttempt = randomPosition(),
+    previousAttempt = null
+  ) => {
+    while (computer.wrongAttempts[currentAttempt]) {
+      currentAttempt = randomPosition();
     }
-    setWrongAttempts("computer", computerAttempt);
+    setWrongAttempts("computer", currentAttempt);
     setAttempts("computer");
-    setLegendLineOne(`Now is computer's turn. Attempt is: ${computerAttempt}`);
-    if (!player.shipsCells[computerAttempt]) {
+    setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
+    // check if ship was damaged or not
+    if (!player.shipsCells[currentAttempt]) {
       setLegendLineTwo(`Computer catched some of your ships`);
-      setKilledCells("player", computerAttempt);
-      checkShip("player", computerAttempt);
-      const randomNeigbourCell = searchNeighbourCells(computerAttempt);
-      setTimeout(() => {
-        checkComputerAttempt(randomNeigbourCell);
-      }, 2000);
+      setKilledCells("player", currentAttempt);
+      // check if ship was completely destroyed or not
+      if (checkShipDestroyed("player", currentAttempt)) {
+        // if completely destroyed we just looking for new random cell
+        setTimeout(() => {
+          checkComputerAttempt();
+        }, 2000);
+      } else {
+        // if we don't have previous success attempt
+        if (!previousAttempt) {
+          // choose random neigbour cell
+          const randomNeigbourCell = searchNeighbourCells(currentAttempt);
+          setTimeout(() => {
+            checkComputerAttempt(randomNeigbourCell, currentAttempt);
+          }, 2000);
+        } else {
+          // we need to understand dependency between current and previous cell
+        }
+      }
     } else {
       setLegendLineTwo("Computer missed all of your ships");
-      if (!computer.wrongAttempts[computerAttempt])
-        setWrongAttempts("computer", computerAttempt);
+      if (!computer.wrongAttempts[currentAttempt])
+        setWrongAttempts("computer", currentAttempt);
     }
+  };
+
+  // determine looking left-right or up-down
+  const determinePlayerShipLocation = (cellFirst, cellSecond) => {
+    const cellFirstNumber = considerCellNumber(cellFirst);
+    const cellSecondNumber = considerCellNumber(cellSecond);
+
+    if (cellFirst[0] === cellSecond[0]) {
+      if (Number(cellFirstNumber) > Number(cellSecondNumber)) {
+        if (upperNeighbour(cellFirst)) {
+        }
+      }
+    } else {
+    }
+    // ? Number(cellFirstNumber) > Number(cellSecondNumber)
+    //   ? "up"
+    //   : "down"
+    // : String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
+    // ? "left"
+    // : "right";
   };
 
   // method to provide random neighbour cell
@@ -416,22 +470,24 @@ const Battle = ({
 
   // method to remove cell from attempt from corresponding ship array
   // and check was ship completely destroyed or not
-  const checkShip = (side, value) => {
+  const checkShipDestroyed = (side, value) => {
     const sideObj = whatTheSide(side);
     shipNames.forEach((ship, index) => {
       if (sideObj[ship].includes(value)) {
         removeShipCell(side, ship, value);
         if (sideObj[ship].length === 1) {
-          if (side === "player")
+          if (side === "player") {
             setLegendLineOne(
               `Oops. Your ${shipNicknames[index]} was completely destroyed`
             );
-          else {
+            return true;
+          } else {
             setLegendLineOne(
               `Congratulations! You completely destroyed ${shipNicknames[index]}`
             );
             setShipsStatus("computer", ship, false);
             setFirstTime(false);
+            return false;
           }
         }
       }

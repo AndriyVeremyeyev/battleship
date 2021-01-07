@@ -133,3 +133,9 @@ export const clearEverything = () => {
     type: "CLEAR_EVERYTHING",
   };
 };
+
+// export const setCatchedShip = (status) => {
+//   return {
+//     type: "SET_CATCHED_SHIP",
+//   };
+// };

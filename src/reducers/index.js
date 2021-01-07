@@ -1,6 +1,6 @@
 import { generateFreeCells, generateShipsStatus } from "../database";
 
-const computerInitialState = {
+const basicInitialState = {
   attempts: 0,
   killedCells: generateFreeCells({}, false),
   shipsStatus: generateShipsStatus({}),
@@ -19,8 +19,10 @@ const computerInitialState = {
   vedetteForth: [],
 };
 
+const computerInitialState = { ...basicInitialState, catchedShip: false };
+
 const playerInitialState = {
-  ...computerInitialState,
+  ...basicInitialState,
   possibleDirections: generateFreeCells({}, false),
 };
 
@@ -201,6 +203,14 @@ const reducer = (state = initialState, action) => {
         player: playerInitialState,
         computer: computerInitialState,
       };
+    // case "SET_CATCHED_SHIP":
+    //   return {
+    //     ...state,
+    //     computer: {
+    //       ...state.computer,
+    //       catchedShip: action.payload,
+    //     },
+    //   };
     default:
       return state;
   }
