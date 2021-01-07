@@ -146,6 +146,11 @@ const Battle = ({
     return [...new Set(shipPositionWithShadows)];
   };
 
+  // method to return corresponding object based on string
+  const whatTheSide = (side) => {
+    return side === "player" ? player : computer;
+  };
+
   ///////////////////////////////////////////////////////////////////////////////////////
   // generate computer ships and all related methods
 
@@ -298,11 +303,13 @@ const Battle = ({
       setLegendLineTwo("Please provide cell from existing range of cells");
     } else {
       if (!computer.shipsCells[correctedValue]) {
-        setLegendLineOne("You catch the ship");
+        setLegendLineOne("Nice job. You catch the ship");
+        setLegendLineTwo("You have one more try to catch enemy ship");
         setKilledCells("computer", correctedValue);
         checkShip("computer", correctedValue);
       } else {
         setLegendLineOne("You missed any of ships");
+        setLegendLineTwo("");
         if (!player.wrongAttempts[value])
           setWrongAttempts("player", correctedValue);
         setTimeout(() => {
@@ -336,7 +343,7 @@ const Battle = ({
   // method to remove cell from attempt from corresponding ship array
   // and check was ship completely destroyed or not
   const checkShip = (side, value) => {
-    const sideObj = side === "player" ? player : computer;
+    const sideObj = whatTheSide(side);
     shipNames.forEach((ship, index) => {
       if (sideObj[ship].includes(value)) {
         removeShipCell(side, ship, value);
@@ -399,12 +406,12 @@ const Battle = ({
   ///////////////////////////////////////////////////////////////////////////////////////
   // front-end methods
 
-  const shipsCondition = () => {
+  const shipsCondition = (side) => {
     const condition = (ship, index) => {
       let response = "";
-      if (computer[ship].length === shipLengths[index]) response = "целый";
-      else if (computer[ship].length === 0) response = "потонул";
-      else response = "подбитый";
+      if (side[ship].length === shipLengths[index]) response = "undamaged";
+      else if (side[ship].length === 0) response = "destroyed";
+      else response = "damaged";
       return response;
     };
 
@@ -510,30 +517,35 @@ const Battle = ({
           <Grid container direction="column" alignItems="center">
             {map("player")}
             {Object.values(player.shipsStatus).every((x) => x) ? (
-              <Grid item style={{ marginTop: 20 }}>
-                <Grid container direction="row" spacing={2} justify="center">
-                  <Grid item>
-                    <TextField
-                      variant="outlined"
-                      style={{ width: 70, height: 10 }}
-                      onChange={(event) => setValue(event.target.value)}
-                    />
+              <React.Fragment>
+                <Grid item style={{ marginTop: 20 }}>
+                  <Grid container direction="row" spacing={2} justify="center">
+                    <Grid item>
+                      <TextField
+                        variant="outlined"
+                        style={{ width: 70, height: 10 }}
+                        onChange={(event) => setValue(event.target.value)}
+                      />
+                    </Grid>
+                    <Grid item style={{ marginTop: 10 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => checkPlayerAttempt(value)}
+                      >
+                        Enter cell
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item style={{ marginTop: 10 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => checkPlayerAttempt(value)}
-                    >
-                      Enter cell
-                    </Button>
-                  </Grid>
+                  <Typography
+                    style={{ marginTop: 20 }}
+                    variant="h6"
+                  >{`Quantity of your attempts: ${player.attempts}`}</Typography>
                 </Grid>
-                <Typography
-                  style={{ marginTop: 20 }}
-                  variant="h6"
-                >{`Quantity of your attempts: ${player.attempts}`}</Typography>
-              </Grid>
+                <Grid item style={{ marginTop: 20 }}>
+                  {shipsCondition(player)}
+                </Grid>
+              </React.Fragment>
             ) : null}
           </Grid>
         </Grid>
@@ -555,7 +567,7 @@ const Battle = ({
             style={{ marginTop: 20 }}
             variant="h6"
           >{`Quantity of computer attempts: ${computer.attempts}`}</Typography>
-          <Grid item>{shipsCondition()}</Grid>
+          <Grid item>{shipsCondition(computer)}</Grid>
         </Grid>
       </Grid>
     </React.Fragment>
