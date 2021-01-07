@@ -65,6 +65,10 @@ const Battle = ({
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((ship) => ship))
       removeShadows();
+    if (Object.values(player.shipsStatus).every((ship) => !ship)) {
+      setLegendLineOne("Congratulations! You won the game");
+      setLegendLineTwo("");
+    }
   }, [player.shipsStatus]);
 
   const [value, setValue] = useState("");
@@ -295,6 +299,7 @@ const Battle = ({
 
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value) => {
+    console.log("player attempt");
     const correctedValue = value.toLowerCase();
     setLegendLineTwo("");
     setAttempts("player");
@@ -321,9 +326,15 @@ const Battle = ({
 
   // method for computer attempt after player attempt
   const checkComputerAttempt = () => {
+    console.log("computer attempt");
     let computerAttempt = randomPosition();
-    while (computer.wrongAttempts[computerAttempt])
-      setWrongAttempts("computer", computerAttempt);
+    console.log(computer.wrongAttempts);
+    while (computer.wrongAttempts[computerAttempt]) {
+      console.log(computerAttempt);
+      computerAttempt = randomPosition();
+    }
+    console.log(computerAttempt);
+    setWrongAttempts("computer", computerAttempt);
     setAttempts("computer");
     setLegendLineOne(`Now is computer's turn. Attempt is: ${computerAttempt}`);
     if (!player.shipsCells[computerAttempt]) {
