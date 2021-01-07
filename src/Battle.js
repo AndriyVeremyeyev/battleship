@@ -94,19 +94,20 @@ const Battle = ({
     }
   }, [computer.shipsStatus]);
 
-  useEffect(() => {
-    console.log("Player ships", player.shipsStatus);
-  }, [player.shipsStatus]);
+  // useEffect(() => {
+  //   console.log("Player ships", player.shipsStatus);
+  // }, [player.shipsStatus]);
 
-  useEffect(() => {
-    console.log("Computer ships", computer.shipsStatus);
-  }, [computer.shipsStatus]);
+  // useEffect(() => {
+  //   console.log("Computer ships", computer.shipsStatus);
+  // }, [computer.shipsStatus]);
 
-  useEffect(() => {
-    console.log(firstTime);
-  }, [firstTime]);
+  // useEffect(() => {
+  //   console.log(firstTime);
+  // }, [firstTime]);
 
   const [value, setValue] = useState("");
+  const [catchedCell, setCatchedCell] = useState(null);
 
   const cellStyle = {
     height: 50,
@@ -172,21 +173,34 @@ const Battle = ({
   };
 
   // method to create neighbour cells array considering non existing cells
-  const createNeighbourCellsArray = (cell) => {
+  const createNeighbourCellsArray = (cell, all = true) => {
     const number = considerCellNumber(cell);
     // create empty board to know which cells are exist
     const board = generateFreeCells({});
     // create array of all possble neigbour cells
-    const neighbourCells = [
+    let neighbourCells = [
       upperNeighbour(cell),
       downNeighbour(cell),
       leftNeighbour(cell),
       rightNeighbour(cell),
-      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) - 1}`,
-      `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${Number(number) + 1}`,
-      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${Number(number) - 1}`,
-      `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${Number(number) + 1}`,
     ];
+
+    if (all)
+      neighbourCells = [
+        ...neighbourCells,
+        `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${
+          Number(number) - 1
+        }`,
+        `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${
+          Number(number) + 1
+        }`,
+        `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${
+          Number(number) - 1
+        }`,
+        `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${
+          Number(number) + 1
+        }`,
+      ];
     // return only filtered existing cells
     return neighbourCells.filter((pos) => board[pos]);
   };
@@ -393,14 +407,17 @@ const Battle = ({
     }
   };
 
-  //
-
   // method for computer attempt after player attempt
   const checkComputerAttempt = (
     currentAttempt = randomPosition(),
     previousAttempt = null
   ) => {
-    while (computer.wrongAttempts[currentAttempt]) {
+    let randomNeigbourCell = null;
+    if (catchedCell) currentAttempt = searchNeighbourCells(catchedCell);
+    while (
+      computer.wrongAttempts[currentAttempt] &&
+      computer.shipsShadowsCells[currentAttempt]
+    ) {
       currentAttempt = randomPosition();
     }
     setWrongAttempts("computer", currentAttempt);
@@ -410,9 +427,11 @@ const Battle = ({
     if (!player.shipsCells[currentAttempt]) {
       setLegendLineTwo(`Computer catched some of your ships`);
       setKilledCells("player", currentAttempt);
+      setCatchedCell(currentAttempt);
       // check if ship was completely destroyed or not
       if (checkShipDestroyed("player", currentAttempt)) {
         // if completely destroyed we just looking for new random cell
+        setCatchedCell(null);
         setTimeout(() => {
           checkComputerAttempt();
         }, 2000);
@@ -420,12 +439,18 @@ const Battle = ({
         // if we don't have previous success attempt
         if (!previousAttempt) {
           // choose random neigbour cell
-          const randomNeigbourCell = searchNeighbourCells(currentAttempt);
+          randomNeigbourCell = searchNeighbourCells(currentAttempt);
           setTimeout(() => {
             checkComputerAttempt(randomNeigbourCell, currentAttempt);
           }, 2000);
         } else {
-          // we need to understand dependency between current and previous cell
+          randomNeigbourCell = guessNextPlayerShipCell(
+            currentAttempt,
+            previousAttempt
+          );
+          setTimeout(() => {
+            checkComputerAttempt(randomNeigbourCell, currentAttempt);
+          }, 2000);
         }
       }
     } else {
@@ -435,36 +460,79 @@ const Battle = ({
     }
   };
 
-  // determine looking left-right or up-down
-  const determinePlayerShipLocation = (cellFirst, cellSecond) => {
+  // guessing next plyaer cell if we have 2 cells of damaged ship
+  const guessNextPlayerShipCell = (cellFirst, cellSecond) => {
     const cellFirstNumber = considerCellNumber(cellFirst);
     const cellSecondNumber = considerCellNumber(cellSecond);
-
+    let directions = [];
+    let leftCell = null,
+      rightCell = null,
+      upCell = null,
+      downCell = null;
     if (cellFirst[0] === cellSecond[0]) {
       if (Number(cellFirstNumber) > Number(cellSecondNumber)) {
-        if (upperNeighbour(cellFirst)) {
-        }
+        upCell = cellFirst;
+        downCell = cellSecond;
+      } else {
+        upCell = cellSecond;
+        downCell = cellFirst;
       }
     } else {
+      if (
+        String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
+      ) {
+        leftCell = cellSecond;
+        rightCell = cellFirst;
+      } else {
+        leftCell = cellFirst;
+        rightCell = cellSecond;
+      }
     }
-    // ? Number(cellFirstNumber) > Number(cellSecondNumber)
-    //   ? "up"
-    //   : "down"
-    // : String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
-    // ? "left"
-    // : "right";
+
+    if (upCell || downCell) {
+      if (
+        computer.shipsShadowsCells[upperNeighbour(upCell)] &&
+        computer.shipsShadowsCells[downNeighbour(downCell)]
+      ) {
+        directions = ["up", "down"];
+      } else if (!computer.shipsShadowsCells[upperNeighbour(upCell)]) {
+        return downNeighbour(downCell);
+      } else {
+        return upperNeighbour(upCell);
+      }
+    } else {
+      if (
+        computer.shipsShadowsCells[leftNeighbour(leftCell)] &&
+        computer.shipsShadowsCells[rightNeighbour(rightCell)]
+      ) {
+        directions = ["left", "right"];
+      } else if (!computer.shipsShadowsCells[leftNeighbour(leftCell)]) {
+        return rightNeighbour(rightCell);
+      } else {
+        return leftNeighbour(leftCell);
+      }
+    }
+    const randomDirection =
+      directions[Math.floor(Math.random() * directions.length)];
+    if (randomDirection === "up") return upperNeighbour(upCell);
+    if (randomDirection === "down") return downNeighbour(downCell);
+    if (randomDirection === "left") return leftNeighbour(leftCell);
+    if (randomDirection === "right") return rightNeighbour(rightCell);
   };
 
   // method to provide random neighbour cell
   const searchNeighbourCells = (cell) => {
-    const neighbourCells = createNeighbourCellsArray(cell);
+    // we need to filter array of cells to make sure that we not tried this cell before and it's not lying on other ship shadow
+    const neighbourCells = createNeighbourCellsArray(cell, false);
+    const filteredneighbourCells = neighbourCells.filter(
+      (cell) =>
+        !computer.wrongAttempts[cell] && computer.shipsShadowsCells[cell]
+    );
+    // take random cell from filtered array
     let randomNeigbourCell =
-      neighbourCells[Math.floor(Math.random() * neighbourCells.length)];
-    // make sure that we not tried this cell before
-    while (computer.wrongAttempts[randomNeigbourCell]) {
-      randomNeigbourCell =
-        neighbourCells[Math.floor(Math.random() * neighbourCells.length)];
-    }
+      filteredneighbourCells[
+        Math.floor(Math.random() * filteredneighbourCells.length)
+      ];
     return randomNeigbourCell;
   };
 
