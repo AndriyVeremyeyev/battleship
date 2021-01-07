@@ -21,6 +21,7 @@ import {
   removeShadows,
   setPlayAgain,
   removeShips,
+  setFirstTime,
 } from "./actions/index";
 import {
   rows,
@@ -56,6 +57,8 @@ const Battle = ({
   setPlayAgain,
   playAgain,
   removeShips,
+  setFirstTime,
+  firstTime,
 }) => {
   // to generate computer map once battle is mounted
   useEffect(() => {
@@ -68,15 +71,32 @@ const Battle = ({
   }, [player.shipsCells]);
 
   useEffect(() => {
-    if (Object.values(player.shipsStatus).every((ship) => ship))
+    if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows("player");
-    if (Object.values(player.shipsStatus).every((ship) => !ship)) {
+  }, [player.shipsStatus]);
+
+  useEffect(() => {
+    if (
+      Object.values(computer.shipsStatus).every((status) => !status) &&
+      !firstTime
+    ) {
       setLegendLineOne("Congratulations! You won the game");
       setLegendLineTwo("");
       setPlayAgain();
-      console.log(playAgain);
     }
+  }, [computer.shipsStatus]);
+
+  useEffect(() => {
+    console.log("Player ships", player.shipsStatus);
   }, [player.shipsStatus]);
+
+  useEffect(() => {
+    console.log("Computer ships", computer.shipsStatus);
+  }, [computer.shipsStatus]);
+
+  useEffect(() => {
+    console.log(firstTime);
+  }, [firstTime]);
 
   const [value, setValue] = useState("");
 
@@ -252,6 +272,7 @@ const Battle = ({
     shipNames.forEach((ship) => {
       const shipPosition = generateShip(ship, shipsShadows);
       setShip("computer", ship, shipPosition);
+      setShipsStatus("computer", ship, true);
       const shipPositionWithArrays = fillShipArrayWithShadows(
         shipPosition,
         shipsShadows
@@ -312,7 +333,6 @@ const Battle = ({
 
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value) => {
-    console.log("player attempt");
     const correctedValue = value.toLowerCase();
     setLegendLineTwo("");
     setAttempts("player");
@@ -339,14 +359,10 @@ const Battle = ({
 
   // method for computer attempt after player attempt
   const checkComputerAttempt = () => {
-    console.log("computer attempt");
     let computerAttempt = randomPosition();
-    console.log(computer.wrongAttempts);
     while (computer.wrongAttempts[computerAttempt]) {
-      console.log(computerAttempt);
       computerAttempt = randomPosition();
     }
-    console.log(computerAttempt);
     setWrongAttempts("computer", computerAttempt);
     setAttempts("computer");
     setLegendLineOne(`Now is computer's turn. Attempt is: ${computerAttempt}`);
@@ -376,10 +392,13 @@ const Battle = ({
             setLegendLineOne(
               `Oops. Your ${shipNicknames[index]} was completely destroyed`
             );
-          else
+          else {
             setLegendLineOne(
               `Congratulations! You completely destroyed ${shipNicknames[index]}`
             );
+            setShipsStatus("computer", ship, false);
+            setFirstTime(false);
+          }
         }
       }
     });
@@ -425,6 +444,15 @@ const Battle = ({
         setShipsStatus("player", ship, true);
       }
     });
+  };
+
+  const killPlayer = () => {
+    shipNames.forEach((ship) => setShipsStatus("player", ship, false));
+  };
+
+  const killComputer = () => {
+    shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
+    setFirstTime(false);
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -476,7 +504,9 @@ const Battle = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={console.log("Don't want to play")}
+              onClick={() => {
+                console.log("Don't want to play");
+              }}
             >
               No
             </Button>
@@ -572,7 +602,7 @@ const Battle = ({
         direction="column"
         alignItems="center"
       >
-        {playAgain ? showPlayAgainBlock() : null}
+        {playAgain && !firstTime ? showPlayAgainBlock() : null}
       </Grid>
       <Grid container direction="row" spacing={5} justify="center">
         <Grid item>
@@ -609,11 +639,31 @@ const Battle = ({
                 </Grid>
               </React.Fragment>
             ) : null}
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={killPlayer}
+                style={{ marginTop: 20 }}
+              >
+                Kill player
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
             {map("computer")}
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={killComputer}
+                style={{ marginTop: 20 }}
+              >
+                Kill computer
+              </Button>
+            </Grid>
             <Grid item>
               <Button
                 variant="contained"
@@ -637,8 +687,8 @@ const Battle = ({
 };
 
 const mapStateToProps = (state) => {
-  const { player, computer, showComputer, playAgain } = state;
-  return { player, computer, showComputer, playAgain };
+  const { player, computer, showComputer, playAgain, firstTime } = state;
+  return { player, computer, showComputer, playAgain, firstTime };
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -666,6 +716,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeShadows: (player) => dispatch(removeShadows(player)),
   setPlayAgain: () => dispatch(setPlayAgain()),
   removeShips: (player) => dispatch(removeShips(player)),
+  setFirstTime: (status) => dispatch(setFirstTime(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

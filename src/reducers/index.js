@@ -27,6 +27,7 @@ const initialState = {
     killedCells: generateFreeCells({}, false),
     attempts: 0,
     wrongAttempts: generateFreeCells({}, false),
+    shipsStatus: generateShipsStatus({}),
     shipsCells: generateFreeCells({}),
     shipsShadowsCells: generateFreeCells({}),
     battleShip: [],
@@ -205,10 +206,11 @@ const reducer = (state = initialState, action) => {
           shipsCells: cleanCells,
         },
       };
+    // case "REMOVE_KILLED"
     case "SET_PLAY_AGAIN":
       return {
         ...state,
-        playAgain: !state.playAgain,
+        playAgain: true,
       };
     case "SET_FIRST_TIME":
       return {
