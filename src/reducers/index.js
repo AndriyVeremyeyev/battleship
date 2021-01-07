@@ -182,8 +182,8 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_SHADOWS":
       return {
         ...state,
-        player: {
-          ...state.player,
+        [action.payload]: {
+          ...state[action.payload],
           shipsShadowsCells: generateFreeCells({}),
         },
       };

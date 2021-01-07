@@ -108,9 +108,10 @@ export const removePossibleDirections = () => {
   };
 };
 
-export const removeShadows = () => {
+export const removeShadows = (player) => {
   return {
     type: "REMOVE_SHADOWS",
+    payload: player,
   };
 };
 
