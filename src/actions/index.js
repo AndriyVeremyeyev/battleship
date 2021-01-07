@@ -108,23 +108,16 @@ export const removePossibleDirections = () => {
   };
 };
 
-export const removeShadows = (player) => {
+export const removeShadows = () => {
   return {
     type: "REMOVE_SHADOWS",
-    payload: player,
   };
 };
 
-export const removeShips = (player) => {
-  return {
-    type: "REMOVE_SHIPS",
-    payload: player,
-  };
-};
-
-export const setPlayAgain = () => {
+export const setPlayAgain = (status) => {
   return {
     type: "SET_PLAY_AGAIN",
+    payload: status,
   };
 };
 
@@ -132,5 +125,11 @@ export const setFirstTime = (status) => {
   return {
     type: "SET_FIRST_TIME",
     payload: status,
+  };
+};
+
+export const clearEverything = () => {
+  return {
+    type: "CLEAR_EVERYTHING",
   };
 };

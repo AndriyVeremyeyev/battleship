@@ -20,8 +20,8 @@ import {
   setShipsShadowsCellsTotal,
   removeShadows,
   setPlayAgain,
-  removeShips,
   setFirstTime,
+  clearEverything,
 } from "./actions/index";
 import {
   rows,
@@ -56,9 +56,9 @@ const Battle = ({
   removeShadows,
   setPlayAgain,
   playAgain,
-  removeShips,
   setFirstTime,
   firstTime,
+  clearEverything,
 }) => {
   // to generate computer map once battle is mounted
   useEffect(() => {
@@ -72,7 +72,7 @@ const Battle = ({
 
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((status) => status))
-      removeShadows("player");
+      removeShadows();
   }, [player.shipsStatus]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const Battle = ({
     ) {
       setLegendLineOne("Congratulations! You won the game");
       setLegendLineTwo("");
-      setPlayAgain();
+      setPlayAgain(true);
     }
   }, [computer.shipsStatus]);
 
@@ -109,9 +109,9 @@ const Battle = ({
   };
 
   const oneMoreTimeGame = () => {
-    removeShips("player");
-    removeShips("computer");
-    removeShadows("computer");
+    clearEverything();
+    generateComputerMap();
+    setPlayAgain(false);
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -448,6 +448,7 @@ const Battle = ({
 
   const killPlayer = () => {
     shipNames.forEach((ship) => setShipsStatus("player", ship, false));
+    setFirstTime(false);
   };
 
   const killComputer = () => {
@@ -713,10 +714,10 @@ const mapDispatchToProps = (dispatch) => ({
   setAttempts: (player) => dispatch(setAttempts(player)),
   setShipsCellsTotal: (obj) => dispatch(setShipsCellsTotal(obj)),
   setShipsShadowsCellsTotal: (obj) => dispatch(setShipsShadowsCellsTotal(obj)),
-  removeShadows: (player) => dispatch(removeShadows(player)),
-  setPlayAgain: () => dispatch(setPlayAgain()),
-  removeShips: (player) => dispatch(removeShips(player)),
+  removeShadows: () => dispatch(removeShadows()),
+  setPlayAgain: (status) => dispatch(setPlayAgain(status)),
   setFirstTime: (status) => dispatch(setFirstTime(status)),
+  clearEverything: () => dispatch(clearEverything()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

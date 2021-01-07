@@ -1,54 +1,41 @@
 import { generateFreeCells, generateShipsStatus } from "../database";
 
+const computerInitialState = {
+  attempts: 0,
+  killedCells: generateFreeCells({}, false),
+  shipsStatus: generateShipsStatus({}),
+  shipsCells: generateFreeCells({}),
+  shipsShadowsCells: generateFreeCells({}),
+  wrongAttempts: generateFreeCells({}, false),
+  battleShip: [],
+  cruiserFirst: [],
+  cruiserSecond: [],
+  destroyerFirst: [],
+  destroyerSecond: [],
+  destroyerThird: [],
+  vedetteFirst: [],
+  vedetteSecond: [],
+  vedetteThird: [],
+  vedetteForth: [],
+};
+
+const playerInitialState = {
+  ...computerInitialState,
+  possibleDirections: generateFreeCells({}, false),
+};
+
 const initialState = {
   pageStatus: "startGame",
   legendLineOne: "",
   legendLineTwo: "",
-  player: {
-    attempts: 0,
-    wrongAttempts: generateFreeCells({}, false),
-    killedCells: generateFreeCells({}, false),
-    shipsCells: generateFreeCells({}),
-    shipsShadowsCells: generateFreeCells({}),
-    shipsStatus: generateShipsStatus({}),
-    possibleDirections: generateFreeCells({}, false),
-    battleShip: [],
-    cruiserFirst: [],
-    cruiserSecond: [],
-    destroyerFirst: [],
-    destroyerSecond: [],
-    destroyerThird: [],
-    vedetteFirst: [],
-    vedetteSecond: [],
-    vedetteThird: [],
-    vedetteForth: [],
-  },
-  computer: {
-    killedCells: generateFreeCells({}, false),
-    attempts: 0,
-    wrongAttempts: generateFreeCells({}, false),
-    shipsStatus: generateShipsStatus({}),
-    shipsCells: generateFreeCells({}),
-    shipsShadowsCells: generateFreeCells({}),
-    battleShip: [],
-    cruiserFirst: [],
-    cruiserSecond: [],
-    destroyerFirst: [],
-    destroyerSecond: [],
-    destroyerThird: [],
-    vedetteFirst: [],
-    vedetteSecond: [],
-    vedetteThird: [],
-    vedetteForth: [],
-  },
+  player: playerInitialState,
+  computer: computerInitialState,
   showComputer: false,
   playAgain: false,
   firstTime: true,
 };
 
 const reducer = (state = initialState, action) => {
-  const cleanCells = generateFreeCells({});
-
   switch (action.type) {
     case "SET_KILLED_CELLS":
       return {
@@ -193,31 +180,27 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_SHADOWS":
       return {
         ...state,
-        [action.payload]: {
-          ...state[action.payload],
-          shipsShadowsCells: cleanCells,
+        player: {
+          ...state.player,
+          shipsShadowsCells: generateFreeCells({}),
         },
       };
-    case "REMOVE_SHIPS":
-      return {
-        ...state,
-        [action.payload]: {
-          ...state[action.payload],
-          shipsCells: cleanCells,
-        },
-      };
-    // case "REMOVE_KILLED"
     case "SET_PLAY_AGAIN":
       return {
         ...state,
-        playAgain: true,
+        playAgain: action.payload,
       };
     case "SET_FIRST_TIME":
       return {
         ...state,
         firstTime: action.payload,
       };
-
+    case "CLEAR_EVERYTHING":
+      return {
+        ...state,
+        player: playerInitialState,
+        computer: computerInitialState,
+      };
     default:
       return state;
   }
