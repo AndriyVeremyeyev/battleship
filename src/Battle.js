@@ -73,6 +73,8 @@ const Battle = ({
     if (Object.values(player.shipsStatus).every((ship) => !ship)) {
       setLegendLineOne("Congratulations! You won the game");
       setLegendLineTwo("");
+      setPlayAgain();
+      console.log(playAgain);
     }
   }, [player.shipsStatus]);
 
@@ -457,20 +459,28 @@ const Battle = ({
   const showPlayAgainBlock = () => {
     return (
       <Grid item>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" style={{ marginBottom: 20 }}>
           Do you want to play one more time?
         </Typography>
-        <Grid container direction="row" spacing={2}>
-          <Button variant="contained" color="primary" onClick={oneMoreTimeGame}>
-            Yes
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={console.log("Don't want to play")}
-          >
-            No
-          </Button>
+        <Grid container direction="row" spacing={5} justify="center">
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={oneMoreTimeGame}
+            >
+              Yes
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={console.log("Don't want to play")}
+            >
+              No
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     );

@@ -42,6 +42,7 @@ const initialState = {
   },
   showComputer: false,
   playAgain: false,
+  firstTime: true,
 };
 
 const reducer = (state = initialState, action) => {
@@ -209,6 +210,12 @@ const reducer = (state = initialState, action) => {
         ...state,
         playAgain: !state.playAgain,
       };
+    case "SET_FIRST_TIME":
+      return {
+        ...state,
+        firstTime: action.payload,
+      };
+
     default:
       return state;
   }

@@ -127,3 +127,10 @@ export const setPlayAgain = () => {
     type: "SET_PLAY_AGAIN",
   };
 };
+
+export const setFirstTime = (status) => {
+  return {
+    type: "SET_FIRST_TIME",
+    payload: status,
+  };
+};
