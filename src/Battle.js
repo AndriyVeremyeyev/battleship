@@ -855,6 +855,9 @@ const Battle = ({
                         variant="outlined"
                         style={{ width: 70, height: 10 }}
                         onChange={(event) => setValue(event.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.keyCode === 13) checkPlayerAttempt(value);
+                        }}
                       />
                     </Grid>
                     <Grid item style={{ marginTop: 10 }}>
