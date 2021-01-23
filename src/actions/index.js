@@ -19,10 +19,10 @@ export const setShipsShadowsCells = (player, cell) => {
   };
 };
 
-export const setShipsShadowsCellsTotal = (obj) => {
+export const setShipsShadowsCellsTotal = (player, obj) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS_TOTAL",
-    payload: obj,
+    payload: { player, obj },
   };
 };
 
@@ -108,10 +108,9 @@ export const removePossibleDirections = () => {
   };
 };
 
-export const removeShadows = (player) => {
+export const removeShadows = () => {
   return {
     type: "REMOVE_SHADOWS",
-    payload: player,
   };
 };
 

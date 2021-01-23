@@ -83,9 +83,9 @@ const reducer = (state = initialState, action) => {
     case "SET_SHIPS_SHADOWS_CELLS_TOTAL":
       return {
         ...state,
-        computer: {
-          ...state.computer,
-          shipsShadowsCells: action.payload,
+        [action.payload.player]: {
+          ...state[action.payload.player],
+          shipsShadowsCells: action.payload.obj,
         },
       };
     case "SET_SHIP":
@@ -182,8 +182,8 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_SHADOWS":
       return {
         ...state,
-        [action.payload]: {
-          ...state[action.payload],
+        player: {
+          ...state.player,
           shipsShadowsCells: generateFreeCells({}),
         },
       };
