@@ -244,6 +244,31 @@ const Battle = ({
     return `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${number}`;
   };
 
+  // method to determine what the ship based on catched cell, returns ship name
+  const whatTheShip = (side, value) => {
+    const sideObj = whatTheSide(side);
+    let currShip = null;
+    shipNames.forEach((ship) => {
+      if (sideObj[ship].includes(value)) currShip = ship;
+    });
+    return currShip;
+  };
+
+  // method to determine what the ship index based on ship name
+  const whatTheShipIndex = (ship) => {
+    let index;
+    shipNames.forEach((currShip, currIndex) => {
+      if (currShip === ship) index = currIndex;
+    });
+    return index;
+  };
+
+  // method to check was ship completely destroyed or not
+  const isShipDestroyed = (side, ship) => {
+    const sideObj = whatTheSide(side);
+    return sideObj[ship].length === 1 ? true : false;
+  };
+
   ///////////////////////////////////////////////////////////////////////////////////////
   // generate computer ships and all related methods
 
@@ -397,7 +422,7 @@ const Battle = ({
         setLegendLineOne("Nice job. You catch the ship");
         setLegendLineTwo("You have one more try to catch enemy ship");
         setKilledCells("computer", correctedValue);
-        checkShipDestroyed("computer", correctedValue);
+        removeCellFromShip("computer", correctedValue);
       } else {
         setLegendLineOne("You missed any of ships");
         setLegendLineTwo("");
@@ -452,7 +477,7 @@ const Battle = ({
       // console.log("destroyed ship", destroyedShip);
       setCatchedCell(currentAttempt);
       // check if ship was completely destroyed or not
-      if (checkShipDestroyed("player", currentAttempt)) {
+      if (removeCellFromShip("player", currentAttempt)) {
         setCatchedCell(null);
         setSecondCatchedCell(null);
         // if completely destroyed we just looking for new random cell
@@ -595,52 +620,25 @@ const Battle = ({
 
   // method to remove cell from attempt from corresponding ship array
   // and check was ship completely destroyed or not
-  const checkShipDestroyed = (side, value) => {
-    const sideObj = whatTheSide(side);
-    let shipDestroyed = false;
-    shipNames.forEach((ship, index) => {
-      if (sideObj[ship].includes(value)) {
-        // console.log("sideObj[ship]", sideObj[ship]);
-        removeShipCell(side, ship, value);
-        if (sideObj[ship].length === 1) {
-          shipDestroyed = true;
-          // console.log("how ship looks like", sideObj[ship]);
-          if (side === "player") {
-            setLegendLineOne(
-              `Oops. Your ${shipNicknames[index]} was completely destroyed`
-            );
-          } else {
-            setLegendLineOne(
-              `Congratulations! You completely destroyed ${shipNicknames[index]}`
-            );
-            setShipsStatus("computer", ship, false);
-            setFirstTime(false);
-          }
-        }
+  const removeCellFromShip = (side, value) => {
+    const currentShip = whatTheShip(side, value);
+    const currentIndex = whatTheShipIndex(currentShip);
+    // console.log("sideObj[ship]", sideObj[ship]);
+    removeShipCell(side, currentShip, value);
+    if (isShipDestroyed(side, currentShip)) {
+      // console.log("how ship looks like", sideObj[ship]);
+      if (side === "player") {
+        setLegendLineOne(
+          `Oops. Your ${shipNicknames[currentIndex]} was completely destroyed`
+        );
+      } else {
+        setLegendLineOne(
+          `Congratulations! You completely destroyed ${shipNicknames[currentIndex]}`
+        );
+        setShipsStatus("computer", currentShip, false);
+        setFirstTime(false);
       }
-    });
-    // console.log(shipDestroyed);
-    return shipDestroyed;
-  };
-
-  // method to determine what the ship based on catched cell
-
-  const whatTheShip = (side, value) => {
-    console.log(value);
-    const sideObj = whatTheSide(side);
-    let currShip = null;
-    shipNames.forEach((ship) => {
-      if (sideObj[ship].includes(value)) {
-        currShip = sideObj[ship];
-      }
-    });
-    return currShip;
-  };
-
-  // method to check was ship completely destroyed or not
-  const isShipDestroyed = (side, ship) => {
-    const sideObj = whatTheSide(side);
-    return sideObj[ship].length === 1 ? true : false;
+    }
   };
 
   // method to fill possible directions
