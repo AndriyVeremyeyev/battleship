@@ -139,3 +139,10 @@ export const clearEverything = () => {
 //     type: "SET_CATCHED_SHIP",
 //   };
 // };
+
+export const setDamagedShip = (ship) => {
+  return {
+    type: "SET_DAMAGED_SHIP",
+    payload: ship,
+  };
+};

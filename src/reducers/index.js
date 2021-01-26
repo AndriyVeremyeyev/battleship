@@ -19,7 +19,11 @@ const basicInitialState = {
   vedetteForth: [],
 };
 
-const computerInitialState = { ...basicInitialState, catchedShip: false };
+const computerInitialState = {
+  ...basicInitialState,
+  catchedShip: false,
+  damagedShip: [],
+};
 
 const playerInitialState = {
   ...basicInitialState,
@@ -211,6 +215,14 @@ const reducer = (state = initialState, action) => {
     //       catchedShip: action.payload,
     //     },
     //   };
+    case "SET_DAMAGED_SHIP":
+      return {
+        ...state,
+        computer: {
+          ...state.computer,
+          damagedShip: action.payload,
+        },
+      };
     default:
       return state;
   }

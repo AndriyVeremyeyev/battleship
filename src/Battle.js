@@ -22,6 +22,7 @@ import {
   setPlayAgain,
   setFirstTime,
   clearEverything,
+  setDamagedShip,
 } from "./actions/index";
 import {
   rows,
@@ -59,10 +60,14 @@ const Battle = ({
   setFirstTime,
   firstTime,
   clearEverything,
+  setDamagedShip,
 }) => {
   // to generate computer map once battle is mounted
+  const [firstRender, setFirstRender] = useState(false);
+
   useEffect(() => {
     generateComputerMap();
+    setFirstRender(true);
   }, []);
 
   // to monitor changes in
@@ -109,12 +114,14 @@ const Battle = ({
   const [playerAttempt, setPlayerAttempt] = useState("");
   // const [catchedCell, setCatchedCell] = useState(null);
   // const [secondCatchedCell, setSecondCatchedCell] = useState(null);
-  const [damagedShip, setDamagedShip] = useState([]);
+  // const [damagedShip, setDamagedShip] = useState([]);
 
   useEffect(() => {
-    setDamagedShip(damagedShip);
-    console.log("current damaged ship", damagedShip);
-  }, [damagedShip]);
+    if (firstRender) {
+      console.log("computer check fires");
+      checkComputerAttempt();
+    }
+  }, [computer.damagedShip.length]);
 
   const cellStyle = {
     height: 50,
@@ -387,10 +394,13 @@ const Battle = ({
 
   // method to add cells to damaged ship
   const addCellToDamagedShip = (cell) => {
+    const { damagedShip } = computer;
     if (damagedShip.length === 0) {
-      console.log("cell for adding to damaged ship", cell);
+      console.log("length of damaged ship = 0");
       setDamagedShip([cell]);
     } else {
+      console.log("length of damaged ship > 0");
+      console.log("input data", damagedShip[0], cell);
       const direction = determineShipDirection(damagedShip[0], cell);
       const damagedShipCopy = damagedShip;
       let necessaryIndex;
@@ -406,6 +416,7 @@ const Battle = ({
         );
       if (necessaryIndex === -1) necessaryIndex = damagedShip.length;
       damagedShipCopy.splice(necessaryIndex, 0, cell);
+      console.log("damaged ship copy", damagedShipCopy);
       setDamagedShip(damagedShipCopy);
     }
   };
@@ -413,7 +424,29 @@ const Battle = ({
   // guessing next player cell if we have 2 cells of damaged ship
   const guessBasedOnTwoCells = (ship) => {
     const direction = determineShipDirection(ship[0], ship[ship.length - 1]);
-    console.log(direction, "vasya");
+    const neighbourCells = [];
+    if (direction === "vertical") {
+      neighbourCells.push(
+        `${ship[0][0]}${Number(considerCellNumber(ship[0])) - 1}`
+      );
+      neighbourCells.push(
+        `${ship[0][0]}${Number(considerCellNumber(ship[ship.length - 1])) + 1}`
+      );
+    }
+    if (direction === "horizontal") {
+      const thisCellNumber = considerCellNumber(ship[0]);
+      neighbourCells.push(
+        `${String.fromCharCode(ship[0].charCodeAt(0) - 1)}${thisCellNumber}`
+      );
+    }
+    const filteredneighbourCells = neighbourCells.filter(
+      (cell) => !computer.wrongAttempts[cell] && player.shipsShadowsCells[cell]
+    );
+    return filteredneighbourCells.length === 1
+      ? filteredneighbourCells[0]
+      : filteredneighbourCells[
+          Math.floor(Math.random() * filteredneighbourCells.length)
+        ];
   };
 
   // method to determine ship direction based on ship coordinates
@@ -556,12 +589,13 @@ const Battle = ({
 
   // method for computer attempt after player attempt
   const checkComputerAttempt = () => {
+    const { damagedShip } = computer;
     console.log("incoming damagedShip", damagedShip);
     const currentAttempt =
       damagedShip.length === 0
         ? generateComputerAttempt()
         : guessNextPlayerShipCell(damagedShip);
-
+    console.log("current attempt", currentAttempt);
     setWrongAttempts("computer", currentAttempt);
     setAttempts("computer");
     setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
@@ -573,22 +607,20 @@ const Battle = ({
       setKilledCells("player", currentAttempt);
       const damagedShipName = whatTheShip("player", currentAttempt);
       console.log("damaged ship name", damagedShipName);
-      addCellToDamagedShip(currentAttempt);
       // check if ship was completely destroyed or not
       if (isShipDestroyed("player", damagedShipName)) {
         // if completely destroyed we just looking for new random cell
         console.log("ship is completely destroyed");
         const destroyedShipShadows = fillShipArrayWithShadows(damagedShip);
-        setDamagedShip([]);
         const playerShipsShadowsCellsCopy = player.shipsShadowsCells;
         destroyedShipShadows.forEach(
           (cell) => (playerShipsShadowsCellsCopy[cell] = false)
         );
         setShipsShadowsCellsTotal("player", playerShipsShadowsCellsCopy);
+        setDamagedShip([]);
+      } else {
+        addCellToDamagedShip(currentAttempt);
       }
-      setTimeout(() => {
-        checkComputerAttempt();
-      }, 2000);
     } else {
       console.log("if computer missed any ships");
       setLegendLineTwo("Computer missed all of your ships");
@@ -1069,6 +1101,7 @@ const mapDispatchToProps = (dispatch) => ({
   setPlayAgain: (status) => dispatch(setPlayAgain(status)),
   setFirstTime: (status) => dispatch(setFirstTime(status)),
   clearEverything: () => dispatch(clearEverything()),
+  setDamagedShip: (ship) => dispatch(setDamagedShip(ship)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);
