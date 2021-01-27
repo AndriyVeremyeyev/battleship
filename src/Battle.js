@@ -112,14 +112,11 @@ const Battle = ({
   // }, [firstTime]);
 
   const [playerAttempt, setPlayerAttempt] = useState("");
-  // const [catchedCell, setCatchedCell] = useState(null);
-  // const [secondCatchedCell, setSecondCatchedCell] = useState(null);
-  // const [damagedShip, setDamagedShip] = useState([]);
 
   useEffect(() => {
     if (firstRender) {
       console.log("computer check fires");
-      checkComputerAttempt();
+      setTimeout(() => checkComputerAttempt(), 2000);
     }
   }, [computer.damagedShip.length]);
 
@@ -423,6 +420,7 @@ const Battle = ({
 
   // guessing next player cell if we have 2 cells of damaged ship
   const guessBasedOnTwoCells = (ship) => {
+    console.log("guess based on two cells");
     const direction = determineShipDirection(ship[0], ship[ship.length - 1]);
     const neighbourCells = [];
     if (direction === "vertical") {
@@ -452,67 +450,6 @@ const Battle = ({
   // method to determine ship direction based on ship coordinates
   const determineShipDirection = (firstCell, lastCell) => {
     return firstCell[0] === lastCell[0] ? "vertical" : "horizontal";
-  };
-
-  // guessing next player cell if we have 2 cells of damaged ship
-  // probably we should pass here array
-  const guessNextPlayerShipCellTemp = (cellFirst, cellSecond) => {
-    const cellFirstNumber = considerCellNumber(cellFirst);
-    const cellSecondNumber = considerCellNumber(cellSecond);
-    let directions = [];
-    let leftCell = null,
-      rightCell = null,
-      upCell = null,
-      downCell = null;
-    if (cellFirst[0] === cellSecond[0]) {
-      if (Number(cellFirstNumber) > Number(cellSecondNumber)) {
-        upCell = cellFirst;
-        downCell = cellSecond;
-      } else {
-        upCell = cellSecond;
-        downCell = cellFirst;
-      }
-    } else {
-      if (
-        String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
-      ) {
-        leftCell = cellSecond;
-        rightCell = cellFirst;
-      } else {
-        leftCell = cellFirst;
-        rightCell = cellSecond;
-      }
-    }
-
-    if (upCell || downCell) {
-      if (
-        player.shipsShadowsCells[upperNeighbour(upCell)] &&
-        player.shipsShadowsCells[downNeighbour(downCell)]
-      ) {
-        directions = ["up", "down"];
-      } else if (!player.shipsShadowsCells[upperNeighbour(upCell)]) {
-        return downNeighbour(downCell);
-      } else {
-        return upperNeighbour(upCell);
-      }
-    } else {
-      if (
-        player.shipsShadowsCells[leftNeighbour(leftCell)] &&
-        player.shipsShadowsCells[rightNeighbour(rightCell)]
-      ) {
-        directions = ["left", "right"];
-      } else if (!player.shipsShadowsCells[leftNeighbour(leftCell)]) {
-        return rightNeighbour(rightCell);
-      } else {
-        return leftNeighbour(leftCell);
-      }
-    }
-    const randomDirection =
-      directions[Math.floor(Math.random() * directions.length)];
-    if (randomDirection === "up") return upperNeighbour(upCell);
-    if (randomDirection === "down") return downNeighbour(downCell);
-    if (randomDirection === "left") return leftNeighbour(leftCell);
-    if (randomDirection === "right") return rightNeighbour(rightCell);
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -607,6 +544,7 @@ const Battle = ({
       setKilledCells("player", currentAttempt);
       const damagedShipName = whatTheShip("player", currentAttempt);
       console.log("damaged ship name", damagedShipName);
+      removeShipCell("player", damagedShipName, currentAttempt);
       // check if ship was completely destroyed or not
       if (isShipDestroyed("player", damagedShipName)) {
         // if completely destroyed we just looking for new random cell
@@ -626,117 +564,6 @@ const Battle = ({
       setLegendLineTwo("Computer missed all of your ships");
     }
   };
-  // const checkComputerAttempt = () =>
-  //   // currentAttempt = randomPosition(),
-  //   // previousAttempt = null
-  //   {
-  //     // console.log("previous attempt", previousAttempt);
-  //     // console.log("catchedCell", catchedCell);
-  //     // console.log("secondCatchedCell", secondCatchedCell);
-  //     // let randomNeigbourCell = null;
-  //     let currentAttempt;
-  //     if (damagedShip.length === 0) {
-  //       currentAttempt = randomPosition();
-  //       while (isCellOccupied(currentAttempt))
-  //         currentAttempt = randomPosition();
-  //     } else {
-  //       currentAttempt = guessNextPlayerShipCell(damagedShip);
-  //     }
-  //     // if (catchedCell && !secondCatchedCell) {
-  //     //   // console.log("catchedCell && !secondCatchedCell");
-  //     //   currentAttempt = searchNeighbourCells(catchedCell);
-  //     //   previousAttempt = catchedCell;
-  //     // }
-  //     // if (catchedCell && secondCatchedCell) {
-  //     //   // console.log("catchedCell && secondCatchedCell");
-  //     //   currentAttempt = catchedCell;
-  //     //   previousAttempt = secondCatchedCell;
-  //     // // }
-  //     // while (
-  //     //   computer.wrongAttempts[currentAttempt] &&
-  //     //   !player.shipsShadowsCells[currentAttempt]
-  //     // ) {
-  //     //   // console.log("looping through while loop looking for new random point");
-  //     //   currentAttempt = randomPosition();
-  //     // }
-  //     // console.log("player shipsShadowsCells", player.shipsShadowsCells);
-  //     // console.log("CURRENT ATTEMPT", currentAttempt);
-  //     setWrongAttempts("computer", currentAttempt);
-  //     setAttempts("computer");
-  //     setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
-
-  //     // check if ship was damaged or not
-  //     if (!player.shipsCells[currentAttempt]) {
-  //       // if ship was damaged
-  //       setLegendLineTwo(`Computer catched some of your ships`);
-  //       setKilledCells("player", currentAttempt);
-  //       addCellToDamagedShip(currentAttempt);
-  //       // setDamagedShip([...damagedShip, currentAttempt]);
-  //       // console.log("destroyed ship", destroyedShip);
-  //       // setCatchedCell(currentAttempt);
-  //       // check if ship was completely destroyed or not
-  //       if (isShipDestroyed("player", currentAttempt)) {
-  //         // setCatchedCell(null);
-  //         // setSecondCatchedCell(null);
-  //         // if completely destroyed we just looking for new random cell
-  //         // console.log(
-  //         //   "if player's ship is completely destroyed and computer just looking for new random cell"
-  //         // );
-  //         const destroyedShipShadows = fillShipArrayWithShadows(damagedShip);
-  //         setDamagedShip([]);
-  //         const playerShipsShadowsCellsCopy = player.shipsShadowsCells;
-  //         // console.log("shadows of destroyed ship", destroyedShipShadows);
-  //         destroyedShipShadows.forEach(
-  //           (cell) => (playerShipsShadowsCellsCopy[cell] = false)
-  //         );
-  //         setShipsShadowsCellsTotal("player", playerShipsShadowsCellsCopy);
-  //         // console.log("catched cell", catchedCell);
-  //         setTimeout(() => {
-  //           checkComputerAttempt();
-  //         }, 2000);
-  //       } else {
-  //         // console.log("if player's ship wasn't completely destroyed");
-  //         // if we don't have previous success attempt
-  //         // if (!previousAttempt) {
-  //         // console.log("computer hasn't previous success attempt");
-  //         // choose random neigbour cell
-  //         // randomNeigbourCell = searchNeighbourCells(currentAttempt);
-  //         // console.log(
-  //         //   "random neigbour cell based on 1 cell",
-  //         //   randomNeigbourCell
-  //         // );
-  //         // setTimeout(() => {
-  //         //   checkComputerAttempt(randomNeigbourCell, currentAttempt);
-  //         // }, 2000);
-  //         // } else {
-  //         // console.log("computer has previous success attempt");
-  //         // randomNeigbourCell = guessNextPlayerShipCell(
-  //         //   currentAttempt,
-  //         //   previousAttempt
-  //         // );
-  //         // console.log(
-  //         //   "random neighbour cell based on 2 cells",
-  //         //   randomNeigbourCell
-  //         // );
-  //         // if (secondCatchedCell) {
-  //         //   setSecondCatchedCell(currentAttempt);
-  //         // } else {
-  //         //   setSecondCatchedCell(previousAttempt);
-  //         //   setCatchedCell(currentAttempt);
-  //         // }
-  //         // setTimeout(() => {
-  //         //   checkComputerAttempt(randomNeigbourCell, currentAttempt);
-  //         // }, 2000);
-  //         // }
-  //       }
-  //     } else {
-  //       // console.log("if computer missed any ships");
-  //       // if (previousAttempt) setCatchedCell(previousAttempt);
-  //       setLegendLineTwo("Computer missed all of your ships");
-  //       // if (!computer.wrongAttempts[currentAttempt])
-  //       //   setWrongAttempts("computer", currentAttempt);
-  //     }
-  //   };
 
   // method to provide random neighbour cell based on one cell
   const guessBasedOnOneCell = (cell) => {
