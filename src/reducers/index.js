@@ -40,6 +40,7 @@ const initialState = {
   playAgain: false,
   firstTime: true,
   isBattle: false,
+  score: [0, 0],
 };
 
 const reducer = (state = initialState, action) => {
@@ -220,6 +221,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isBattle: action.payload,
+      };
+    case "SET_SCORE":
+      const newScore = state.score;
+      action.payload === "player" ? newScore[0]++ : newScore[1]++;
+      return {
+        ...state,
+        score: newScore,
       };
     default:
       return state;

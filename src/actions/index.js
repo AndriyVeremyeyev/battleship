@@ -147,3 +147,10 @@ export const setIsBattle = (status) => {
     payload: status,
   };
 };
+
+export const setScore = (side) => {
+  return {
+    type: "SET_SCORE",
+    payload: side,
+  };
+};
