@@ -103,23 +103,10 @@ const Battle = ({
     if (player.battleShip.length === 4) setFirstTime(false);
   }, [player.battleShip]);
 
-  // useEffect(() => {
-  //   console.log("Player ships", player.shipsStatus);
-  // }, [player.shipsStatus]);
-
-  // useEffect(() => {
-  //   console.log("Computer ships", computer.shipsStatus);
-  // }, [computer.shipsStatus]);
-
-  // useEffect(() => {
-  //   console.log(firstTime);
-  // }, [firstTime]);
-
   const [playerAttempt, setPlayerAttempt] = useState("");
 
   useEffect(() => {
     if (firstRender) {
-      console.log("computer check fires");
       setTimeout(() => checkComputerAttempt(), 2000);
     }
   }, [player.damagedShip.length]);
@@ -397,11 +384,8 @@ const Battle = ({
   const addCellToDamagedShip = (cell) => {
     const { damagedShip } = player;
     if (damagedShip.length === 0) {
-      console.log("length of damaged ship = 0");
       setDamagedShip([cell]);
     } else {
-      console.log("length of damaged ship > 0");
-      console.log("input data", damagedShip[0], cell);
       const direction = determineShipDirection(damagedShip[0], cell);
       const damagedShipCopy = damagedShip;
       let necessaryIndex;
@@ -417,14 +401,12 @@ const Battle = ({
         );
       if (necessaryIndex === -1) necessaryIndex = damagedShip.length;
       damagedShipCopy.splice(necessaryIndex, 0, cell);
-      console.log("damaged ship copy", damagedShipCopy);
       setDamagedShip(damagedShipCopy);
     }
   };
 
   // guessing next player cell if we have 2 cells of damaged ship
   const guessBasedOnTwoCells = (ship) => {
-    console.log("guess based on two cells");
     const direction = determineShipDirection(ship[0], ship[ship.length - 1]);
     const neighbourCells = [];
     if (direction === "vertical") {
@@ -531,28 +513,23 @@ const Battle = ({
   // method for computer attempt after player attempt
   const checkComputerAttempt = () => {
     const { damagedShip } = player;
-    console.log("incoming damagedShip", damagedShip);
     const currentAttempt =
       damagedShip.length === 0
         ? generateComputerAttempt()
         : guessNextPlayerShipCell(damagedShip);
-    console.log("current attempt", currentAttempt);
     setWrongAttempts("computer", currentAttempt);
     setAttempts("computer");
     setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
-
     // check if ship was damaged or not
     if (!player.shipsCells[currentAttempt]) {
       // if ship was damaged
       setLegendLineTwo(`Computer catched some of your ships`);
       setKilledCells("player", currentAttempt);
       const damagedShipName = whatTheShip("player", currentAttempt);
-      console.log("damaged ship name", damagedShipName);
       removeCellFromShip("player", currentAttempt);
       // check if ship was completely destroyed or not
       if (isShipDestroyed("player", damagedShipName)) {
         // if completely destroyed we just looking for new random cell
-        console.log("ship is completely destroyed");
         const destroyedShipShadows = fillShipArrayWithShadows([
           ...damagedShip,
           currentAttempt,
@@ -567,7 +544,6 @@ const Battle = ({
         addCellToDamagedShip(currentAttempt);
       }
     } else {
-      console.log("if computer missed any ships");
       setLegendLineTwo("Computer missed all of your ships");
     }
   };
@@ -575,19 +551,15 @@ const Battle = ({
   // method to provide random neighbour cell based on one cell
   const guessBasedOnOneCell = (cell) => {
     // we need to filter array of cells to make sure that we not tried this cell before and it's not lying on other ship shadow
-    console.log("guess based on one cell");
     const neighbourCells = createNeighbourCellsArray(cell, false);
-    // console.log("neighbour cells", neighbourCells);
     const filteredneighbourCells = neighbourCells.filter(
       (cell) => !computer.wrongAttempts[cell] && player.shipsShadowsCells[cell]
     );
-    // console.log("filtered neighbour cells", filteredneighbourCells);
     // take random cell from filtered array
     let randomNeigbourCell =
       filteredneighbourCells[
         Math.floor(Math.random() * filteredneighbourCells.length)
       ];
-    // console.log("random cell from filtered array", randomNeigbourCell);
     return randomNeigbourCell;
   };
 
@@ -596,11 +568,8 @@ const Battle = ({
   const removeCellFromShip = (side, value) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex = whatTheShipIndex(currentShip);
-    // console.log("sideObj[ship]", sideObj[ship]);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
-      // console.log("how ship looks like", sideObj[ship]);
-
       if (side === "player") {
         setLegendLineOne(
           `Oops. Your ${shipNicknames[currentIndex]} was completely destroyed`
