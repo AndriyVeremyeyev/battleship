@@ -78,11 +78,6 @@ const Battle = ({
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows();
-    if (!firstTime) {
-      const { damagedShip } = player;
-      console.log("what is going on with damagedShip", damagedShip);
-    }
-
     if (
       Object.values(player.shipsStatus).every((status) => !status) &&
       !firstTime
@@ -103,6 +98,10 @@ const Battle = ({
       setPlayAgain(true);
     }
   }, [computer.shipsStatus, firstTime]);
+
+  useEffect(() => {
+    if (player.battleShip.length === 4) setFirstTime(false);
+  }, [player.battleShip]);
 
   // useEffect(() => {
   //   console.log("Player ships", player.shipsStatus);
@@ -223,7 +222,6 @@ const Battle = ({
 
   // create array of ship cells together with shadows based on ship array
   const fillShipArrayWithShadows = (shipPosition) => {
-    console.log("ship position", shipPosition);
     let shipPositionWithShadows = [];
     shipPosition.forEach((pos) => {
       const neighbourCells = createNeighbourCellsArray(pos);
@@ -234,7 +232,6 @@ const Battle = ({
       ];
     });
     // return only unique cells
-    console.log("ship shadows", [...new Set(shipPositionWithShadows)]);
     return [...new Set(shipPositionWithShadows)];
   };
 
@@ -603,7 +600,7 @@ const Battle = ({
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
       // console.log("how ship looks like", sideObj[ship]);
-      setFirstTime(false);
+
       if (side === "player") {
         setLegendLineOne(
           `Oops. Your ${shipNicknames[currentIndex]} was completely destroyed`
@@ -823,7 +820,9 @@ const Battle = ({
         <Grid item>
           <Grid container direction="column" alignItems="center">
             {map("player")}
-            {Object.values(player.shipsStatus).every((x) => x) ? (
+            {Object.values(player.shipsStatus).every((status) => status) ||
+            (!Object.values(player.shipsStatus).every((status) => !status) &&
+              !firstTime) ? (
               <React.Fragment>
                 <Grid item style={{ marginTop: 20 }}>
                   <Grid container direction="row" spacing={2} justify="center">
