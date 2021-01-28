@@ -22,12 +22,12 @@ const basicInitialState = {
 const computerInitialState = {
   ...basicInitialState,
   catchedShip: false,
-  damagedShip: [],
 };
 
 const playerInitialState = {
   ...basicInitialState,
   possibleDirections: generateFreeCells({}, false),
+  damagedShip: [],
 };
 
 const initialState = {
@@ -207,19 +207,11 @@ const reducer = (state = initialState, action) => {
         player: playerInitialState,
         computer: computerInitialState,
       };
-    // case "SET_CATCHED_SHIP":
-    //   return {
-    //     ...state,
-    //     computer: {
-    //       ...state.computer,
-    //       catchedShip: action.payload,
-    //     },
-    //   };
     case "SET_DAMAGED_SHIP":
       return {
         ...state,
-        computer: {
-          ...state.computer,
+        player: {
+          ...state.player,
           damagedShip: action.payload,
         },
       };
