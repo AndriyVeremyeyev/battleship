@@ -140,3 +140,10 @@ export const setDamagedShip = (ship) => {
     payload: ship,
   };
 };
+
+export const setIsBattle = (status) => {
+  return {
+    type: "SET_IS_BATTLE",
+    payload: status,
+  };
+};

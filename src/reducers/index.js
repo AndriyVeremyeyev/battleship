@@ -39,6 +39,7 @@ const initialState = {
   showComputer: false,
   playAgain: false,
   firstTime: true,
+  isBattle: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -214,6 +215,11 @@ const reducer = (state = initialState, action) => {
           ...state.player,
           damagedShip: action.payload,
         },
+      };
+    case "SET_IS_BATTLE":
+      return {
+        ...state,
+        isBattle: action.payload,
       };
     default:
       return state;
