@@ -287,6 +287,7 @@ const Battle = ({
   const removeCellFromShip = (side, value) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex = whatTheShipIndex(currentShip);
+    console.log("remove ship cell", side, currentShip, value);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
       if (side === "player") {
