@@ -9,7 +9,15 @@ import { shipTypes } from "./database";
 import strings from "./strings";
 import { Grid, Button } from "@material-ui/core";
 
-const StartGame = ({ setPageStatus, setLegendLineOne, setLegendLineTwo }) => {
+type StartGameProps = {
+  setPageStatus: any;
+  setLegendLineOne: any;
+  setLegendLineTwo: any;
+};
+
+const StartGame: React.FC<StartGameProps> = (props) => {
+  const { setPageStatus, setLegendLineOne, setLegendLineTwo } = props;
+
   useEffect(() => {
     setLegendLineOne(strings.startGame.greeting);
   }, [setLegendLineOne]);
@@ -49,10 +57,10 @@ const StartGame = ({ setPageStatus, setLegendLineOne, setLegendLineTwo }) => {
 //   };
 // };
 
-const mapDispatchToProps = (dispatch) => ({
-  setPageStatus: (pageStatus) => dispatch(setPageStatus(pageStatus)),
-  setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
-  setLegendLineTwo: (lelend) => dispatch(setLegendLineTwo(lelend)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setPageStatus: (pageStatus: string) => dispatch(setPageStatus(pageStatus)),
+  setLegendLineOne: (legend: string) => dispatch(setLegendLineOne(legend)),
+  setLegendLineTwo: (lelend: string) => dispatch(setLegendLineTwo(lelend)),
 });
 
 export default connect(null, mapDispatchToProps)(StartGame);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 // import { setPageStatus } from "./actions/index";
 
@@ -6,7 +6,12 @@ import Header from "./Header";
 import Battle from "./Battle";
 import StartGame from "./StartGame";
 
-const GameController = ({ pageStatus }) => {
+type GameControllerProps = {
+  pageStatus: string;
+};
+
+const GameController: React.FC<GameControllerProps> = (props) => {
+  const { pageStatus } = props;
   const mode = () => {
     switch (pageStatus) {
       case "battle":
@@ -16,14 +21,14 @@ const GameController = ({ pageStatus }) => {
     }
   };
   return (
-    <React.Fragment>
+    <Fragment>
       <Header />
       {mode()}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   const { pageStatus } = state;
   return {
     pageStatus,

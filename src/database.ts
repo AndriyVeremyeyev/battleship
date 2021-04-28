@@ -1,4 +1,4 @@
-export const generateFreeCells = (obj, status = true) => {
+export const generateFreeCells = (obj: any, status = true) => {
   for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < columns.length; j++) {
       obj[`${rows[i]}${columns[j]}`] = status;
@@ -7,7 +7,7 @@ export const generateFreeCells = (obj, status = true) => {
   return obj;
 };
 
-export const generateShipsStatus = (obj) => {
+export const generateShipsStatus = (obj: any) => {
   shipNames.forEach((ship) => (obj[ship] = false));
   return obj;
 };

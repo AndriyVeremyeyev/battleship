@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import GameController from "./GameController";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <React.Fragment>
+    <Fragment>
       <GameController />
-    </React.Fragment>
+    </Fragment>
   );
-}
+};
 
 export default App;

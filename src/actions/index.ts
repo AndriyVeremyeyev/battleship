@@ -1,81 +1,81 @@
-export const setShipsCells = (player, cell) => {
+export const setShipsCells = (player: any, cell: any) => {
   return {
     type: "SET_SHIPS_CELLS",
     payload: { player, cell },
   };
 };
 
-export const setShipsCellsTotal = (obj) => {
+export const setShipsCellsTotal = (obj: any) => {
   return {
     type: "SET_SHIPS_CELLS_TOTAL",
     payload: obj,
   };
 };
 
-export const setShipsShadowsCells = (player, cell) => {
+export const setShipsShadowsCells = (player: any, cell: any) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS",
     payload: { player, cell },
   };
 };
 
-export const setShipsShadowsCellsTotal = (player, obj) => {
+export const setShipsShadowsCellsTotal = (player: any, obj: any) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS_TOTAL",
     payload: { player, obj },
   };
 };
 
-export const setShip = (player, ship, position) => {
+export const setShip = (player: any, ship: any, position: any) => {
   return {
     type: "SET_SHIP",
     payload: { player, ship, position },
   };
 };
 
-export const setPageStatus = (pageStatus) => {
+export const setPageStatus = (pageStatus: any) => {
   return {
     type: "SET_PAGE_STATUS",
     payload: pageStatus,
   };
 };
 
-export const setLegendLineOne = (legend) => {
+export const setLegendLineOne = (legend: any) => {
   return {
     type: "SET_LEGEND_LINE_ONE",
     payload: legend,
   };
 };
 
-export const setLegendLineTwo = (legend) => {
+export const setLegendLineTwo = (legend: any) => {
   return {
     type: "SET_LEGEND_LINE_TWO",
     payload: legend,
   };
 };
 
-export const setShipsStatus = (player, ship, status) => {
+export const setShipsStatus = (player: any, ship: any, status: any) => {
   return {
     type: "SET_SHIPS_STATUS",
     payload: { player, ship, status },
   };
 };
 
-export const setAttempts = (player) => {
+export const setAttempts = (player: any) => {
   return {
     type: "SET_ATTEMPTS",
     payload: player,
   };
 };
 
-export const setWrongAttempts = (player, attempt) => {
+export const setWrongAttempts = (player: any, attempt: any) => {
   return {
     type: "SET_WRONG_ATTEMPTS",
     payload: { player, attempt },
   };
 };
 
-export const setKilledCells = (player, cell) => {
+export const setKilledCells = (player: any, cell: any) => {
   return {
     type: "SET_KILLED_CELLS",
     payload: { player, cell },
@@ -88,14 +88,14 @@ export const setShowComputer = () => {
   };
 };
 
-export const removeShipCell = (player, ship, cell) => {
+export const removeShipCell = (player: any, ship: any, cell: any) => {
   return {
     type: "REMOVE_SHIP_CELL",
     payload: { player, ship, cell },
   };
 };
 
-export const setPossibleDirections = (cell) => {
+export const setPossibleDirections = (cell: any) => {
   return {
     type: "SET_POSSIBLE_DIRECTIONS",
     payload: cell,
@@ -114,14 +114,14 @@ export const removeShadows = () => {
   };
 };
 
-export const setPlayAgain = (status) => {
+export const setPlayAgain = (status: any) => {
   return {
     type: "SET_PLAY_AGAIN",
     payload: status,
   };
 };
 
-export const setFirstTime = (status) => {
+export const setFirstTime = (status: any) => {
   return {
     type: "SET_FIRST_TIME",
     payload: status,
@@ -134,21 +134,21 @@ export const clearEverything = () => {
   };
 };
 
-export const setDamagedShip = (ship) => {
+export const setDamagedShip = (ship: any) => {
   return {
     type: "SET_DAMAGED_SHIP",
     payload: ship,
   };
 };
 
-export const setIsBattle = (status) => {
+export const setIsBattle = (status: any) => {
   return {
     type: "SET_IS_BATTLE",
     payload: status,
   };
 };
 
-export const setScore = (side) => {
+export const setScore = (side: any) => {
   return {
     type: "SET_SCORE",
     payload: side,

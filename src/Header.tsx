@@ -3,7 +3,13 @@ import { connect } from "react-redux";
 import strings from "./strings";
 import { Grid, Typography } from "@material-ui/core";
 
-const Header = ({ legendLineOne, legendLineTwo }) => {
+type HeaderProps = {
+  legendLineOne: string;
+  legendLineTwo: string;
+};
+
+const Header: React.FC<HeaderProps> = (props) => {
+  const { legendLineOne, legendLineTwo } = props;
   return (
     <Grid container direction="column" alignItems="center">
       <Typography variant="h2">{strings.header.title}</Typography>
@@ -32,7 +38,7 @@ const Header = ({ legendLineOne, legendLineTwo }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   const { legendLineOne, legendLineTwo } = state;
   return {
     legendLineOne,
