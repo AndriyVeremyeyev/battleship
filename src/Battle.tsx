@@ -430,7 +430,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setShipsStatus("computer", ship, true);
       const shipPositionWithArrays = fillShipArrayWithShadows(shipPosition);
       shipPosition.forEach((pos: any) => (ships[pos] = false));
-      shipPositionWithArrays.forEach((pos) => (shipsShadows[pos] = false));
+      shipPositionWithArrays.forEach((pos: any) => (shipsShadows[pos] = false));
     });
     // pass objects with information to corresponding reducers
     setShipsCellsTotal(ships);
@@ -511,7 +511,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         ]);
         const playerShipsShadowsCellsCopy = player.shipsShadowsCells;
         destroyedShipShadows.forEach(
-          (cell) => (playerShipsShadowsCellsCopy[cell] = false)
+          (cell: any) => (playerShipsShadowsCellsCopy[cell] = false)
         );
         setShipsShadowsCellsTotal("player", playerShipsShadowsCellsCopy);
         setDamagedShip([]);
@@ -815,6 +815,7 @@ const Battle: React.FC<BattleProps> = (props) => {
                         key={cellNumber}
                         style={{
                           ...cellStyle,
+                          // @ts-ignore
                           backgroundColor: cellColor(),
                           backgroundSize: "cover",
                           backgroundImage: `url(${
@@ -973,10 +974,10 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   setShip: (player: any, ship: any, position: any) =>
     dispatch(setShip(player, ship, position)),
-  setShipsCells: (player: any, cell: any, status: any) =>
-    dispatch(setShipsCells(player, cell, status)),
-  setShipsShadowsCells: (player: any, cell: any, status: any) =>
-    dispatch(setShipsShadowsCells(player, cell, status)),
+  setShipsCells: (player: any, cell: any) =>
+    dispatch(setShipsCells(player, cell)),
+  setShipsShadowsCells: (player: any, cell: any) =>
+    dispatch(setShipsShadowsCells(player, cell)),
   setLegendLineTwo: (legend: string) => dispatch(setLegendLineTwo(legend)),
   setLegendLineOne: (legend: string) => dispatch(setLegendLineOne(legend)),
   setShowComputer: () => dispatch(setShowComputer()),

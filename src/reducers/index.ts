@@ -43,14 +43,17 @@ const initialState = {
   score: [0, 0],
 };
 
+// @ts-ignore
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_KILLED_CELLS":
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           killedCells: {
+            // @ts-ignore
             ...state[action.payload.player].killedCells,
             [action.payload.cell]: true,
           },
@@ -60,8 +63,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           shipsCells: {
+            // @ts-ignore
             ...state[action.payload.player].shipsCells,
             [action.payload.cell]: false,
           },
@@ -79,8 +84,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           shipsShadowsCells: {
+            // @ts-ignore
             ...state[action.payload.player].shipsShadowsCells,
             [action.payload.cell]: false,
           },
@@ -90,6 +97,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           shipsShadowsCells: action.payload.obj,
         },
@@ -98,20 +106,24 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           [action.payload.ship]: [
+            // @ts-ignore
             ...state[action.payload.player][action.payload.ship],
             ...action.payload.position,
           ],
         },
       };
     case "REMOVE_SHIP_CELL":
+      // @ts-ignore
       const newArray = state[action.payload.player][action.payload.ship].filter(
-        (cell) => cell !== action.payload.cell
+        (cell: any) => cell !== action.payload.cell
       );
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           [action.payload.ship]: newArray,
         },
@@ -140,8 +152,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           shipsStatus: {
+            // @ts-ignore
             ...state[action.payload.player].shipsStatus,
             [action.payload.ship]: action.payload.status,
           },
@@ -151,7 +165,9 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload]: {
+          // @ts-ignore
           ...state[action.payload],
+          // @ts-ignore
           attempts: state[action.payload].attempts + 1,
         },
       };
@@ -159,8 +175,10 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.player]: {
+          // @ts-ignore
           ...state[action.payload.player],
           wrongAttempts: {
+            // @ts-ignore
             ...state[action.payload.player].wrongAttempts,
             [action.payload.attempt]: true,
           },
