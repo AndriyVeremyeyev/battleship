@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button, TextField } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+
 import cross from "./images/01.jpg";
 import {
   setShip,
@@ -69,8 +71,26 @@ type BattleProps = {
   score: number[];
 };
 
+const useStyles = makeStyles({
+  cell: {
+    height: 60,
+    width: 60,
+    border: "1px #DCDCDC solid",
+    borderWidth: 0.5,
+    cursor: "pointer",
+    boxShadow: "2.4px 2.4px 3.2px rgba(0, 0, 0, 0.15)",
+    padding: 2,
+    "&:hover": {
+      boxShadow: "4.8px 4.8px 6.4px rgba(0, 0, 0, 0.15)",
+      fontWeight: "bold",
+    },
+  },
+});
+
 const Battle: React.FC<BattleProps> = (props) => {
   // to generate computer map once battle is mounted
+
+  const classes = useStyles();
 
   const {
     setShip,
@@ -158,14 +178,6 @@ const Battle: React.FC<BattleProps> = (props) => {
       setTimeout(() => checkComputerAttempt(), 2000);
     }
   }, [player.damagedShip.length]);
-
-  const cellStyle = {
-    height: 50,
-    width: 50,
-    border: "solid",
-    borderWidth: 0.5,
-    cursor: "pointer",
-  };
 
   const oneMoreTimeGame = () => {
     clearEverything();
@@ -775,12 +787,12 @@ const Battle: React.FC<BattleProps> = (props) => {
           container
           direction="column"
           alignItems="center"
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20, gridGap: 5 }}
         >
           {columns.map((x) => {
             return (
               <Grid item key={x}>
-                <Grid container direction="row">
+                <Grid container direction="row" style={{ gridGap: 5 }}>
                   {rows.map((y) => {
                     const cellNumber = `${y}${x}`;
                     const cellColor = () => {
@@ -813,8 +825,8 @@ const Battle: React.FC<BattleProps> = (props) => {
                       <Grid
                         item
                         key={cellNumber}
+                        className={classes.cell}
                         style={{
-                          ...cellStyle,
                           // @ts-ignore
                           backgroundColor: cellColor(),
                           backgroundSize: "cover",

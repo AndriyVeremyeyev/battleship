@@ -7,7 +7,8 @@ import {
 } from "./actions/index";
 import { shipTypes } from "./database";
 import strings from "./strings";
-import { Grid, Button } from "@material-ui/core";
+import { Grid, Button, Link, Box, Typography } from "@material-ui/core";
+import titleImage from "./images/title-image.jpg";
 
 type StartGameProps = {
   setPageStatus: any;
@@ -29,33 +30,35 @@ const StartGame: React.FC<StartGameProps> = (props) => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ height: 800 }}
-    >
-      <Grid item>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginTop: 20 }}
-          onClick={startButtonOnClick}
-        >
-          {strings.startGame.button}
-        </Button>
-      </Grid>
+    <Grid container direction="column" justify="center" alignItems="center">
+      <Box
+        style={{
+          height: 1000,
+          width: "100%",
+          backgroundImage: `url(${titleImage})`,
+          backgroundSize: "cover",
+        }}
+      >
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginTop: 20 }}
+            onClick={startButtonOnClick}
+          >
+            {strings.startGame.button}
+          </Button>
+        </Grid>
+      </Box>
+      <Link
+        href="https://en.wikipedia.org/wiki/Battleship_(game)"
+        target="_blank"
+      >
+        <Typography variant="h6"> More about the Game</Typography>
+      </Link>
     </Grid>
   );
 };
-
-// const mapStateToProps = (state) => {
-//   const { pageStatus } = state;
-//   return {
-//     pageStatus,
-//   };
-// };
 
 const mapDispatchToProps = (dispatch: any) => ({
   setPageStatus: (pageStatus: string) => dispatch(setPageStatus(pageStatus)),
