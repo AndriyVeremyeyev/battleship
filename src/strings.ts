@@ -9,6 +9,7 @@ const strings = {
   enterName: {
     title: "enterName",
     text: "Please, enter your name",
+    warning: "You need to fill this field before proceed",
   },
   battle: {
     title: "battle",

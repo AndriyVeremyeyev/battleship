@@ -782,7 +782,9 @@ const Battle: React.FC<BattleProps> = (props) => {
   const map = (side: any) => {
     return (
       <React.Fragment>
-        <Typography variant="h4">{side}</Typography>
+        <Typography variant="h4">
+          {side === "player" ? player.name : "computer"}
+        </Typography>
         <Grid
           container
           direction="column"
