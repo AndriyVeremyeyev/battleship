@@ -26,6 +26,7 @@ const computerInitialState = {
 
 const playerInitialState = {
   ...basicInitialState,
+  name: "",
   possibleDirections: generateFreeCells({}, false),
   damagedShip: [],
 };
@@ -246,6 +247,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         score: newScore,
+      };
+    case "SET_PLAYER_NAME":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          name: action.payload,
+        },
       };
     default:
       return state;

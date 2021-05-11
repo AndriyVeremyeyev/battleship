@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-// import { setPageStatus } from "./actions/index";
-
 import Header from "./Header";
 import Battle from "./Battle";
 import StartGame from "./StartGame";
+import EnterName from "./EnterName";
 
 type GameControllerProps = {
   pageStatus: string;
@@ -14,6 +13,8 @@ const GameController: React.FC<GameControllerProps> = (props) => {
   const { pageStatus } = props;
   const mode = () => {
     switch (pageStatus) {
+      case "enterName":
+        return <EnterName />;
       case "battle":
         return <Battle />;
       default:
@@ -34,9 +35,5 @@ const mapStateToProps = (state: any) => {
     pageStatus,
   };
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   setPageStatus: (pageStatus) => dispatch(setPageStatus(pageStatus)),
-// });
 
 export default connect(mapStateToProps)(GameController);

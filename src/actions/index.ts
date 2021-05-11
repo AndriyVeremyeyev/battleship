@@ -154,3 +154,10 @@ export const setScore = (side: any) => {
     payload: side,
   };
 };
+
+export const setPlayerName = (name: string) => {
+  return {
+    type: "SET_PLAYER_NAME",
+    payload: name,
+  };
+};

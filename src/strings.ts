@@ -6,6 +6,10 @@ const strings = {
     button: "Start Game",
     greeting: "Welcome to BattleShip Game",
   },
+  enterName: {
+    title: "enterName",
+    text: "Please, enter your name",
+  },
   battle: {
     title: "battle",
     toComputer: "Switch to Computer",
