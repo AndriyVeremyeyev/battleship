@@ -26,22 +26,22 @@ const computerInitialState = {
 
 const playerInitialState = {
   ...basicInitialState,
-  name: "",
   possibleDirections: generateFreeCells({}, false),
   damagedShip: [],
 };
 
 const initialState = {
-  pageStatus: "startGame",
-  legendLineOne: "",
-  legendLineTwo: "",
-  player: playerInitialState,
-  computer: computerInitialState,
-  showComputer: false,
-  playAgain: false,
   firstTime: true,
   isBattle: false,
+  legendLineOne: "",
+  legendLineTwo: "",
+  pageStatus: "startGame",
+  playAgain: false,
+  playerName: "",
   score: [0, 0],
+  showComputer: false,
+  computer: computerInitialState,
+  player: playerInitialState,
 };
 
 // @ts-ignore
@@ -251,10 +251,7 @@ const reducer = (state = initialState, action) => {
     case "SET_PLAYER_NAME":
       return {
         ...state,
-        player: {
-          ...state.player,
-          name: action.payload,
-        },
+        playerName: action.payload,
       };
     default:
       return state;

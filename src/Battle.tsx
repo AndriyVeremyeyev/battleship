@@ -69,6 +69,7 @@ type BattleProps = {
   isBattle: boolean;
   setScore: any;
   score: number[];
+  playerName: string;
 };
 
 const useStyles = makeStyles({
@@ -122,6 +123,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     isBattle,
     setScore,
     score,
+    playerName,
   } = props;
   const [firstRender, setFirstRender] = useState(false);
 
@@ -783,7 +785,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     return (
       <React.Fragment>
         <Typography variant="h4">
-          {side === "player" ? player.name : "computer"}
+          {side === "player" ? playerName : "computer"}
         </Typography>
         <Grid
           container
@@ -973,6 +975,7 @@ const mapStateToProps = (state: any) => {
     firstTime,
     isBattle,
     score,
+    playerName,
   } = state;
   return {
     player,
@@ -982,6 +985,7 @@ const mapStateToProps = (state: any) => {
     firstTime,
     isBattle,
     score,
+    playerName,
   };
 };
 
