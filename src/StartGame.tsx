@@ -47,7 +47,7 @@ const StartGame: React.FC<StartGameProps> = (props) => {
         href="https://en.wikipedia.org/wiki/Battleship_(game)"
         target="_blank"
       >
-        <Typography variant="h6"> More about the Game</Typography>
+        <Typography variant="h6">{strings.startGame.about}</Typography>
       </Link>
     </Grid>
   );

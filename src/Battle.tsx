@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Grid, Typography, Button, TextField } from "@material-ui/core";
 // import { makeStyles } from "@material-ui/styles";
 import Field from "./Field";
+import PlayAgain from "./PlayAgain";
+
 import {
   setShip,
   setShipsCells,
@@ -27,6 +29,7 @@ import {
   setIsBattle,
   setScore,
 } from "./actions/index";
+
 import {
   rows,
   columns,
@@ -735,51 +738,8 @@ const Battle: React.FC<BattleProps> = (props) => {
     );
   };
 
-  const showPlayAgainBlock = () => {
-    return (
-      <Grid item>
-        <Typography variant="subtitle1" style={{ marginBottom: 20 }}>
-          Do you want to play one more time?
-        </Typography>
-        <Grid container direction="row" spacing={5} justify="center">
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={oneMoreTimeGame}
-            >
-              Yes
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                console.log("Don't want to play");
-              }}
-            >
-              No
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    );
-  };
-
-  const map = (side: any) => {
-    return (
-      <Fragment>
-        <Typography variant="h4">
-          {side === "player" ? playerName : "computer"}
-        </Typography>
-        <Field side={side} placeShipOnMap={placePlayerShipOnMap} />
-      </Fragment>
-    );
-  };
-
   return (
-    <React.Fragment>
+    <Fragment>
       <Grid
         container
         style={{ marginBottom: 20 }}
@@ -792,12 +752,15 @@ const Battle: React.FC<BattleProps> = (props) => {
             {score[0]}:{score[1]}
           </Typography>
         </Grid>
-        {playAgain && !firstTime ? showPlayAgainBlock() : null}
+        {playAgain && !firstTime ? (
+          <PlayAgain oneMoreGame={oneMoreTimeGame} />
+        ) : null}
       </Grid>
       <Grid container direction="row" spacing={5} justify="center">
         <Grid item>
           <Grid container direction="column" alignItems="center">
-            {map("player")}
+            <Typography variant="h4">{playerName}</Typography>
+            <Field side={"player"} placeShipOnMap={placePlayerShipOnMap} />
             {isBattle ? (
               <React.Fragment>
                 <Grid item style={{ marginTop: 20 }}>
@@ -849,7 +812,11 @@ const Battle: React.FC<BattleProps> = (props) => {
         </Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
-            {map("computer")}
+            <Typography variant="h4">computer</Typography>
+            <Field
+              side={"computer"}
+              placeShipOnMap={placePlayerShipOnMap}
+            />{" "}
             <Grid item>
               <Button
                 variant="contained"
@@ -878,7 +845,7 @@ const Battle: React.FC<BattleProps> = (props) => {
           <Grid item>{shipsCondition(computer)}</Grid>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
