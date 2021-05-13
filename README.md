@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+# BattleShip Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### A strategy type guessing game between player and computer.
 
-## Available Scripts
+<!-- [![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive) -->
 
-In the project directory, you can run:
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+![LastCommit](https://img.shields.io/github/last-commit/BelyyBrat/battleship)
+![Languages](https://img.shields.io/github/languages/top/BelyyBrat/battleship)
+[![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://lbesson.mit-license.org/)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### <u>Table of Contents</u>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. [Description](#description)
+2. [Screenshots](#known-bugs)
+3. [Setup/Installation Requirements](#setup/installation-requirements)
+4. [Known bugs](#known-bugs)
+5. [Deployed website](#deployed-website)
+6. [Technology](#technology)
+7. [Contact](#contact)
+8. [License](#license)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## About the Project
 
-### `npm run build`
+1. Description
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Battleship (also Battleships or Sea Battle) is a strategy type guessing game for two players. It is played on ruled grids (paper or board) on which each player's fleet of ships (including battleships) are marked. The locations of the fleets are concealed from the other player. Players alternate turns calling "shots" at the other player's ships, and the objective of the game is to destroy the opposing player's fleet.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The game of Battleship is thought to have its origins in the French game L'Attaque played during World War I, although parallels have also been drawn to E. I. Horsman's 1890 game Basilinda, and the game is said to have been played by Russian officers before World War I.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The game is played on two grids, one for each player. The grids are typically square – usually 10×10 – and the individual squares in the grid are identified by letter and number. On one grid the player arranges ships and records the shots by the opponent. On the other grid the computer records their own shots.
 
-### `npm run eject`
+2. Screenshots
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Starting position of player's ships before battle
+<image src="./public/before.png" width="800px"/>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Situation during battle
+<image src="./public/after.png" width="800px"/>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. Setup/Installation Requirements
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Download or clone this repository to your computer,
+- Download and install [npm package](https://www.npmjs.com/get-npm),
+- Open terminal
+- Run "npm install" to install npm package
+- Run "npm start" to run the application
 
-## Learn More
+### Prerequisites
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Understanding of Markdown and HTML languages
+- Option 1: [Atom](https://nodejs.org/en/)
+- Option 2: [VisualStudioCode](https://www.npmjs.com/)
+- [GitHub Account](https://github.com) (Optional)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Use
 
-### Code Splitting
+- Use preferred IDE or Text Editor to review documentation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4. Known Bugs
 
-### Analyzing the Bundle Size
+TypeError: Cannot read property 'filter' of undefined during battle
+118 | };
+119 | case "REMOVE_SHIP_CELL":
+120 | // @ts-ignore
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+> 121 | const newArray = state[action.payload.player][action.payload.ship].filter(
 
-### Making a Progressive Web App
+      | ^  122 |     (cell: any) => cell !== action.payload.cell
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+123 | );
+124 | return {
 
-### Advanced Configuration
+5. Deployed Website
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+6. Technology
 
-### Deployment
+- React
+  - React Redux
+  - React Router
+  - React Slick
+  - react-modal-image
+- JavaScript
+- TypeScript
+- CSS
+- Material-UI
+- Markdown
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+7. Contact
 
-### `npm run build` fails to minify
+| Author                 |     GitHub     |           Email            |
+| ---------------------- | :------------: | :------------------------: |
+| [Andriy Veremyeyev](#) | [belyybrat](#) | [averemyeyev@gmail.com](#) |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+8. License
+
+This software is licensed under the MIT license.
+
+Copyright (c) 2020 **Andriy Veremyeyev**
