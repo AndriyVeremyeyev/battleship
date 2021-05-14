@@ -2,10 +2,21 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { Provider } from "react-redux";
 import store from "./store";
+import titleImage from "./images/title-image.jpg";
+import { Box } from "@material-ui/core";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Box
+      style={{
+        height: 1000,
+        width: "100%",
+        backgroundImage: `url(${titleImage})`,
+        backgroundSize: "cover",
+      }}
+    >
+      <App />
+    </Box>
   </Provider>,
   document.getElementById("root")
 );

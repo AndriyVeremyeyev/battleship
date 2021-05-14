@@ -746,17 +746,23 @@ const Battle: React.FC<BattleProps> = (props) => {
         direction="column"
         alignItems="center"
       >
-        <Grid item>
-          <Typography variant="h5">Score:</Typography>
-          <Typography variant="h5">
-            {score[0]}:{score[1]}
-          </Typography>
-        </Grid>
+        <Typography style={{ color: "white" }} variant="h5">
+          Score:
+        </Typography>
+        <Typography style={{ color: "white" }} variant="h5">
+          {score[0]}:{score[1]}
+        </Typography>
         {playAgain && !firstTime ? (
           <PlayAgain oneMoreGame={oneMoreTimeGame} />
         ) : null}
       </Grid>
-      <Grid container direction="row" spacing={5} justify="center">
+      <Grid
+        container
+        direction="row"
+        spacing={5}
+        justify="center"
+        style={{ backgroundColor: "white" }}
+      >
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">{playerName}</Typography>

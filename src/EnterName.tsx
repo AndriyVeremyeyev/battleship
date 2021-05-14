@@ -9,6 +9,16 @@ import {
 } from "./actions/index";
 import { shipTypes } from "./database";
 import strings from "./strings";
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles({
+  input: {
+    color: "white",
+    width: 200,
+    height: 50,
+    border: "1px solid white",
+  },
+});
 
 type EnterNameProps = {
   setPageStatus: any;
@@ -20,6 +30,8 @@ type EnterNameProps = {
 const EnterName: React.FC<EnterNameProps> = (props) => {
   const { setPageStatus, setLegendLineOne, setLegendLineTwo, setPlayerName } =
     props;
+  const classes = useStyles();
+
   const [name, setName] = useState("");
 
   const handleOnClick = () => {
@@ -43,8 +55,8 @@ const EnterName: React.FC<EnterNameProps> = (props) => {
     >
       <TextField
         variant="outlined"
-        style={{ width: 200, height: 10 }}
         onChange={(event) => setName(event.target.value)}
+        InputProps={{ className: classes.input }}
       ></TextField>
       <Grid item style={{ marginTop: 90 }}>
         <Button variant="contained" color="primary" onClick={handleOnClick}>

@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { setLegendLineOne, setPageStatus } from "./actions/index";
 import strings from "./strings";
-import { Grid, Button, Link, Box, Typography } from "@material-ui/core";
-import titleImage from "./images/title-image.jpg";
+import { Grid, Button, Link, Typography } from "@material-ui/core";
 
 type StartGameProps = {
   setPageStatus: any;
@@ -23,29 +22,24 @@ const StartGame: React.FC<StartGameProps> = (props) => {
   };
 
   return (
-    <Grid container direction="column" justify="center" alignItems="center">
-      <Box
-        style={{
-          height: 1000,
-          width: "100%",
-          backgroundImage: `url(${titleImage})`,
-          backgroundSize: "cover",
-        }}
+    <Grid
+      container
+      style={{ height: 750 }}
+      direction="column"
+      alignItems="center"
+      justify="space-between"
+    >
+      <Button
+        variant="contained"
+        style={{ marginTop: 300, backgroundColor: "white" }}
+        onClick={startButtonOnClick}
       >
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: 20 }}
-            onClick={startButtonOnClick}
-          >
-            {strings.startGame.button}
-          </Button>
-        </Grid>
-      </Box>
+        {strings.startGame.button}
+      </Button>
       <Link
         href="https://en.wikipedia.org/wiki/Battleship_(game)"
         target="_blank"
+        style={{ color: "white" }}
       >
         <Typography variant="h6">{strings.startGame.about}</Typography>
       </Link>

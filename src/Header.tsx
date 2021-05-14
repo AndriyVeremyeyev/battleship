@@ -12,7 +12,9 @@ const Header: React.FC<HeaderProps> = (props) => {
   const { legendLineOne, legendLineTwo } = props;
   return (
     <Grid container direction="column" alignItems="center">
-      <Typography variant="h2">{strings.header.title}</Typography>
+      <Typography style={{ color: "white", marginTop: 50 }} variant="h2">
+        {strings.header.title}
+      </Typography>
       <Grid
         item
         style={{
@@ -22,13 +24,15 @@ const Header: React.FC<HeaderProps> = (props) => {
           width: 500,
           marginTop: 20,
           marginBottom: 20,
+          color: "white",
+          backgroundColor: "fade(#FFFFFF, 50%)",
         }}
       >
         <Grid
           container
-          direction="row"
+          direction="column"
           style={{ marginTop: 10 }}
-          justify="center"
+          alignItems="center"
         >
           <Typography variant="subtitle1">{legendLineOne}</Typography>
           <Typography variant="subtitle1">{legendLineTwo}</Typography>
@@ -45,10 +49,5 @@ const mapStateToProps = (state: any) => {
     legendLineTwo,
   };
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   setLegendLineOne: (legend) => dispatch(setLegendLineOne(legend)),
-//   setLegendLineTwo: (legend) => dispatch(setLegendLineTwo(legend)),
-// });
 
 export default connect(mapStateToProps)(Header);
