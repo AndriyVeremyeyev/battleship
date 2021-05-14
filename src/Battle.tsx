@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
-import { Grid, Typography, Button, TextField } from "@material-ui/core";
+import { Grid, Typography, Button, TextField, Modal } from "@material-ui/core";
 // import { makeStyles } from "@material-ui/styles";
 import Field from "./Field";
 import PlayAgain from "./PlayAgain";
@@ -115,6 +115,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     playerName,
   } = props;
   const [firstRender, setFirstRender] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     generateComputerMap();
@@ -705,11 +706,13 @@ const Battle: React.FC<BattleProps> = (props) => {
   const killPlayer = () => {
     shipNames.forEach((ship) => setShipsStatus("player", ship, false));
     setFirstTime(false);
+    setOpen(true);
   };
 
   const killComputer = () => {
     shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
     setFirstTime(false);
+    setOpen(true);
   };
 
   const shipsCondition = (side: any) => {
@@ -753,7 +756,21 @@ const Battle: React.FC<BattleProps> = (props) => {
           {score[0]}:{score[1]}
         </Typography>
         {playAgain && !firstTime ? (
-          <PlayAgain oneMoreGame={oneMoreTimeGame} />
+          <Modal
+            open={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PlayAgain oneMoreGame={oneMoreTimeGame} />
+          </Modal>
         ) : null}
       </Grid>
       <Grid
