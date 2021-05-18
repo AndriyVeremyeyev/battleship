@@ -15,7 +15,7 @@
 
 1. [Description](#description)
 2. [Screenshots](#screenshots)
-3. [Setup/Installation Requirements](#setup-installation-requirements)
+3. [Setup/Installation Requirements](#setup-and-installation-requirements)
 4. [Known bugs](#known-bugs)
 5. [Deployed website](#deployed-website)
 6. [Technology](#technology)
@@ -42,7 +42,7 @@ During battle
 
 <image src="./public/after.png" width="800px"/>
 
-## Setup/Installation Requirements
+## Setup and Installation Requirements
 
 ### Prerequisites
 
