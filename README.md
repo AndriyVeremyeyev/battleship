@@ -14,7 +14,7 @@
 ## <u>Table of Contents</u>
 
 1. [Description](#description)
-2. [Screenshots](#known-bugs)
+2. [Screenshots](#screenshots)
 3. [Setup/Installation Requirements](#setup/installation-requirements)
 4. [Known bugs](#known-bugs)
 5. [Deployed website](#deployed-website)
@@ -35,21 +35,23 @@ The game is played on two grids, one for each player. The grids are typically sq
 ## Screenshots
 
 Starting position of player's ships before battle
+
 <image src="./public/before.png" width="800px"/>
 
-Situation during battle
+During battle
+
 <image src="./public/after.png" width="800px"/>
 
 ## Setup/Installation Requirements
 
-#### Prerequisites
+### Prerequisites
 
 - Understanding of Markdown and HTML languages
 - Option 1: [Atom](https://nodejs.org/en/)
 - Option 2: [VisualStudioCode](https://www.npmjs.com/)
 - [GitHub Account](https://github.com) (Optional)
 
-#### Installation
+### Installation
 
 - Download or clone this repository to your computer,
 - Download and install [npm package](https://www.npmjs.com/get-npm),
@@ -57,7 +59,7 @@ Situation during battle
 - Run "npm install" to install npm package
 - Run "npm start" to run the application
 
-#### Use
+### Use
 
 - Use preferred IDE or Text Editor to review documentation
 
@@ -65,15 +67,15 @@ Situation during battle
 
 #### Major bug. TypeError: Cannot read property 'filter' of undefined during battle:
 
-<image src="./public/bug_01.png" width="800px"/>
+<image src="./public/bug_01.png" width="600px"/>
 
-<image src="./public/bug_02.png" width="800px"/>
+<image src="./public/bug_02.png" width="600px"/>
 
-<image src="./public/bug_04.png" width="800px"/>
+<image src="./public/bug_04.png" width="600px"/>
 
 #### When player wins score counts toward computer and in opposite:
 
-<image src="./public/bug_03.png" width="800px"/>
+<image src="./public/bug_03.png" width="600px"/>
 
 ## [Deployed Website](https://a-battleship.web.app/)
 
