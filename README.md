@@ -64,16 +64,13 @@ Situation during battle
 4. Known Bugs
 
 TypeError: Cannot read property 'filter' of undefined during battle
-118 | };
-119 | case "REMOVE_SHIP_CELL":
-120 | // @ts-ignore
-
-> 121 | const newArray = state[action.payload.player][action.payload.ship].filter(
-
+  118 |   };
+  119 | case "REMOVE_SHIP_CELL":
+  120 |   // @ts-ignore
+> 121 |   const newArray = state[action.payload.player][action.payload.ship].filter(
       | ^  122 |     (cell: any) => cell !== action.payload.cell
-
-123 | );
-124 | return {
+  123 |   );
+  124 |   return {
 
 5. Deployed Website
 
