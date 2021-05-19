@@ -33,28 +33,32 @@ export const setShip = (player: any, ship: any, position: any) => {
   };
 };
 
-export const setPageStatus = (pageStatus: any) => {
+export const setPageStatus = (pageStatus: string) => {
   return {
     type: "SET_PAGE_STATUS",
     payload: pageStatus,
   };
 };
 
-export const setLegendLineOne = (legend: any) => {
+export const setLegendLineOne = (legend: string) => {
   return {
     type: "SET_LEGEND_LINE_ONE",
     payload: legend,
   };
 };
 
-export const setLegendLineTwo = (legend: any) => {
+export const setLegendLineTwo = (legend: string) => {
   return {
     type: "SET_LEGEND_LINE_TWO",
     payload: legend,
   };
 };
 
-export const setShipsStatus = (player: any, ship: any, status: any) => {
+export const setShipsStatus = (
+  player: string,
+  ship: string,
+  status: string
+) => {
   return {
     type: "SET_SHIPS_STATUS",
     payload: { player, ship, status },

@@ -4,6 +4,7 @@ import { Grid } from "@material-ui/core";
 import { rows, columns } from "./database";
 import { makeStyles } from "@material-ui/styles";
 import cross from "./images/01.jpg";
+import { ComputerStateProps, PlayerStateProps } from "./types";
 
 const useStyles = makeStyles({
   cell: {
@@ -22,11 +23,11 @@ const useStyles = makeStyles({
 });
 
 type FieldProps = {
-  player: any;
-  computer: any;
+  player: PlayerStateProps;
+  computer: ComputerStateProps;
   side: string;
-  showComputer: any;
-  placeShipOnMap: any;
+  showComputer: boolean;
+  placeShipOnMap: (cellNumber: string) => void;
 };
 
 const Field: React.FC<FieldProps> = (props) => {

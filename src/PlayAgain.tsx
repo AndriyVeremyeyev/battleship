@@ -3,7 +3,7 @@ import { Grid, Typography, Button } from "@material-ui/core";
 import strings from "./strings";
 
 type PlayAgainProps = {
-  oneMoreGame: any;
+  oneMoreGame: () => void;
 };
 
 const PlayAgain: React.FC<PlayAgainProps> = (props) => {

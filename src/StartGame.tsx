@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import { setLegendLineOne, setPageStatus } from "./actions/index";
 import strings from "./strings";
 import { Grid, Button, Link, Typography } from "@material-ui/core";
+import { ActionStringObj } from "./types";
 
 type StartGameProps = {
-  setPageStatus: any;
-  setLegendLineOne: any;
+  setPageStatus: (pageStatus: string) => ActionStringObj;
+  setLegendLineOne: (legend: string) => ActionStringObj;
 };
 
 const StartGame: React.FC<StartGameProps> = (props) => {

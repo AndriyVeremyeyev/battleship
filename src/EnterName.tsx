@@ -10,6 +10,7 @@ import {
 import { shipTypes } from "./database";
 import strings from "./strings";
 import { makeStyles } from "@material-ui/styles";
+import { ActionStringObj } from "./types";
 
 const useStyles = makeStyles({
   input: {
@@ -21,10 +22,10 @@ const useStyles = makeStyles({
 });
 
 type EnterNameProps = {
-  setPageStatus: any;
-  setLegendLineOne: any;
-  setLegendLineTwo: any;
-  setPlayerName: any;
+  setPageStatus: (pageStatus: string) => ActionStringObj;
+  setLegendLineOne: (legend: string) => ActionStringObj;
+  setLegendLineTwo: (legend: string) => ActionStringObj;
+  setPlayerName: (name: string) => ActionStringObj;
 };
 
 const EnterName: React.FC<EnterNameProps> = (props) => {

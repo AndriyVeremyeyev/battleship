@@ -15,7 +15,7 @@
 
 1. [Description](#description)
 2. [Screenshots](#screenshots)
-3. [Setup/Installation Requirements](#setup-and-installation-requirements)
+3. [Setup and Installation Requirements](#setup-and-installation-requirements)
 4. [Known bugs](#known-bugs)
 5. [Deployed website](#deployed-website)
 6. [Technology](#technology)
