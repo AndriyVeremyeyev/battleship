@@ -85,17 +85,7 @@
 //   i4: boolean;
 //   i5: boolean;
 //   i6: boolean;
-//   i7: boolean;
-//   i8: boolean;
-//   i9: boolean;
-//   i10: boolean;
-//   j1: boolean;
-//   j2: boolean;
-//   j3: boolean;
-//   j4: boolean;
-//   j5: boolean;
-//   j6: boolean;
-//   j7: boolean;
+//   i7: boolean;any
 //   j8: boolean;
 //   j9: boolean;
 //   j10: boolean;
@@ -156,7 +146,41 @@ export type StateProps = {
   player: PlayerStateProps;
 };
 
+type PlayerCell = {
+  player: any;
+  cell: string;
+};
+
+type PlayerObj = {
+  player: any;
+  obj: any;
+};
+
 export type ActionStringObj = {
   type: string;
   payload: string;
+};
+
+export type ActionBooleanObj = {
+  type: string;
+  payload: boolean;
+};
+
+export type ActionEmptyObj = {
+  type: string;
+};
+
+export type ActionStringArrayObj = {
+  type: string;
+  payload: string[];
+};
+
+export type ActionTripleObj = {
+  type: string;
+  payload: PlayerObj;
+};
+
+export type ActionCellObjObj = {
+  type: string;
+  payload: PlayerCell;
 };

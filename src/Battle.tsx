@@ -40,6 +40,12 @@ import {
   generateFreeCells,
 } from "./database";
 import strings from "./strings";
+import {
+  ActionBooleanObj,
+  ActionEmptyObj,
+  ActionStringArrayObj,
+  ActionStringObj,
+} from "./types";
 
 type BattleProps = {
   setShip: any;
@@ -60,16 +66,16 @@ type BattleProps = {
   setAttempts: any;
   setShipsCellsTotal: any;
   setShipsShadowsCellsTotal: any;
-  removeShadows: any;
-  setPlayAgain: any;
+  removeShadows: () => ActionEmptyObj;
+  setPlayAgain: (status: boolean) => ActionBooleanObj;
   playAgain: boolean;
-  setFirstTime: any;
+  setFirstTime: (status: boolean) => ActionBooleanObj;
   firstTime: boolean;
-  clearEverything: any;
-  setDamagedShip: any;
-  setIsBattle: any;
+  clearEverything: () => ActionEmptyObj;
+  setDamagedShip: (ship: string[]) => ActionStringArrayObj;
+  setIsBattle: (status: boolean) => ActionBooleanObj;
   isBattle: boolean;
-  setScore: any;
+  setScore: (side: string) => ActionStringObj;
   score: number[];
   playerName: string;
 };
@@ -265,9 +271,9 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // create array of ship cells together with shadows based on ship array
-  const fillShipArrayWithShadows = (shipPosition: any) => {
-    let shipPositionWithShadows: any = [];
-    shipPosition.forEach((pos: any) => {
+  const fillShipArrayWithShadows = (shipPosition: string[]) => {
+    let shipPositionWithShadows: string[] = [];
+    shipPosition.forEach((pos: string) => {
       const neighbourCells = createNeighbourCellsArray(pos);
       shipPositionWithShadows = [
         ...shipPositionWithShadows,
@@ -283,25 +289,25 @@ const Battle: React.FC<BattleProps> = (props) => {
   const whatTheSide = (side: string) => (side === "player" ? player : computer);
 
   // methods to determine neighbour cells
-  const upperNeighbour = (cell: any) => {
+  const upperNeighbour = (cell: string) => {
     const number = considerCellNumber(cell);
     return `${cell[0]}${Number(number) + 1}`;
   };
-  const downNeighbour = (cell: any) => {
+  const downNeighbour = (cell: string) => {
     const number = considerCellNumber(cell);
     return `${cell[0]}${Number(number) - 1}`;
   };
-  const leftNeighbour = (cell: any) => {
+  const leftNeighbour = (cell: string) => {
     const number = considerCellNumber(cell);
     return `${String.fromCharCode(cell[0].charCodeAt(0) - 1)}${number}`;
   };
-  const rightNeighbour = (cell: any) => {
+  const rightNeighbour = (cell: string) => {
     const number = considerCellNumber(cell);
     return `${String.fromCharCode(cell[0].charCodeAt(0) + 1)}${number}`;
   };
 
   // method to determine what the ship based on catched cell, returns ship name
-  const whatTheShip = (side: any, value: any) => {
+  const whatTheShip = (side: string, value: string) => {
     const sideObj = whatTheSide(side);
     let currShip = null;
     shipNames.forEach((ship) => {
@@ -320,14 +326,14 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to check was ship completely destroyed or not
-  const isShipDestroyed = (side: any, ship: any) => {
+  const isShipDestroyed = (side: string, ship: any) => {
     const sideObj = whatTheSide(side);
     return sideObj[ship].length === 1 ? true : false;
   };
 
   // method to remove cell from attempt from corresponding ship array
   // and check was ship completely destroyed or not
-  const removeCellFromShip = (side: any, value: any) => {
+  const removeCellFromShip = (side: string, value: string) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex: any = whatTheShipIndex(currentShip);
     console.log("remove ship cell", side, currentShip, value);
@@ -362,7 +368,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to fill ship array based on choosen direction
-  const fillShipArray = (ship: any, arr: any, direction: any) => {
+  const fillShipArray = (ship: string, arr: string[], direction: string) => {
     const number = considerCellNumber(arr[0]);
     const shipLength = calculateShipLength(ship);
     if (direction === "up") {
@@ -393,7 +399,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to generate ship position based on current condition of map cells
-  const generateShip = (ship: any, obj: any) => {
+  const generateShip = (ship: string, obj: any) => {
     // generate first cell of first ship
     let firstCell = generateStartingPoint(obj);
     let shipPosition = [];
@@ -433,8 +439,10 @@ const Battle: React.FC<BattleProps> = (props) => {
       setShip("computer", ship, shipPosition);
       setShipsStatus("computer", ship, true);
       const shipPositionWithArrays = fillShipArrayWithShadows(shipPosition);
-      shipPosition.forEach((pos: any) => (ships[pos] = false));
-      shipPositionWithArrays.forEach((pos: any) => (shipsShadows[pos] = false));
+      shipPosition.forEach((pos: string) => (ships[pos] = false));
+      shipPositionWithArrays.forEach(
+        (pos: string) => (shipsShadows[pos] = false)
+      );
     });
     // pass objects with information to corresponding reducers
     setShipsCellsTotal(ships);
@@ -454,13 +462,13 @@ const Battle: React.FC<BattleProps> = (props) => {
 
   // method how computer is going to guess next player ship cell based on
   // quantity of already guessed cells
-  const guessNextPlayerShipCell = (ship: any) =>
+  const guessNextPlayerShipCell = (ship: string[]) =>
     ship.length === 1
       ? guessBasedOnOneCell(ship[0])
       : guessBasedOnTwoCells(ship);
 
   // method to add cells to damaged ship
-  const addCellToDamagedShip = (cell: any) => {
+  const addCellToDamagedShip = (cell: string) => {
     const { damagedShip } = player;
     if (damagedShip.length === 0) {
       setDamagedShip([cell]);
@@ -470,13 +478,14 @@ const Battle: React.FC<BattleProps> = (props) => {
       let necessaryIndex;
       if (direction === "vertical")
         necessaryIndex = damagedShip.findIndex(
-          (currentCell: any) =>
+          (currentCell: string) =>
             Number(considerCellNumber(cell)) <
             Number(considerCellNumber(currentCell))
         );
       if (direction === "horizontal")
         necessaryIndex = damagedShip.findIndex(
-          (currentCell: any) => cell.charCodeAt(0) < currentCell.charCodeAt(0)
+          (currentCell: string) =>
+            cell.charCodeAt(0) < currentCell.charCodeAt(0)
         );
       if (necessaryIndex === -1) necessaryIndex = damagedShip.length;
       damagedShipCopy.splice(necessaryIndex, 0, cell);
@@ -515,7 +524,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         ]);
         const playerShipsShadowsCellsCopy = player.shipsShadowsCells;
         destroyedShipShadows.forEach(
-          (cell: any) => (playerShipsShadowsCellsCopy[cell] = false)
+          (cell: string) => (playerShipsShadowsCellsCopy[cell] = false)
         );
         setShipsShadowsCellsTotal("player", playerShipsShadowsCellsCopy);
         setDamagedShip([]);
@@ -530,7 +539,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to provide random neighbour cell based on one cell
-  const guessBasedOnOneCell = (cell: any) => {
+  const guessBasedOnOneCell = (cell: string) => {
     // we need to filter array of cells to make sure that we not tried this cell before and it's not lying on other ship shadow
     const neighbourCells = createNeighbourCellsArray(cell, false);
     const filteredneighbourCells = neighbourCells.filter(
@@ -545,7 +554,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // guessing next player cell if we have 2 cells of damaged ship
-  const guessBasedOnTwoCells = (ship: any) => {
+  const guessBasedOnTwoCells = (ship: string[]) => {
     const direction = determineShipDirection(ship[0], ship[ship.length - 1]);
     const neighbourCells = [];
     if (direction === "vertical") {
@@ -631,7 +640,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to check was attempt wrong or not
-  const checkPlayerAttempt = (value: any) => {
+  const checkPlayerAttempt = (value: string) => {
     const correctedValue = value.toLowerCase();
     setLegendLineTwo("");
     setAttempts("player");
@@ -659,15 +668,15 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to fill possible directions
-  const fillPossibleDirection = (ship: any, cell: any, direction: any) => {
+  const fillPossibleDirection = (ship: any, cell: any, direction: string) => {
     const shipPosition = fillShipArray(ship, cell, direction);
-    shipPosition.forEach((shipCell: any, cellIndex: any) => {
+    shipPosition.forEach((shipCell: string, cellIndex: number) => {
       if (cellIndex > 0) setPossibleDirections(shipCell);
     });
   };
 
   // method to determine ship direction based on started and second points
-  const determineDirection = (cellFirst: any, cellSecond: any) => {
+  const determineDirection = (cellFirst: string, cellSecond: string) => {
     const cellFirstNumber = considerCellNumber(cellFirst);
     const cellSecondNumber = considerCellNumber(cellSecond);
     return cellFirst[0] === cellSecond[0]
@@ -716,7 +725,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   const shipsCondition = (side: any) => {
-    const condition = (ship: any, index: any) => {
+    const condition = (ship: string, index: number) => {
       let response = "";
       if (side[ship].length === shipLengths[index]) response = "undamaged";
       else if (side[ship].length === 0) response = "destroyed";

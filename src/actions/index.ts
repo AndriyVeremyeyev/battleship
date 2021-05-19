@@ -1,4 +1,4 @@
-export const setShipsCells = (player: any, cell: any) => {
+export const setShipsCells = (player: string, cell: string) => {
   return {
     type: "SET_SHIPS_CELLS",
     payload: { player, cell },
@@ -12,21 +12,21 @@ export const setShipsCellsTotal = (obj: any) => {
   };
 };
 
-export const setShipsShadowsCells = (player: any, cell: any) => {
+export const setShipsShadowsCells = (player: string, cell: string) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS",
     payload: { player, cell },
   };
 };
 
-export const setShipsShadowsCellsTotal = (player: any, obj: any) => {
+export const setShipsShadowsCellsTotal = (player: string, obj: any) => {
   return {
     type: "SET_SHIPS_SHADOWS_CELLS_TOTAL",
     payload: { player, obj },
   };
 };
 
-export const setShip = (player: any, ship: any, position: any) => {
+export const setShip = (player: string, ship: string, position: string) => {
   return {
     type: "SET_SHIP",
     payload: { player, ship, position },
@@ -65,21 +65,21 @@ export const setShipsStatus = (
   };
 };
 
-export const setAttempts = (player: any) => {
+export const setAttempts = (player: string) => {
   return {
     type: "SET_ATTEMPTS",
     payload: player,
   };
 };
 
-export const setWrongAttempts = (player: any, attempt: any) => {
+export const setWrongAttempts = (player: string, attempt: string) => {
   return {
     type: "SET_WRONG_ATTEMPTS",
     payload: { player, attempt },
   };
 };
 
-export const setKilledCells = (player: any, cell: any) => {
+export const setKilledCells = (player: string, cell: string) => {
   return {
     type: "SET_KILLED_CELLS",
     payload: { player, cell },
@@ -92,14 +92,14 @@ export const setShowComputer = () => {
   };
 };
 
-export const removeShipCell = (player: any, ship: any, cell: any) => {
+export const removeShipCell = (player: string, ship: string, cell: string) => {
   return {
     type: "REMOVE_SHIP_CELL",
     payload: { player, ship, cell },
   };
 };
 
-export const setPossibleDirections = (cell: any) => {
+export const setPossibleDirections = (cell: string) => {
   return {
     type: "SET_POSSIBLE_DIRECTIONS",
     payload: cell,
@@ -118,14 +118,14 @@ export const removeShadows = () => {
   };
 };
 
-export const setPlayAgain = (status: any) => {
+export const setPlayAgain = (status: boolean) => {
   return {
     type: "SET_PLAY_AGAIN",
     payload: status,
   };
 };
 
-export const setFirstTime = (status: any) => {
+export const setFirstTime = (status: boolean) => {
   return {
     type: "SET_FIRST_TIME",
     payload: status,
@@ -138,21 +138,21 @@ export const clearEverything = () => {
   };
 };
 
-export const setDamagedShip = (ship: any) => {
+export const setDamagedShip = (ship: string[]) => {
   return {
     type: "SET_DAMAGED_SHIP",
     payload: ship,
   };
 };
 
-export const setIsBattle = (status: any) => {
+export const setIsBattle = (status: boolean) => {
   return {
     type: "SET_IS_BATTLE",
     payload: status,
   };
 };
 
-export const setScore = (side: any) => {
+export const setScore = (side: string) => {
   return {
     type: "SET_SCORE",
     payload: side,
