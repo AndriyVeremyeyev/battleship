@@ -26,7 +26,7 @@ export const setShipsShadowsCellsTotal = (player: string, obj: any) => {
   };
 };
 
-export const setShip = (player: string, ship: string, position: string) => {
+export const setShip = (player: string, ship: string, position: string[]) => {
   return {
     type: "SET_SHIP",
     payload: { player, ship, position },
@@ -57,7 +57,7 @@ export const setLegendLineTwo = (legend: string) => {
 export const setShipsStatus = (
   player: string,
   ship: string,
-  status: string
+  status: boolean
 ) => {
   return {
     type: "SET_SHIPS_STATUS",

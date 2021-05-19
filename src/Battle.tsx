@@ -41,41 +41,55 @@ import {
 } from "./database";
 import strings from "./strings";
 import {
-  ActionBooleanObj,
-  ActionEmptyObj,
-  ActionStringArrayObj,
-  ActionStringObj,
+  TypeOneAction,
+  TypeTwoAction,
+  TypeThreeAction,
+  TypeFourAction,
+  TypeFiveAction,
+  TypeSixAction,
+  TypeSevenAction,
+  TypeEightAction,
+  TypeNineAction,
+  TypeTenAction,
 } from "./types";
 
 type BattleProps = {
-  setShip: any;
-  setShipsCells: any;
-  setShipsShadowsCells: any;
+  setShip: (player: string, ship: string, position: string[]) => TypeTenAction;
+  setShipsCells: (player: string, cell: string) => TypeSixAction;
+  setShipsShadowsCells: (player: string, cell: string) => TypeSixAction;
   computer: any;
-  setLegendLineOne: any;
-  setLegendLineTwo: any;
+  setLegendLineOne: (legend: string) => TypeThreeAction;
+  setLegendLineTwo: (legend: string) => TypeThreeAction;
   player: any;
-  setShipsStatus: any;
-  setShowComputer: any;
-  showComputer: any;
-  setKilledCells: any;
-  removeShipCell: any;
-  setWrongAttempts: any;
-  setPossibleDirections: any;
-  removePossibleDirections: any;
-  setAttempts: any;
-  setShipsCellsTotal: any;
-  setShipsShadowsCellsTotal: any;
-  removeShadows: () => ActionEmptyObj;
-  setPlayAgain: (status: boolean) => ActionBooleanObj;
+  setShipsStatus: (
+    player: string,
+    ship: string,
+    status: boolean
+  ) => TypeEightAction;
+  setShowComputer: () => TypeOneAction;
+  showComputer: boolean;
+  setKilledCells: (player: string, cell: string) => TypeSixAction;
+  removeShipCell: (
+    player: string,
+    ship: string,
+    cell: string
+  ) => TypeNineAction;
+  setWrongAttempts: (player: string, atempt: string) => TypeSixAction;
+  setPossibleDirections: (cell: string) => TypeThreeAction;
+  removePossibleDirections: () => TypeOneAction;
+  setAttempts: (player: string) => TypeThreeAction;
+  setShipsCellsTotal: (obj: any) => TypeFiveAction;
+  setShipsShadowsCellsTotal: (player: string, obj: any) => TypeSevenAction;
+  removeShadows: () => TypeOneAction;
+  setPlayAgain: (status: boolean) => TypeTwoAction;
   playAgain: boolean;
-  setFirstTime: (status: boolean) => ActionBooleanObj;
+  setFirstTime: (status: boolean) => TypeTwoAction;
   firstTime: boolean;
-  clearEverything: () => ActionEmptyObj;
-  setDamagedShip: (ship: string[]) => ActionStringArrayObj;
-  setIsBattle: (status: boolean) => ActionBooleanObj;
+  clearEverything: () => TypeOneAction;
+  setDamagedShip: (ship: string[]) => TypeFourAction;
+  setIsBattle: (status: boolean) => TypeTwoAction;
   isBattle: boolean;
-  setScore: (side: string) => ActionStringObj;
+  setScore: (side: string) => TypeThreeAction;
   score: number[];
   playerName: string;
 };
@@ -309,7 +323,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to determine what the ship based on catched cell, returns ship name
   const whatTheShip = (side: string, value: string) => {
     const sideObj = whatTheSide(side);
-    let currShip = null;
+    let currShip = "";
     shipNames.forEach((ship) => {
       if (sideObj[ship].includes(value)) currShip = ship;
     });

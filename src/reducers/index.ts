@@ -119,7 +119,7 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_SHIP_CELL":
       // @ts-ignore
       const newArray = state[action.payload.player][action.payload.ship].filter(
-        (cell: any) => cell !== action.payload.cell
+        (cell: string) => cell !== action.payload.cell
       );
       return {
         ...state,

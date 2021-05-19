@@ -146,41 +146,79 @@ export type StateProps = {
   player: PlayerStateProps;
 };
 
-type PlayerCell = {
-  player: any;
+type PlayerCellSet = {
+  player: string;
   cell: string;
 };
 
-type PlayerObj = {
-  player: any;
+type PlayerMapSet = {
+  player: string;
   obj: any;
 };
 
-export type ActionStringObj = {
-  type: string;
-  payload: string;
+type PlayerShipStatusSet = {
+  player: string;
+  ship: string;
+  status: boolean;
 };
 
-export type ActionBooleanObj = {
+type PlayerShipCellSet = {
+  player: string;
+  ship: string;
+  cell: string;
+};
+
+type PlayerShipPositionSet = {
+  player: string;
+  ship: string;
+  position: string[];
+};
+
+export type TypeOneAction = {
+  type: string;
+};
+
+export type TypeTwoAction = {
   type: string;
   payload: boolean;
 };
 
-export type ActionEmptyObj = {
+export type TypeThreeAction = {
   type: string;
+  payload: string;
 };
 
-export type ActionStringArrayObj = {
+export type TypeFourAction = {
   type: string;
   payload: string[];
 };
 
-export type ActionTripleObj = {
+export type TypeFiveAction = {
   type: string;
-  payload: PlayerObj;
+  payload: any;
 };
 
-export type ActionCellObjObj = {
+export type TypeSixAction = {
   type: string;
-  payload: PlayerCell;
+  payload: PlayerCellSet;
+};
+
+export type TypeSevenAction = {
+  type: string;
+  payload: PlayerMapSet;
+};
+
+export type TypeEightAction = {
+  type: string;
+  payload: PlayerShipStatusSet;
+};
+
+export type TypeNineAction = {
+  type: string;
+  payload: PlayerShipCellSet;
+};
+
+export type TypeTenAction = {
+  type: string;
+  payload: PlayerShipPositionSet;
 };
