@@ -346,7 +346,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   const removeCellFromShip = (side: string, value: string) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex: number = whatTheShipIndex(currentShip, shipNames);
-    console.log("remove ship cell", side, currentShip, value);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
       if (side === "player") {
@@ -580,6 +579,11 @@ const Battle: React.FC<BattleProps> = (props) => {
       neighbourCells.push(
         `${String.fromCharCode(ship[0].charCodeAt(0) - 1)}${thisCellNumber}`
       );
+      neighbourCells.push(
+        `${String.fromCharCode(
+          ship[ship.length - 1].charCodeAt(0) + 1
+        )}${thisCellNumber}`
+      );
     }
     const filteredneighbourCells = neighbourCells.filter(
       (cell) => !computer.wrongAttempts[cell] && player.shipsShadowsCells[cell]
@@ -593,18 +597,6 @@ const Battle: React.FC<BattleProps> = (props) => {
 
   ///////////////////////////////////////////////////////////////////////////////////////
   // methods for player playing
-
-  useEffect(() => {
-    console.log("player possibleDirections", player.possibleDirections);
-  }, [player.possibleDirections]);
-
-  useEffect(() => {
-    console.log("player shipsCells", player.shipsCells);
-  }, [player.shipsCells]);
-
-  useEffect(() => {
-    console.log("player shipsShadowCells", player.shipsShadowCells);
-  }, [player.shipsShadowCells]);
 
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber: string) => {
