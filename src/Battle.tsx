@@ -149,6 +149,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [player.shipsCells]);
 
   useEffect(() => {
+    console.log(player.shipsStatus);
     if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows();
     if (
@@ -169,6 +170,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [player.shipsStatus, firstTime, player.damagedShip]);
 
   useEffect(() => {
+    console.log(computer.shipsStatus);
     if (
       Object.values(computer.shipsStatus).every((status) => !status) &&
       !firstTime
@@ -193,9 +195,9 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [player.damagedShip.length]);
 
   const oneMoreTimeGame = () => {
+    setPlayAgain(false);
     clearEverything();
     generateComputerMap();
-    setPlayAgain(false);
     setLegendLineOne("Glad that you decided to keep playing in the game");
     setLegendLineTwo(
       "Choose cell on player map to place start point of Battleship"
