@@ -165,10 +165,3 @@ export const setPlayerName = (name: string) => {
     payload: name,
   };
 };
-
-export const setPlayerTurn = (status: boolean) => {
-  return {
-    type: "SET_PLAYER_TURN",
-    payload: status,
-  };
-};

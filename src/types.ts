@@ -142,7 +142,6 @@ export type StateProps = {
   playerName: string;
   score: number[];
   showComputer: boolean;
-  playerTurn: boolean;
   computer: ComputerStateProps;
   player: PlayerStateProps;
 };

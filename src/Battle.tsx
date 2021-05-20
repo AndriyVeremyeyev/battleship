@@ -28,7 +28,6 @@ import {
   setDamagedShip,
   setIsBattle,
   setScore,
-  setPlayerTurn,
 } from "./actions/index";
 
 import {
@@ -93,8 +92,6 @@ type BattleProps = {
   setScore: (side: string) => TypeThreeAction;
   score: number[];
   playerName: string;
-  setPlayerTurn: (status: boolean) => TypeTwoAction;
-  playerTurn: boolean;
 };
 
 // const useStyles = makeStyles({
@@ -136,11 +133,10 @@ const Battle: React.FC<BattleProps> = (props) => {
     setScore,
     score,
     playerName,
-    setPlayerTurn,
-    playerTurn,
   } = props;
   const [firstRender, setFirstRender] = useState(false);
   const [open, setOpen] = useState(false);
+  const [playerTurn, setPlayerTurn] = useState(true);
 
   useEffect(() => {
     generateComputerMap();
@@ -673,9 +669,14 @@ const Battle: React.FC<BattleProps> = (props) => {
       } else {
         setWrongAttempts("player", correctedValue);
         if (!computer.shipsCells[correctedValue]) {
-          setLegendLineTwo(
-            "Nice job. You catch the ship. You have one more try to catch enemy ship"
-          );
+          const currentShip = whatTheShip("computer", value);
+          if (isShipDestroyed("computer", currentShip)) {
+            setLegendLineTwo("You have one more try to catch enemy ship");
+          } else {
+            setLegendLineTwo(
+              "Nice job. You catch the ship. You have one more try to catch enemy ship"
+            );
+          }
           setKilledCells("computer", correctedValue);
           removeCellFromShip("computer", correctedValue);
         } else {
@@ -964,7 +965,6 @@ const mapDispatchToProps = (dispatch: any) => ({
   setDamagedShip: (ship: string[]) => dispatch(setDamagedShip(ship)),
   setIsBattle: (status: boolean) => dispatch(setIsBattle(status)),
   setScore: (side: string) => dispatch(setScore(side)),
-  setPlayerTurn: (status: boolean) => dispatch(setPlayerTurn(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);
