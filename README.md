@@ -65,17 +65,13 @@ During battle
 
 ## Known Bugs
 
-#### Major bug. TypeError: Cannot read property 'filter' of undefined during battle:
-
-<image src="./public/bug_01.png" width="600px"/>
-
-<image src="./public/bug_02.png" width="600px"/>
-
-<image src="./public/bug_04.png" width="600px"/>
-
 #### When player wins score counts toward computer and in opposite:
 
 <image src="./public/bug_03.png" width="600px"/>
+
+#### console warning
+
+<image src="./public/bug_05.png" width="600px"/>
 
 ## [Deployed Website](https://a-battleship.web.app/)
 
