@@ -149,7 +149,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [player.shipsCells]);
 
   useEffect(() => {
-    console.log(player.shipsStatus);
     if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows();
     if (
@@ -159,6 +158,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setIsBattle(true);
     if (
       Object.values(player.shipsStatus).every((status) => !status) &&
+      player.attempts &&
       !firstTime
     ) {
       setLegendLineOne(strings.battle.lose);
@@ -167,12 +167,13 @@ const Battle: React.FC<BattleProps> = (props) => {
       setIsBattle(false);
       setScore("computer");
     }
-  }, [player.shipsStatus, firstTime, player.damagedShip]);
+    // removed player.damagedShip
+  }, [player.shipsStatus, firstTime]);
 
   useEffect(() => {
-    console.log(computer.shipsStatus);
     if (
       Object.values(computer.shipsStatus).every((status) => !status) &&
+      computer.attempts &&
       !firstTime
     ) {
       setLegendLineOne(strings.battle.win);
@@ -188,6 +189,7 @@ const Battle: React.FC<BattleProps> = (props) => {
 
   const [playerAttempt, setPlayerAttempt] = useState("");
 
+  // Why we need this??
   useEffect(() => {
     if (firstRender) {
       setTimeout(() => checkComputerAttempt(), 2000);
@@ -347,7 +349,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   const removeCellFromShip = (side: string, value: string) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex: number = whatTheShipIndex(currentShip, shipNames);
-    console.log("value", value);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
       if (side === "player") {
@@ -746,12 +747,14 @@ const Battle: React.FC<BattleProps> = (props) => {
   const killPlayer = () => {
     shipNames.forEach((ship) => setShipsStatus("player", ship, false));
     setFirstTime(false);
+    setAttempts("player");
     // setOpen(true);
   };
 
   const killComputer = () => {
     shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
     setFirstTime(false);
+    setAttempts("computer");
     // setOpen(true);
   };
 
