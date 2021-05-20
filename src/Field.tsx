@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { rows, columns } from "./database";
 import { makeStyles } from "@material-ui/styles";
 import cross from "./images/01.jpg";
@@ -8,8 +8,8 @@ import { ComputerStateProps, PlayerStateProps } from "./types";
 
 const useStyles = makeStyles({
   cell: {
-    height: 60,
-    width: 60,
+    height: "3rem",
+    width: "3rem",
     border: "1px #DCDCDC solid",
     borderWidth: 0.5,
     cursor: "pointer",
@@ -39,12 +39,12 @@ const Field: React.FC<FieldProps> = (props) => {
       container
       direction="column"
       alignItems="center"
-      style={{ marginTop: 20, gridGap: 5 }}
+      style={{ marginTop: 20, gridGap: "0.3rem" }}
     >
       {columns.map((x) => {
         return (
           <Grid item key={x}>
-            <Grid container direction="row" style={{ gridGap: 5 }}>
+            <Grid container direction="row" style={{ gridGap: "0.3rem" }}>
               {rows.map((y) => {
                 const cellNumber = `${y}${x}`;
                 const cellColor = () => {
@@ -94,7 +94,9 @@ const Field: React.FC<FieldProps> = (props) => {
                         : null
                     }
                   >
-                    {cellNumber}
+                    <Typography style={{ fontSize: "0.85rem" }}>
+                      {cellNumber}
+                    </Typography>
                   </Grid>
                 );
               })}

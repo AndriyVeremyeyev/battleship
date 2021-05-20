@@ -837,7 +837,7 @@ const Battle: React.FC<BattleProps> = (props) => {
                         }}
                       />
                     </Grid>
-                    <Grid item style={{ marginTop: 10 }}>
+                    <Grid item style={{ marginTop: 10, marginBottom: 50 }}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -872,11 +872,8 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">computer</Typography>
-            <Field
-              side={"computer"}
-              placeShipOnMap={placePlayerShipOnMap}
-            />{" "}
-            <Grid item>
+            <Field side={"computer"} placeShipOnMap={placePlayerShipOnMap} />
+            <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
                 color="primary"
