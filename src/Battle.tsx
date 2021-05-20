@@ -28,6 +28,7 @@ import {
   setDamagedShip,
   setIsBattle,
   setScore,
+  setPlayerTurn,
 } from "./actions/index";
 
 import {
@@ -92,6 +93,8 @@ type BattleProps = {
   setScore: (side: string) => TypeThreeAction;
   score: number[];
   playerName: string;
+  setPlayerTurn: (status: boolean) => TypeTwoAction;
+  playerTurn: boolean;
 };
 
 // const useStyles = makeStyles({
@@ -133,6 +136,8 @@ const Battle: React.FC<BattleProps> = (props) => {
     setScore,
     score,
     playerName,
+    setPlayerTurn,
+    playerTurn,
   } = props;
   const [firstRender, setFirstRender] = useState(false);
   const [open, setOpen] = useState(false);
@@ -346,6 +351,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   const removeCellFromShip = (side: string, value: string) => {
     const currentShip = whatTheShip(side, value);
     const currentIndex: number = whatTheShipIndex(currentShip, shipNames);
+    console.log("value", value);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
       if (side === "player") {
@@ -517,6 +523,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     setWrongAttempts("computer", currentAttempt);
     setAttempts("computer");
     setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
+    setLegendLineTwo("");
     // check if ship was damaged or not
     if (!player.shipsCells[currentAttempt]) {
       // if ship was damaged
@@ -543,7 +550,11 @@ const Battle: React.FC<BattleProps> = (props) => {
         addCellToDamagedShip(currentAttempt);
       }
     } else {
-      setLegendLineTwo("Computer missed all of your ships");
+      setTimeout(() => {
+        setLegendLineOne("Computer haven't catched any of your ships");
+        setLegendLineTwo("Now it's your turn");
+        setPlayerTurn(true);
+      }, 2000);
     }
   };
 
@@ -644,27 +655,36 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value: string) => {
     const correctedValue = value.toLowerCase();
-    setLegendLineTwo("");
     setAttempts("player");
-    if (player.wrongAttempts[value]) {
-      setLegendLineOne("You already tried this cell");
-      setLegendLineTwo("Please provide cell from existing range of cells");
-    } else if (computer.shipsCells[correctedValue] === undefined) {
-      setLegendLineOne("Provided cell doesn't exist");
-      setLegendLineTwo("Please provide cell from existing range of cells");
+    if (!playerTurn) {
+      setLegendLineOne("It's not your turn yet");
+      setLegendLineTwo("Please wait while computer complete their turn");
     } else {
-      setWrongAttempts("player", correctedValue);
-      if (!computer.shipsCells[correctedValue]) {
-        setLegendLineOne("Nice job. You catch the ship");
-        setLegendLineTwo("You have one more try to catch enemy ship");
-        setKilledCells("computer", correctedValue);
-        removeCellFromShip("computer", correctedValue);
+      setLegendLineOne(`Your attempt is ${correctedValue}`);
+      setLegendLineTwo("");
+      if (player.wrongAttempts[value]) {
+        setLegendLineTwo(
+          "You already tried this cell. Please provide cell from existing range of cells"
+        );
+      } else if (computer.shipsCells[correctedValue] === undefined) {
+        setLegendLineTwo(
+          "Provided cell doesn't exist. Please provide cell from existing range of cells"
+        );
       } else {
-        setLegendLineOne("You missed any of ships");
-        setLegendLineTwo("");
-        setTimeout(() => {
-          checkComputerAttempt();
-        }, 2000);
+        setWrongAttempts("player", correctedValue);
+        if (!computer.shipsCells[correctedValue]) {
+          setLegendLineTwo(
+            "Nice job. You catch the ship. You have one more try to catch enemy ship"
+          );
+          setKilledCells("computer", correctedValue);
+          removeCellFromShip("computer", correctedValue);
+        } else {
+          setLegendLineTwo("You missed any of ships.");
+          setPlayerTurn(false);
+          setTimeout(() => {
+            checkComputerAttempt();
+          }, 2000);
+        }
       }
     }
   };
@@ -897,6 +917,7 @@ const mapStateToProps = (state: any) => {
     isBattle,
     score,
     playerName,
+    playerTurn,
   } = state;
   return {
     player,
@@ -907,6 +928,7 @@ const mapStateToProps = (state: any) => {
     isBattle,
     score,
     playerName,
+    playerTurn,
   };
 };
 
@@ -942,6 +964,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   setDamagedShip: (ship: string[]) => dispatch(setDamagedShip(ship)),
   setIsBattle: (status: boolean) => dispatch(setIsBattle(status)),
   setScore: (side: string) => dispatch(setScore(side)),
+  setPlayerTurn: (status: boolean) => dispatch(setPlayerTurn(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);

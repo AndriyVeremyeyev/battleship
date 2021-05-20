@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           border: "solid",
           borderWidth: 1,
           height: 80,
-          width: 500,
+          width: 600,
           marginTop: 20,
           marginBottom: 20,
           color: "white",

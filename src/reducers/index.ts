@@ -40,6 +40,7 @@ const initialState = {
   playerName: "",
   score: [0, 0],
   showComputer: false,
+  playerTurn: true,
   computer: computerInitialState,
   player: playerInitialState,
 };
@@ -252,6 +253,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         playerName: action.payload,
+      };
+    case "SET_PLAYER_TURN":
+      return {
+        ...state,
+        playerTurn: action.payload,
       };
     default:
       return state;
