@@ -331,16 +331,12 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to determine what the ship index based on ship name
-  const whatTheShipIndex = (ship: any) => {
-    let index;
-    shipNames.forEach((currShip, currIndex) => {
-      if (currShip === ship) index = currIndex;
-    });
-    return index;
+  const whatTheShipIndex = (ship: string, shipNames: string[]) => {
+    return shipNames.findIndex((currShip) => currShip === ship);
   };
 
   // method to check was ship completely destroyed or not
-  const isShipDestroyed = (side: string, ship: any) => {
+  const isShipDestroyed = (side: string, ship: string) => {
     const sideObj = whatTheSide(side);
     return sideObj[ship].length === 1 ? true : false;
   };
@@ -349,7 +345,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   // and check was ship completely destroyed or not
   const removeCellFromShip = (side: string, value: string) => {
     const currentShip = whatTheShip(side, value);
-    const currentIndex: any = whatTheShipIndex(currentShip);
+    const currentIndex: number = whatTheShipIndex(currentShip, shipNames);
     console.log("remove ship cell", side, currentShip, value);
     removeShipCell(side, currentShip, value);
     if (isShipDestroyed(side, currentShip)) {
@@ -508,7 +504,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to determine ship direction based on ship coordinates
-  const determineShipDirection = (firstCell: any, lastCell: any) => {
+  const determineShipDirection = (firstCell: string, lastCell: string) => {
     return firstCell[0] === lastCell[0] ? "vertical" : "horizontal";
   };
 
@@ -527,7 +523,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       // if ship was damaged
       setLegendLineTwo(`Computer catched some of your ships`);
       setKilledCells("player", currentAttempt);
-      const damagedShipName: any = whatTheShip("player", currentAttempt);
+      const damagedShipName: string = whatTheShip("player", currentAttempt);
       removeCellFromShip("player", currentAttempt);
       // check if ship was completely destroyed or not
       if (isShipDestroyed("player", damagedShipName)) {
@@ -611,7 +607,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [player.shipsShadowCells]);
 
   // method to place player's ship on map
-  const placePlayerShipOnMap = (cellNumber: any) => {
+  const placePlayerShipOnMap = (cellNumber: string) => {
     shipNames.forEach((ship, index) => {
       // check if cell is not occupied already
       if (player.shipsCells[cellNumber]) {
@@ -682,7 +678,11 @@ const Battle: React.FC<BattleProps> = (props) => {
   };
 
   // method to fill possible directions
-  const fillPossibleDirection = (ship: any, cell: any, direction: string) => {
+  const fillPossibleDirection = (
+    ship: string,
+    cell: string[],
+    direction: string
+  ) => {
     const shipPosition = fillShipArray(ship, cell, direction);
     shipPosition.forEach((shipCell: string, cellIndex: number) => {
       if (cellIndex > 0) setPossibleDirections(shipCell);
@@ -919,36 +919,37 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  setShip: (player: any, ship: any, position: any) =>
+  setShip: (player: string, ship: string, position: string[]) =>
     dispatch(setShip(player, ship, position)),
-  setShipsCells: (player: any, cell: any) =>
+  setShipsCells: (player: string, cell: string) =>
     dispatch(setShipsCells(player, cell)),
-  setShipsShadowsCells: (player: any, cell: any) =>
+  setShipsShadowsCells: (player: string, cell: string) =>
     dispatch(setShipsShadowsCells(player, cell)),
   setLegendLineTwo: (legend: string) => dispatch(setLegendLineTwo(legend)),
   setLegendLineOne: (legend: string) => dispatch(setLegendLineOne(legend)),
   setShowComputer: () => dispatch(setShowComputer()),
-  setShipsStatus: (player: any, ship: any, status: any) =>
+  setShipsStatus: (player: string, ship: string, status: boolean) =>
     dispatch(setShipsStatus(player, ship, status)),
-  setKilledCells: (player: any, cell: any) =>
+  setKilledCells: (player: string, cell: string) =>
     dispatch(setKilledCells(player, cell)),
-  removeShipCell: (player: any, ship: any, cell: any) =>
+  removeShipCell: (player: string, ship: string, cell: string) =>
     dispatch(removeShipCell(player, ship, cell)),
-  setWrongAttempts: (player: any, attempt: any) =>
+  setWrongAttempts: (player: string, attempt: string) =>
     dispatch(setWrongAttempts(player, attempt)),
-  setPossibleDirections: (cell: any) => dispatch(setPossibleDirections(cell)),
+  setPossibleDirections: (cell: string) =>
+    dispatch(setPossibleDirections(cell)),
   removePossibleDirections: () => dispatch(removePossibleDirections()),
-  setAttempts: (player: any) => dispatch(setAttempts(player)),
+  setAttempts: (player: string) => dispatch(setAttempts(player)),
   setShipsCellsTotal: (obj: any) => dispatch(setShipsCellsTotal(obj)),
-  setShipsShadowsCellsTotal: (player: any, obj: any) =>
+  setShipsShadowsCellsTotal: (player: string, obj: any) =>
     dispatch(setShipsShadowsCellsTotal(player, obj)),
   removeShadows: () => dispatch(removeShadows()),
-  setPlayAgain: (status: any) => dispatch(setPlayAgain(status)),
-  setFirstTime: (status: any) => dispatch(setFirstTime(status)),
+  setPlayAgain: (status: boolean) => dispatch(setPlayAgain(status)),
+  setFirstTime: (status: boolean) => dispatch(setFirstTime(status)),
   clearEverything: () => dispatch(clearEverything()),
-  setDamagedShip: (ship: any) => dispatch(setDamagedShip(ship)),
-  setIsBattle: (status: any) => dispatch(setIsBattle(status)),
-  setScore: (side: any) => dispatch(setScore(side)),
+  setDamagedShip: (ship: string[]) => dispatch(setDamagedShip(ship)),
+  setIsBattle: (status: boolean) => dispatch(setIsBattle(status)),
+  setScore: (side: string) => dispatch(setScore(side)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Battle);
