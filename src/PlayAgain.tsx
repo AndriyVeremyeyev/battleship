@@ -8,10 +8,22 @@ import { TypeThreeAction } from "./types";
 type PlayAgainProps = {
   oneMoreGame: () => void;
   setPageStatus: (pageStatus: string) => TypeThreeAction;
+  handleOpen: (status: boolean) => void;
 };
 
 const PlayAgain: React.FC<PlayAgainProps> = (props) => {
-  const { oneMoreGame, setPageStatus } = props;
+  const { oneMoreGame, setPageStatus, handleOpen } = props;
+
+  const handleGameEnd = () => {
+    setPageStatus("farewall");
+    handleOpen(false);
+  };
+
+  const handleKeepPlaying = () => {
+    handleOpen(false);
+    oneMoreGame();
+  };
+
   return (
     <Grid item>
       <Grid
@@ -31,16 +43,16 @@ const PlayAgain: React.FC<PlayAgainProps> = (props) => {
         </Typography>
         <Grid container direction="row" spacing={5} justify="center">
           <Grid item>
-            <Button variant="contained" color="primary" onClick={oneMoreGame}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleKeepPlaying}
+            >
               Yes
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setPageStatus("farewall")}
-            >
+            <Button variant="contained" color="primary" onClick={handleGameEnd}>
               No
             </Button>
           </Grid>
