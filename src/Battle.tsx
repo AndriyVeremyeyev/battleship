@@ -161,7 +161,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       Object.values(player.shipsStatus).every((status) => !status) &&
       !firstTime
     ) {
-      setLegendLineOne("Unfortunately you lost the game");
+      setLegendLineOne(strings.battle.lose);
       setLegendLineTwo("");
       setPlayAgain(true);
       setIsBattle(false);
@@ -175,7 +175,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       Object.values(computer.shipsStatus).every((status) => !status) &&
       !firstTime
     ) {
-      setLegendLineOne("Congratulations! You won the game");
+      setLegendLineOne(strings.battle.win);
       setLegendLineTwo("");
       setPlayAgain(true);
       setScore("player");
@@ -198,10 +198,8 @@ const Battle: React.FC<BattleProps> = (props) => {
     setPlayAgain(false);
     clearEverything();
     generateComputerMap();
-    setLegendLineOne("Glad that you decided to keep playing in the game");
-    setLegendLineTwo(
-      "Choose cell on player map to place start point of Battleship"
-    );
+    setLegendLineOne(strings.battle.keepPlaying);
+    setLegendLineTwo(strings.battle.placeStartPoint);
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -354,12 +352,18 @@ const Battle: React.FC<BattleProps> = (props) => {
     if (isShipDestroyed(side, currentShip)) {
       if (side === "player") {
         setLegendLineOne(
-          `Oops. Your ${shipNicknames[currentIndex]} was completely destroyed`
+          strings.battle.yourShipDestroyed.replace(
+            "{}",
+            shipNicknames[currentIndex]
+          )
         );
         setShipsStatus("player", currentShip, false);
       } else {
         setLegendLineOne(
-          `Congratulations! You completely destroyed ${shipNicknames[currentIndex]}`
+          strings.battle.youDestroyedShip.replace(
+            "{}",
+            shipNicknames[currentIndex]
+          )
         );
         setShipsStatus("computer", currentShip, false);
       }
@@ -489,13 +493,13 @@ const Battle: React.FC<BattleProps> = (props) => {
       const direction = determineShipDirection(damagedShip[0], cell);
       const damagedShipCopy = damagedShip;
       let necessaryIndex;
-      if (direction === "vertical")
+      if (direction === strings.battle.vertical)
         necessaryIndex = damagedShip.findIndex(
           (currentCell: string) =>
             Number(considerCellNumber(cell)) <
             Number(considerCellNumber(currentCell))
         );
-      if (direction === "horizontal")
+      if (direction === strings.battle.horizontal)
         necessaryIndex = damagedShip.findIndex(
           (currentCell: string) =>
             cell.charCodeAt(0) < currentCell.charCodeAt(0)
@@ -508,7 +512,9 @@ const Battle: React.FC<BattleProps> = (props) => {
 
   // method to determine ship direction based on ship coordinates
   const determineShipDirection = (firstCell: string, lastCell: string) => {
-    return firstCell[0] === lastCell[0] ? "vertical" : "horizontal";
+    return firstCell[0] === lastCell[0]
+      ? strings.battle.vertical
+      : strings.battle.horizontal;
   };
 
   // method for computer attempt after player attempt
@@ -520,12 +526,12 @@ const Battle: React.FC<BattleProps> = (props) => {
         : guessNextPlayerShipCell(damagedShip);
     setWrongAttempts("computer", currentAttempt);
     setAttempts("computer");
-    setLegendLineOne(`Now is computer's turn. Attempt is: ${currentAttempt}`);
+    setLegendLineOne(strings.battle.computerTurn.replace("{}", currentAttempt));
     setLegendLineTwo("");
     // check if ship was damaged or not
     if (!player.shipsCells[currentAttempt]) {
       // if ship was damaged
-      setLegendLineTwo(`Computer catched some of your ships`);
+      setLegendLineTwo(strings.battle.computerCatched);
       setKilledCells("player", currentAttempt);
       const damagedShipName: string = whatTheShip("player", currentAttempt);
       removeCellFromShip("player", currentAttempt);
@@ -549,8 +555,8 @@ const Battle: React.FC<BattleProps> = (props) => {
       }
     } else {
       setTimeout(() => {
-        setLegendLineOne("Computer haven't catched any of your ships");
-        setLegendLineTwo("Now it's your turn");
+        setLegendLineOne(strings.battle.computerMissed);
+        setLegendLineTwo(strings.battle.yourTurn);
         setPlayerTurn(true);
       }, 2000);
     }
@@ -575,7 +581,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   const guessBasedOnTwoCells = (ship: string[]) => {
     const direction = determineShipDirection(ship[0], ship[ship.length - 1]);
     const neighbourCells = [];
-    if (direction === "vertical") {
+    if (direction === strings.battle.vertical) {
       neighbourCells.push(
         `${ship[0][0]}${Number(considerCellNumber(ship[0])) - 1}`
       );
@@ -583,7 +589,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         `${ship[0][0]}${Number(considerCellNumber(ship[ship.length - 1])) + 1}`
       );
     }
-    if (direction === "horizontal") {
+    if (direction === strings.battle.horizontal) {
       const thisCellNumber = considerCellNumber(ship[0]);
       neighbourCells.push(
         `${String.fromCharCode(ship[0].charCodeAt(0) - 1)}${thisCellNumber}`
@@ -655,34 +661,30 @@ const Battle: React.FC<BattleProps> = (props) => {
     const correctedValue = value.toLowerCase();
     setAttempts("player");
     if (!playerTurn) {
-      setLegendLineOne("It's not your turn yet");
-      setLegendLineTwo("Please wait while computer complete their turn");
+      setLegendLineOne(strings.battle.notYourTurn);
+      setLegendLineTwo(strings.battle.wait);
     } else {
-      setLegendLineOne(`Your attempt is ${correctedValue}`);
+      setLegendLineOne(
+        strings.battle.yourAttempt.replace("{}", correctedValue)
+      );
       setLegendLineTwo("");
       if (player.wrongAttempts[value]) {
-        setLegendLineTwo(
-          "You already tried this cell. Please provide cell from existing range of cells"
-        );
+        setLegendLineTwo(strings.battle.alreadyTried);
       } else if (computer.shipsCells[correctedValue] === undefined) {
-        setLegendLineTwo(
-          "Provided cell doesn't exist. Please provide cell from existing range of cells"
-        );
+        setLegendLineTwo(strings.battle.cellNotExist);
       } else {
         setWrongAttempts("player", correctedValue);
         if (!computer.shipsCells[correctedValue]) {
           const currentShip = whatTheShip("computer", value);
           if (isShipDestroyed("computer", currentShip)) {
-            setLegendLineTwo("You have one more try to catch enemy ship");
+            setLegendLineTwo(strings.battle.oneMoreTry);
           } else {
-            setLegendLineTwo(
-              "Nice job. You catch the ship. You have one more try to catch enemy ship"
-            );
+            setLegendLineTwo(strings.battle.youCatched);
           }
           setKilledCells("computer", correctedValue);
           removeCellFromShip("computer", correctedValue);
         } else {
-          setLegendLineTwo("You missed any of ships.");
+          setLegendLineTwo(strings.battle.youMissed);
           setPlayerTurn(false);
           setTimeout(() => {
             checkComputerAttempt();
@@ -756,9 +758,10 @@ const Battle: React.FC<BattleProps> = (props) => {
   const shipsCondition = (side: any) => {
     const condition = (ship: string, index: number) => {
       let response = "";
-      if (side[ship].length === shipLengths[index]) response = "undamaged";
-      else if (side[ship].length === 0) response = "destroyed";
-      else response = "damaged";
+      if (side[ship].length === shipLengths[index])
+        response = strings.battle.undamaged;
+      else if (side[ship].length === 0) response = strings.battle.destroyed;
+      else response = strings.battle.damaged;
       return response;
     };
 
