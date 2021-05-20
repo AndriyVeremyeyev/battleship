@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
-import { Grid, Typography, Button, TextField, Modal } from "@material-ui/core";
+import { Grid, Typography, Button, TextField } from "@material-ui/core";
 // import { makeStyles } from "@material-ui/styles";
 import Field from "./Field";
 import PlayAgain from "./PlayAgain";
@@ -135,7 +135,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     playerName,
   } = props;
   const [firstRender, setFirstRender] = useState(false);
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(true);
 
   useEffect(() => {
@@ -164,7 +164,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineTwo("");
       setPlayAgain(true);
       setIsBattle(false);
-      setScore("player");
+      setScore("computer");
     }
   }, [player.shipsStatus, firstTime, player.damagedShip]);
 
@@ -176,7 +176,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineOne("Congratulations! You won the game");
       setLegendLineTwo("");
       setPlayAgain(true);
-      setScore("computer");
+      setScore("player");
     }
   }, [computer.shipsStatus, firstTime]);
 
@@ -742,13 +742,13 @@ const Battle: React.FC<BattleProps> = (props) => {
   const killPlayer = () => {
     shipNames.forEach((ship) => setShipsStatus("player", ship, false));
     setFirstTime(false);
-    setOpen(true);
+    // setOpen(true);
   };
 
   const killComputer = () => {
     shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
     setFirstTime(false);
-    setOpen(true);
+    // setOpen(true);
   };
 
   const shipsCondition = (side: any) => {
@@ -792,22 +792,22 @@ const Battle: React.FC<BattleProps> = (props) => {
           {score[0]}:{score[1]}
         </Typography>
         {playAgain && !firstTime ? (
-          <Modal
-            open={open}
-            onClose={() => {
-              setOpen(false);
-            }}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PlayAgain oneMoreGame={oneMoreTimeGame} />
-          </Modal>
-        ) : null}
+          // <Modal
+          //   open={open}
+          //   onClose={() => {
+          //     setOpen(false);
+          //   }}
+          //   aria-labelledby="simple-modal-title"
+          //   aria-describedby="simple-modal-description"
+          //   style={{
+          //     display: "flex",
+          //     alignItems: "center",
+          //     justifyContent: "center",
+          //   }}
+          // >
+          <PlayAgain oneMoreGame={oneMoreTimeGame} />
+        ) : // </Modal>
+        null}
       </Grid>
       <Grid
         container

@@ -25,7 +25,7 @@ const StartGame: React.FC<StartGameProps> = (props) => {
   return (
     <Grid
       container
-      style={{ height: 750 }}
+      style={{ height: "33vh" }}
       direction="column"
       alignItems="center"
       justify="space-between"
@@ -42,7 +42,9 @@ const StartGame: React.FC<StartGameProps> = (props) => {
         target="_blank"
         style={{ color: "white" }}
       >
-        <Typography variant="h6">{strings.startGame.about}</Typography>
+        <Typography style={{ fontSize: "1.1rem" }}>
+          {strings.startGame.about}
+        </Typography>
       </Link>
     </Grid>
   );

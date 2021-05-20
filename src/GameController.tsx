@@ -4,6 +4,7 @@ import Header from "./Header";
 import Battle from "./Battle";
 import StartGame from "./StartGame";
 import EnterName from "./EnterName";
+import Farewall from "./Firewall";
 
 type GameControllerProps = {
   pageStatus: string;
@@ -17,6 +18,8 @@ const GameController: React.FC<GameControllerProps> = (props) => {
         return <EnterName />;
       case "battle":
         return <Battle />;
+      case "farewall":
+        return <Farewall />;
       default:
         return <StartGame />;
     }

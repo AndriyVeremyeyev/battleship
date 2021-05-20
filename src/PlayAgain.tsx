@@ -1,13 +1,17 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Grid, Typography, Button } from "@material-ui/core";
 import strings from "./strings";
+import { setPageStatus } from "./actions";
+import { TypeThreeAction } from "./types";
 
 type PlayAgainProps = {
   oneMoreGame: () => void;
+  setPageStatus: (pageStatus: string) => TypeThreeAction;
 };
 
 const PlayAgain: React.FC<PlayAgainProps> = (props) => {
-  const { oneMoreGame } = props;
+  const { oneMoreGame, setPageStatus } = props;
   return (
     <Grid item>
       <Grid
@@ -35,9 +39,7 @@ const PlayAgain: React.FC<PlayAgainProps> = (props) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => {
-                console.log("Don't want to play");
-              }}
+              onClick={() => setPageStatus("farewall")}
             >
               No
             </Button>
@@ -48,4 +50,8 @@ const PlayAgain: React.FC<PlayAgainProps> = (props) => {
   );
 };
 
-export default PlayAgain;
+const mapDispatchToProps = (dispatch: any) => ({
+  setPageStatus: (pageStatus: string) => dispatch(setPageStatus(pageStatus)),
+});
+
+export default connect(null, mapDispatchToProps)(PlayAgain);

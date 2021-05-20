@@ -9,8 +9,8 @@ ReactDOM.render(
   <Provider store={store}>
     <Box
       style={{
-        height: 1000,
-        width: "100%",
+        height: "50vh",
+        width: "100vw",
         backgroundImage: `url(${titleImage})`,
         backgroundSize: "cover",
       }}
