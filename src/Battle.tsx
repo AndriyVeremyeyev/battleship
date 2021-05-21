@@ -196,6 +196,19 @@ const Battle: React.FC<BattleProps> = (props) => {
     }
   }, [player.damagedShip.length]);
 
+  useEffect(() => {}, [
+    player.battleShip,
+    player.cruiserFirst,
+    player.cruiserSecond,
+    player.destroyerFirst,
+    player.destroyerSecond,
+    player.destroyerThird,
+    player.vedetteFirst,
+    player.vedetteSecond,
+    player.vedetteThird,
+    player.vedetteForth,
+  ]);
+
   const oneMoreTimeGame = () => {
     setPlayAgain(false);
     clearEverything();
@@ -616,6 +629,7 @@ const Battle: React.FC<BattleProps> = (props) => {
 
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber: string) => {
+    console.log(cellNumber);
     shipNames.forEach((ship, index) => {
       // check if cell is not occupied already
       if (player.shipsCells[cellNumber]) {
@@ -625,6 +639,7 @@ const Battle: React.FC<BattleProps> = (props) => {
             player[shipNames[index - 1]]?.length === shipLengths[index - 1] &&
             player[ship]?.length < shipLengths[index])
         ) {
+          console.log(player[ship]);
           setShip("player", shipNames[index], [cellNumber]);
           setShipsCells("player", cellNumber);
           if (player[ship]?.length === shipLengths[index] - 1) {
@@ -660,7 +675,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value: string) => {
     const correctedValue = value.toLowerCase();
-    setAttempts("player");
     if (!playerTurn) {
       setLegendLineOne(strings.battle.notYourTurn);
       setLegendLineTwo(strings.battle.wait);
@@ -675,6 +689,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         setLegendLineTwo(strings.battle.cellNotExist);
       } else {
         setWrongAttempts("player", correctedValue);
+        setAttempts("player");
         if (!computer.shipsCells[correctedValue]) {
           const currentShip = whatTheShip("computer", value);
           if (isShipDestroyed("computer", currentShip)) {
