@@ -705,13 +705,11 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineOne("Please, choose cell from ship shadow");
       setLegendLineTwo("");
     }
-    console.log(ships);
   };
 
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value: string) => {
     const correctedValue = value.toLowerCase();
-    console.log(player.ships);
     if (!playerTurn) {
       setLegendLineOne(strings.battle.notYourTurn);
       setLegendLineTwo(strings.battle.wait);
@@ -930,10 +928,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">computer</Typography>
-            <Field
-              side={"computer"}
-              placeShipOnMap={() => console.log("vasya")}
-            />
+            <Field side={"computer"} />
             <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
