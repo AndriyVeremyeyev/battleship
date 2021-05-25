@@ -7,16 +7,18 @@ const basicInitialState = {
   shipsCells: generateFreeCells({}),
   shipsShadowsCells: generateFreeCells({}),
   wrongAttempts: generateFreeCells({}, false),
-  battleShip: [],
-  cruiserFirst: [],
-  cruiserSecond: [],
-  destroyerFirst: [],
-  destroyerSecond: [],
-  destroyerThird: [],
-  vedetteFirst: [],
-  vedetteSecond: [],
-  vedetteThird: [],
-  vedetteForth: [],
+  ships: {
+    battleShip: [],
+    cruiserFirst: [],
+    cruiserSecond: [],
+    destroyerFirst: [],
+    destroyerSecond: [],
+    destroyerThird: [],
+    vedetteFirst: [],
+    vedetteSecond: [],
+    vedetteThird: [],
+    vedetteForth: [],
+  },
 };
 
 const computerInitialState = {
@@ -109,11 +111,15 @@ const reducer = (state = initialState, action) => {
         [action.payload.player]: {
           // @ts-ignore
           ...state[action.payload.player],
-          [action.payload.ship]: [
+          ships: {
             // @ts-ignore
-            ...state[action.payload.player][action.payload.ship],
-            ...action.payload.position,
-          ],
+            ...state[action.payload.player].ships,
+            [action.payload.ship]: [
+              // @ts-ignore
+              ...state[action.payload.player].ships[action.payload.ship],
+              ...action.payload.position,
+            ],
+          },
         },
       };
     case "REMOVE_SHIP_CELL":

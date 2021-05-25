@@ -137,6 +137,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   const [firstRender, setFirstRender] = useState(false);
   const [open, setOpen] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(true);
+  const [currentCell, setCurrentCell] = useState("");
 
   useEffect(() => {
     generateComputerMap();
@@ -184,8 +185,8 @@ const Battle: React.FC<BattleProps> = (props) => {
   }, [computer.shipsStatus, firstTime]);
 
   useEffect(() => {
-    if (player.battleShip.length === 4) setFirstTime(false);
-  }, [player.battleShip]);
+    if (player.ships.battleShip.length === 4) setFirstTime(false);
+  }, [player.ships.battleShip]);
 
   const [playerAttempt, setPlayerAttempt] = useState("");
 
@@ -196,18 +197,9 @@ const Battle: React.FC<BattleProps> = (props) => {
     }
   }, [player.damagedShip.length]);
 
-  useEffect(() => {}, [
-    player.battleShip,
-    player.cruiserFirst,
-    player.cruiserSecond,
-    player.destroyerFirst,
-    player.destroyerSecond,
-    player.destroyerThird,
-    player.vedetteFirst,
-    player.vedetteSecond,
-    player.vedetteThird,
-    player.vedetteForth,
-  ]);
+  useEffect(() => {
+    placePlayerShipOnMap(currentCell);
+  }, [player.ships, currentCell]);
 
   const oneMoreTimeGame = () => {
     setPlayAgain(false);
@@ -634,24 +626,24 @@ const Battle: React.FC<BattleProps> = (props) => {
       // check if cell is not occupied already
       if (player.shipsCells[cellNumber]) {
         if (
-          (index === 0 && player[ship]?.length < shipLengths[index]) ||
+          (index === 0 && player.ships[ship]?.length < shipLengths[index]) ||
           (index > 0 &&
             player[shipNames[index - 1]]?.length === shipLengths[index - 1] &&
-            player[ship]?.length < shipLengths[index])
+            player.ships[ship]?.length < shipLengths[index])
         ) {
-          console.log(player[ship]);
+          console.log(player.ships[ship], player.ships[ship].length);
           setShip("player", shipNames[index], [cellNumber]);
           setShipsCells("player", cellNumber);
-          if (player[ship]?.length === shipLengths[index] - 1) {
+          if (player.ships[ship]?.length === shipLengths[index] - 1) {
             const currentShipShadow = fillShipArrayWithShadows([
-              ...player[ship],
+              ...player.ships[ship],
               cellNumber,
             ]);
             currentShipShadow.forEach((cell) =>
               setShipsShadowsCells("player", cell)
             );
           }
-          if (player[ship]?.length === 0 && index < 6) {
+          if (player.ships[ship]?.length === 0 && index < 6) {
             const directions = whereTurnShip(
               player.shipsShadowsCells,
               ship,
@@ -662,15 +654,62 @@ const Battle: React.FC<BattleProps> = (props) => {
               fillPossibleDirection(ship, [cellNumber], dir)
             );
           }
-          if (player[ship]?.length === 1 && index < 6) {
+          if (player.ships[ship]?.length === 1 && index < 6) {
             removePossibleDirections();
-            const dir = determineDirection(player[ship][0], cellNumber);
-            fillPossibleDirection(ship, [player[ship][0]], dir);
+            const dir = determineDirection(player.ships[ship][0], cellNumber);
+            fillPossibleDirection(ship, [player.ships[ship][0]], dir);
           }
         }
       }
     });
   };
+
+  // // method to place player's ship on map
+  // const placePlayerShipOnMap = () => {
+  //   let cellNumber = currentCell;
+  //   console.log(cellNumber);
+  //   shipNames.forEach((ship, index) => {
+  //     // check if cell is not occupied already
+  //     if (player[ship]?.length === 1) return console.log("puk");
+  //     if (player.shipsCells[cellNumber]) {
+  //       if (
+  //         (index === 0 && player[ship]?.length < shipLengths[index]) ||
+  //         (index > 0 &&
+  //           player[shipNames[index - 1]]?.length === shipLengths[index - 1] &&
+  //           player[ship]?.length < shipLengths[index])
+  //       ) {
+  //         console.log(player[ship]);
+  //         setShip("player", shipNames[index], [cellNumber]);
+  //         setShipsCells("player", cellNumber);
+  //         if (player[ship]?.length === shipLengths[index] - 1) {
+  //           const currentShipShadow = fillShipArrayWithShadows([
+  //             ...player[ship],
+  //             cellNumber,
+  //           ]);
+  //           currentShipShadow.forEach((cell) =>
+  //             setShipsShadowsCells("player", cell)
+  //           );
+  //         }
+  //         if (player[ship]?.length === 0 && index < 6) {
+  //           const directions = whereTurnShip(
+  //             player.shipsShadowsCells,
+  //             ship,
+  //             cellNumber,
+  //             direction
+  //           );
+  //           directions.forEach((dir) =>
+  //             fillPossibleDirection(ship, [cellNumber], dir)
+  //           );
+  //         }
+  //         if (player[ship]?.length === 1 && index < 6) {
+  //           removePossibleDirections();
+  //           const dir = determineDirection(player[ship][0], cellNumber);
+  //           fillPossibleDirection(ship, [player[ship][0]], dir);
+  //         }
+  //       }
+  //     }
+  //   });
+  // };
 
   // method to check was attempt wrong or not
   const checkPlayerAttempt = (value: string) => {
@@ -739,7 +778,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   // right now only provides information in legend
   const drawPossibleDirections = () => {
     shipNames.forEach((ship, index) => {
-      if (player[ship]?.length === shipLengths[index]) {
+      if (player.ships[ship]?.length === shipLengths[index]) {
         if (index < shipNames.length - 1) {
           setLegendLineOne(
             strings.battle.completed.replace("{}", shipNicknames[index])
@@ -776,9 +815,10 @@ const Battle: React.FC<BattleProps> = (props) => {
   const shipsCondition = (side: any) => {
     const condition = (ship: string, index: number) => {
       let response = "";
-      if (side[ship].length === shipLengths[index])
+      if (side.ships[ship].length === shipLengths[index])
         response = strings.battle.undamaged;
-      else if (side[ship].length === 0) response = strings.battle.destroyed;
+      else if (side.ships[ship].length === 0)
+        response = strings.battle.destroyed;
       else response = strings.battle.damaged;
       return response;
     };
@@ -839,7 +879,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">{playerName}</Typography>
-            <Field side={"player"} placeShipOnMap={placePlayerShipOnMap} />
+            <Field side={"player"} placeShipOnMap={setCurrentCell} />
             {isBattle ? (
               <React.Fragment>
                 <Grid item style={{ marginTop: 20 }}>
@@ -892,7 +932,10 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">computer</Typography>
-            <Field side={"computer"} placeShipOnMap={placePlayerShipOnMap} />
+            <Field
+              side={"computer"}
+              placeShipOnMap={() => console.log("vasya")}
+            />
             <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
