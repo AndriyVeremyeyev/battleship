@@ -1,10 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { Grid, Typography, Button, TextField, Modal } from "@material-ui/core";
-// import { makeStyles } from "@material-ui/styles";
 import Field from "./Field";
 import PlayAgain from "./PlayAgain";
-
+import Legend from "./Legend";
 import {
   setShip,
   setShipsCells,
@@ -14,7 +13,7 @@ import {
   setShipsStatus,
   setWrongAttempts,
   setAttempts,
-  setShowComputer,
+  // setShowComputer,
   setKilledCells,
   removeShipCell,
   setPossibleDirections,
@@ -29,7 +28,6 @@ import {
   setIsBattle,
   setScore,
 } from "./actions/index";
-
 import {
   rows,
   columns,
@@ -66,8 +64,8 @@ type BattleProps = {
     ship: string,
     status: boolean
   ) => TypeEightAction;
-  setShowComputer: () => TypeOneAction;
-  showComputer: boolean;
+  // setShowComputer: () => TypeOneAction;
+  // showComputer: boolean;
   setKilledCells: (player: string, cell: string) => TypeSixAction;
   removeShipCell: (
     player: string,
@@ -111,8 +109,8 @@ const Battle: React.FC<BattleProps> = (props) => {
     setLegendLineTwo,
     player,
     setShipsStatus,
-    setShowComputer,
-    showComputer,
+    // setShowComputer,
+    // showComputer,
     setKilledCells,
     removeShipCell,
     setWrongAttempts,
@@ -798,47 +796,19 @@ const Battle: React.FC<BattleProps> = (props) => {
   ///////////////////////////////////////////////////////////////////////////////////////
   // front-end methods
 
-  const killPlayer = () => {
-    shipNames.forEach((ship) => setShipsStatus("player", ship, false));
-    setFirstTime(false);
-    setAttempts("player");
-    setOpen(true);
-  };
+  // const killPlayer = () => {
+  //   shipNames.forEach((ship) => setShipsStatus("player", ship, false));
+  //   setFirstTime(false);
+  //   setAttempts("player");
+  //   setOpen(true);
+  // };
 
-  const killComputer = () => {
-    shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
-    setFirstTime(false);
-    setAttempts("computer");
-    setOpen(true);
-  };
-
-  const shipsCondition = (side: any) => {
-    const condition = (ship: string, index: number) => {
-      let response = "";
-      if (side.ships[ship].length === shipLengths[index])
-        response = strings.battle.undamaged;
-      else if (side.ships[ship].length === 0)
-        response = strings.battle.destroyed;
-      else response = strings.battle.damaged;
-      return response;
-    };
-
-    return (
-      <React.Fragment>
-        {shipNicknames.map((ship, index) => {
-          return (
-            <Typography
-              key={`shipsCondition${ship}${index}`}
-              variant="subtitle2"
-            >{`${index + 1}.${ship}: ${condition(
-              shipNames[index],
-              index
-            )}`}</Typography>
-          );
-        })}
-      </React.Fragment>
-    );
-  };
+  // const killComputer = () => {
+  //   shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
+  //   setFirstTime(false);
+  //   setAttempts("computer");
+  //   setOpen(true);
+  // };
 
   return (
     <Fragment>
@@ -913,11 +883,11 @@ const Battle: React.FC<BattleProps> = (props) => {
                   >{`Quantity of your attempts: ${player.attempts}`}</Typography>
                 </Grid>
                 <Grid item style={{ marginTop: 20 }}>
-                  {shipsCondition(player)}
+                  <Legend side={player} />
                 </Grid>
               </React.Fragment>
             ) : null}
-            <Grid item>
+            {/* <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -926,7 +896,7 @@ const Battle: React.FC<BattleProps> = (props) => {
               >
                 Kill player
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <Grid item>
@@ -936,7 +906,7 @@ const Battle: React.FC<BattleProps> = (props) => {
               side={"computer"}
               placeShipOnMap={() => console.log("vasya")}
             />
-            <Grid item style={{ marginTop: 100 }}>
+            {/* <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -945,8 +915,8 @@ const Battle: React.FC<BattleProps> = (props) => {
               >
                 Kill computer
               </Button>
-            </Grid>
-            <Grid item>
+            </Grid> */}
+            {/* <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -955,13 +925,11 @@ const Battle: React.FC<BattleProps> = (props) => {
               >
                 {showComputer ? "Hide Ships" : "Show Ships"}
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
-          <Typography
-            style={{ marginTop: 20 }}
-            variant="h6"
-          >{`Quantity of computer attempts: ${computer.attempts}`}</Typography>
-          <Grid item>{shipsCondition(computer)}</Grid>
+          <Grid item>
+            <Legend side={computer} />
+          </Grid>
         </Grid>
       </Grid>
     </Fragment>
@@ -972,7 +940,7 @@ const mapStateToProps = (state: any) => {
   const {
     player,
     computer,
-    showComputer,
+    // showComputer,
     playAgain,
     firstTime,
     isBattle,
@@ -983,7 +951,7 @@ const mapStateToProps = (state: any) => {
   return {
     player,
     computer,
-    showComputer,
+    // showComputer,
     playAgain,
     firstTime,
     isBattle,
@@ -1002,7 +970,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(setShipsShadowsCells(player, cell)),
   setLegendLineTwo: (legend: string) => dispatch(setLegendLineTwo(legend)),
   setLegendLineOne: (legend: string) => dispatch(setLegendLineOne(legend)),
-  setShowComputer: () => dispatch(setShowComputer()),
+  /* setShowComputer: () => dispatch(setShowComputer()), */
   setShipsStatus: (player: string, ship: string, status: boolean) =>
     dispatch(setShipsStatus(player, ship, status)),
   setKilledCells: (player: string, cell: string) =>
