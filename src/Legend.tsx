@@ -1,14 +1,29 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@material-ui/core";
 import { shipNames, shipLengths, shipNicknames } from "./database";
 import strings from "./strings";
+import { makeStyles } from "@material-ui/core";
 
 type LegendProps = {
   side: any;
 };
 
+const useStyles = makeStyles({
+  tableRow: {
+    height: 10,
+  },
+  tableCell: { padding: 10 },
+});
+
 const Legend: React.FC<LegendProps> = (props) => {
   const { side } = props;
+  const classes = useStyles();
 
   const condition = (ship: string, index: number) => {
     let response = "";
@@ -21,21 +36,47 @@ const Legend: React.FC<LegendProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Typography
-        style={{ marginTop: 20 }}
-        variant="h6"
-      >{`Quantity of attempts: ${side.attempts}`}</Typography>
-      {shipNicknames.map((ship, index) => {
-        return (
-          <Typography
-            key={`shipsCondition${ship}${index}`}
-            variant="subtitle2"
-          >{`${index + 1}.${ship}: ${condition(
-            shipNames[index],
-            index
-          )}`}</Typography>
-        );
-      })}
+      <Table style={{ marginTop: "3rem", width: "18rem" }}>
+        <TableHead>
+          <TableRow className={classes.tableRow}>
+            <TableCell className={classes.tableCell} style={{ width: "2rem" }}>
+              #
+            </TableCell>
+            <TableCell className={classes.tableCell} style={{ width: "10rem" }}>
+              Ship
+            </TableCell>
+            <TableCell className={classes.tableCell} style={{ width: "6rem" }}>
+              Condition
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {shipNicknames.map((ship, index) => {
+            return (
+              <TableRow className={classes.tableRow}>
+                <TableCell
+                  className={classes.tableCell}
+                  style={{ width: "2rem" }}
+                >
+                  {index + 1}
+                </TableCell>
+                <TableCell
+                  className={classes.tableCell}
+                  style={{ width: "10rem" }}
+                >
+                  {ship}
+                </TableCell>
+                <TableCell
+                  className={classes.tableCell}
+                  style={{ width: "6rem" }}
+                >
+                  {condition(shipNames[index], index)}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </React.Fragment>
   );
 };

@@ -845,10 +845,14 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Grid item>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">{playerName}</Typography>
+            <Typography
+              style={{ marginTop: 20 }}
+              variant="h6"
+            >{`Attempts: ${player.attempts}`}</Typography>
             <Field side={"player"} placeShipOnMap={placePlayerShipOnMap} />
             {isBattle ? (
               <React.Fragment>
-                <Grid item style={{ marginTop: 20 }}>
+                <Grid item style={{ marginTop: 40 }}>
                   <Grid container direction="row" spacing={2} justify="center">
                     <Grid item>
                       <TextField
@@ -863,7 +867,7 @@ const Battle: React.FC<BattleProps> = (props) => {
                         }}
                       />
                     </Grid>
-                    <Grid item style={{ marginTop: 10, marginBottom: 50 }}>
+                    <Grid item style={{ marginTop: 10 }}>
                       <Button
                         variant="contained"
                         color="primary"
@@ -873,12 +877,8 @@ const Battle: React.FC<BattleProps> = (props) => {
                       </Button>
                     </Grid>
                   </Grid>
-                  <Typography
-                    style={{ marginTop: 20 }}
-                    variant="h6"
-                  >{`Quantity of your attempts: ${player.attempts}`}</Typography>
                 </Grid>
-                <Grid item style={{ marginTop: 20 }}>
+                <Grid item style={{ marginTop: 10 }}>
                   <Legend side={player} />
                 </Grid>
               </React.Fragment>
@@ -897,7 +897,11 @@ const Battle: React.FC<BattleProps> = (props) => {
         </Grid>
         <Grid item>
           <Grid container direction="column" alignItems="center">
-            <Typography variant="h4">computer</Typography>
+            <Typography variant="h4">Computer</Typography>
+            <Typography
+              style={{ marginTop: 20 }}
+              variant="h6"
+            >{`Attempts: ${computer.attempts}`}</Typography>
             <Field side={"computer"} />
             {/* <Grid item style={{ marginTop: 100 }}>
               <Button
@@ -919,9 +923,9 @@ const Battle: React.FC<BattleProps> = (props) => {
                 {showComputer ? "Hide Ships" : "Show Ships"}
               </Button>
             </Grid> */}
-          </Grid>
-          <Grid item>
-            <Legend side={computer} />
+            <Grid item style={{ marginTop: 97 }}>
+              {isBattle ? <Legend side={computer} /> : null}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
