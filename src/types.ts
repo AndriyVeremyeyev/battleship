@@ -91,13 +91,7 @@
 //   j10: boolean;
 // };
 
-export type PlayerStateProps = {
-  attempts: number;
-  killedCells: any;
-  shipsStatus: any;
-  shipsCells: any;
-  shipsShadowsCells: any;
-  wrongAttempts: any;
+export type Ships = {
   battleShip: string[];
   cruiserFirst: string[];
   cruiserSecond: string[];
@@ -108,6 +102,16 @@ export type PlayerStateProps = {
   vedetteSecond: string[];
   vedetteThird: string[];
   vedetteForth: string[];
+};
+
+export type PlayerStateProps = {
+  attempts: number;
+  killedCells: any;
+  shipsStatus: any;
+  shipsCells: any;
+  shipsShadowsCells: any;
+  wrongAttempts: any;
+  ships: Ships;
   possibleDirections: any;
   damagedShip: string[];
 };
@@ -119,16 +123,7 @@ export type ComputerStateProps = {
   shipsCells: any;
   shipsShadowsCells: any;
   wrongAttempts: any;
-  battleShip: string[];
-  cruiserFirst: string[];
-  cruiserSecond: string[];
-  destroyerFirst: string[];
-  destroyerSecond: string[];
-  destroyerThird: string[];
-  vedetteFirst: string[];
-  vedetteSecond: string[];
-  vedetteThird: string[];
-  vedetteForth: string[];
+  ships: Ships;
   catchedShip: boolean;
 };
 

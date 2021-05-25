@@ -69,6 +69,10 @@ During battle
 
 <image src="./public/bug_03.png" width="600px"/>
 
+#### When round ends with player or computer winning:
+
+<image src="./public/bug_06.png" width="600px"/>
+
 #### console warning
 
 <image src="./public/bug_05.png" width="600px"/>
