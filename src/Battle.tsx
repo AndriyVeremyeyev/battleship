@@ -899,7 +899,7 @@ const Battle: React.FC<BattleProps> = (props) => {
           <Grid container direction="column" alignItems="center">
             <Typography variant="h4">computer</Typography>
             <Field side={"computer"} />
-            <Grid item style={{ marginTop: 100 }}>
+            {/* <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
                 color="primary"
