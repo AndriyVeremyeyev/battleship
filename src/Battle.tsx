@@ -609,12 +609,7 @@ const Battle: React.FC<BattleProps> = (props) => {
         ];
   };
 
-  ///////////////////////////////////////////////////////////////////////////////////////
-  // methods for player playing
-
-  // method to place player's ship on map
-  const placePlayerShipOnMap = (cellNumber: string) => {
-    const { ships } = player;
+  const determineCurrentShip = (ships: any) => {
     let currentShip = "";
     let index = 0;
     if (!ships.battleShip.length || ships.battleShip.length < 4)
@@ -657,8 +652,26 @@ const Battle: React.FC<BattleProps> = (props) => {
       index = 9;
     }
 
+    return {
+      currentShip,
+      index,
+    };
+  };
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // methods for player playing
+
+  // method to place player's ship on map
+  const placePlayerShipOnMap = (cellNumber: string) => {
+    const { ships } = player;
+    const shipObj = determineCurrentShip(ships);
+    const currentShip = shipObj.currentShip;
+    const index = shipObj.index;
+    console.log(player.ships[currentShip]);
     if (
-      (player.shipsCells[cellNumber] && !ships[currentShip].length) ||
+      (player.shipsCells[cellNumber] &&
+        !ships[currentShip].length &&
+        player.shipsShadowsCells[cellNumber]) ||
       (player.shipsCells[cellNumber] && player.possibleDirections[cellNumber])
     ) {
       if (
@@ -701,6 +714,15 @@ const Battle: React.FC<BattleProps> = (props) => {
       !player.possibleDirections[cellNumber]
     ) {
       setLegendLineOne("Please, choose cell from ship shadow");
+      setLegendLineTwo("");
+    } else if (
+      player.shipsCells[cellNumber] &&
+      !ships[currentShip].length &&
+      !player.shipsShadowsCells[cellNumber]
+    ) {
+      setLegendLineOne(
+        "Make sure that you don't place ship close to another one"
+      );
       setLegendLineTwo("");
     }
   };
@@ -771,24 +793,31 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to draw possible directions of ship once start position is determined
   // right now only provides information in legend
   const drawPossibleDirections = () => {
-    shipNames.forEach((ship, index) => {
-      if (player.ships[ship]?.length === shipLengths[index]) {
-        if (index < shipNames.length - 1) {
-          setLegendLineOne(
-            strings.battle.completed.replace("{}", shipNicknames[index])
-          );
-          setLegendLineTwo(
-            strings.battle.proposition.replace("{}", shipNicknames[index + 1])
-          );
-        } else {
-          setLegendLineOne(strings.battle.placementCompleted);
-          setLegendLineTwo("");
-        }
-        setShipsStatus("player", ship, true);
+    const { ships } = player;
+    const shipObj = determineCurrentShip(ships);
+    const currentShip = shipObj.currentShip;
+    const index = shipObj.index;
+    console.log(player.ships[currentShip]);
+    if (player.ships[currentShip]?.length === shipLengths[index]) {
+      if (index < shipNames.length - 1) {
+        setLegendLineOne(
+          strings.battle.completed.replace("{}", shipNicknames[index])
+        );
+        setLegendLineTwo(
+          strings.battle.proposition.replace("{}", shipNicknames[index + 1])
+        );
+      } else {
+        setLegendLineOne(strings.battle.placementCompleted);
+        setLegendLineTwo("");
       }
-    });
+      setShipsStatus("player", currentShip, true);
+    }
   };
 
+  // setLegendLineOne("Good job!");
+  // setLegendLineTwo(
+  //   `Keep working on placing the ${shipNicknames[index]} on the map`
+  // );
   ///////////////////////////////////////////////////////////////////////////////////////
   // front-end methods
 
@@ -879,7 +908,7 @@ const Battle: React.FC<BattleProps> = (props) => {
                   </Grid>
                 </Grid>
                 <Grid item style={{ marginTop: 10 }}>
-                  <Legend side={player} />
+                  <Legend side={player} player="player" />
                 </Grid>
               </React.Fragment>
             ) : null}
