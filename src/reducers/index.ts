@@ -106,6 +106,26 @@ const reducer = (state = initialState, action) => {
         },
       };
     case "SET_SHIP":
+      const updatedShip = [
+        // @ts-ignore
+        ...state[action.payload.player].ships[action.payload.ship],
+        ...action.payload.position,
+      ];
+      const considerCellNumber = (cell: string) => {
+        return cell.length === 3 ? cell[1] + cell[2] : cell[1];
+      };
+      if (updatedShip.length > 1) {
+        if (updatedShip[0] === updatedShip[1]) {
+          updatedShip.sort(
+            (a, b) =>
+              Number(considerCellNumber(a)) - Number(considerCellNumber(b))
+          );
+        } else {
+          updatedShip.sort((a, b) => a.charCodeAt() - b.charCodeAt());
+        }
+      }
+
+      updatedShip.sort();
       return {
         ...state,
         [action.payload.player]: {
@@ -114,11 +134,7 @@ const reducer = (state = initialState, action) => {
           ships: {
             // @ts-ignore
             ...state[action.payload.player].ships,
-            [action.payload.ship]: [
-              // @ts-ignore
-              ...state[action.payload.player].ships[action.payload.ship],
-              ...action.payload.position,
-            ],
+            [action.payload.ship]: updatedShip,
           },
         },
       };

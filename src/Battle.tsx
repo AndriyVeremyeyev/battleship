@@ -705,6 +705,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineOne("Please, choose cell from ship shadow");
       setLegendLineTwo("");
     }
+    console.log(ships);
   };
 
   // method to check was attempt wrong or not
