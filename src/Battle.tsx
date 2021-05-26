@@ -13,7 +13,7 @@ import {
   setShipsStatus,
   setWrongAttempts,
   setAttempts,
-  // setShowComputer,
+  setShowComputer,
   setKilledCells,
   removeShipCell,
   setPossibleDirections,
@@ -64,8 +64,8 @@ type BattleProps = {
     ship: string,
     status: boolean
   ) => TypeEightAction;
-  // setShowComputer: () => TypeOneAction;
-  // showComputer: boolean;
+  setShowComputer: () => TypeOneAction;
+  showComputer: boolean;
   setKilledCells: (player: string, cell: string) => TypeSixAction;
   removeShipCell: (
     player: string,
@@ -109,8 +109,8 @@ const Battle: React.FC<BattleProps> = (props) => {
     setLegendLineTwo,
     player,
     setShipsStatus,
-    // setShowComputer,
-    // showComputer,
+    setShowComputer,
+    showComputer,
     setKilledCells,
     removeShipCell,
     setWrongAttempts,
@@ -135,7 +135,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   const [firstRender, setFirstRender] = useState(false);
   const [open, setOpen] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(true);
-
+  const [test, setTest] = useState(false);
   useEffect(() => {
     generateComputerMap();
     setFirstRender(true);
@@ -821,19 +821,19 @@ const Battle: React.FC<BattleProps> = (props) => {
   ///////////////////////////////////////////////////////////////////////////////////////
   // front-end methods
 
-  // const killPlayer = () => {
-  //   shipNames.forEach((ship) => setShipsStatus("player", ship, false));
-  //   setFirstTime(false);
-  //   setAttempts("player");
-  //   setOpen(true);
-  // };
+  const killPlayer = () => {
+    shipNames.forEach((ship) => setShipsStatus("player", ship, false));
+    setFirstTime(false);
+    setAttempts("player");
+    setOpen(true);
+  };
 
-  // const killComputer = () => {
-  //   shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
-  //   setFirstTime(false);
-  //   setAttempts("computer");
-  //   setOpen(true);
-  // };
+  const killComputer = () => {
+    shipNames.forEach((ship) => setShipsStatus("computer", ship, false));
+    setFirstTime(false);
+    setAttempts("computer");
+    setOpen(true);
+  };
 
   return (
     <Fragment>
@@ -910,16 +910,6 @@ const Battle: React.FC<BattleProps> = (props) => {
                 </Grid>
               </React.Fragment>
             ) : null}
-            {/* <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={killPlayer}
-                style={{ marginTop: 20 }}
-              >
-                Kill player
-              </Button>
-            </Grid> */}
           </Grid>
         </Grid>
         <Grid item>
@@ -930,31 +920,50 @@ const Battle: React.FC<BattleProps> = (props) => {
               variant="h6"
             >{`Attempts: ${computer.attempts}`}</Typography>
             <Field side={"computer"} placeShipOnMap={clickOnComputerField} />
-            {/* <Grid item style={{ marginTop: 100 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={killComputer}
-                style={{ marginTop: 20 }}
-              >
-                Kill computer
-              </Button>
-            </Grid> */}
-            {/* <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginTop: 20 }}
-                onClick={setShowComputer}
-              >
-                {showComputer ? "Hide Ships" : "Show Ships"}
-              </Button>
-            </Grid> */}
             <Grid item style={{ marginTop: 97 }}>
               {isBattle ? <Legend side={computer} /> : null}
             </Grid>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid container direction="row" spacing={2}>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setTest(!test)}
+          >
+            Testing Buttons
+          </Button>
+        </Grid>
+
+        {test ? (
+          <Fragment>
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={killPlayer}>
+                Kill player
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={killComputer}
+              >
+                Kill computer
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={setShowComputer}
+              >
+                {showComputer ? "Hide Ships" : "Show Ships"}
+              </Button>
+            </Grid>
+          </Fragment>
+        ) : null}
       </Grid>
     </Fragment>
   );
@@ -964,7 +973,7 @@ const mapStateToProps = (state: any) => {
   const {
     player,
     computer,
-    // showComputer,
+    showComputer,
     playAgain,
     firstTime,
     isBattle,
@@ -975,7 +984,7 @@ const mapStateToProps = (state: any) => {
   return {
     player,
     computer,
-    // showComputer,
+    showComputer,
     playAgain,
     firstTime,
     isBattle,
@@ -994,7 +1003,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(setShipsShadowsCells(player, cell)),
   setLegendLineTwo: (legend: string) => dispatch(setLegendLineTwo(legend)),
   setLegendLineOne: (legend: string) => dispatch(setLegendLineOne(legend)),
-  /* setShowComputer: () => dispatch(setShowComputer()), */
+  setShowComputer: () => dispatch(setShowComputer()),
   setShipsStatus: (player: string, ship: string, status: boolean) =>
     dispatch(setShipsStatus(player, ship, status)),
   setKilledCells: (player: string, cell: string) =>

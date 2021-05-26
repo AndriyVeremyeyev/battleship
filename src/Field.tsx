@@ -57,6 +57,7 @@ const Field: React.FC<FieldProps> = (props) => {
                       computer.wrongAttempts[`${y}${x}`]
                     )
                       return "#D3D3D3";
+                    if (!player.shipsShadowsCells[`${y}${x}`]) return "#DCDCDC";
                   }
                   if (side === "computer") {
                     if (showComputer) {
