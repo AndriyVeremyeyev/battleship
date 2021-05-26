@@ -141,19 +141,18 @@ const Battle: React.FC<BattleProps> = (props) => {
     setFirstRender(true);
   }, []);
 
-  // to monitor changes in
-  useEffect(() => {
-    drawPossibleDirections();
-  }, [player.shipsCells]);
-
   useEffect(() => {
     if (Object.values(player.shipsStatus).every((status) => status))
       removeShadows();
     if (
       Object.values(player.shipsStatus).every((status) => status) &&
       !firstTime
-    )
+    ) {
       setIsBattle(true);
+      setLegendLineOne(strings.battle.placementCompleted);
+      setLegendLineTwo("");
+    }
+
     if (
       Object.values(player.shipsStatus).every((status) => !status) &&
       player.attempts &&
@@ -609,7 +608,8 @@ const Battle: React.FC<BattleProps> = (props) => {
         ];
   };
 
-  const determineCurrentShip = (ships: any) => {
+  const determineCurrentShip = () => {
+    const { ships } = player;
     let currentShip = "";
     let index = 0;
     if (!ships.battleShip.length || ships.battleShip.length < 4)
@@ -651,7 +651,6 @@ const Battle: React.FC<BattleProps> = (props) => {
       currentShip = shipNames[9];
       index = 9;
     }
-
     return {
       currentShip,
       index,
@@ -664,16 +663,25 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to place player's ship on map
   const placePlayerShipOnMap = (cellNumber: string) => {
     const { ships } = player;
-    const shipObj = determineCurrentShip(ships);
+    const shipObj = determineCurrentShip();
     const currentShip = shipObj.currentShip;
     const index = shipObj.index;
-    console.log(player.ships[currentShip]);
+
     if (
       (player.shipsCells[cellNumber] &&
-        !ships[currentShip].length &&
+        !ships[currentShip]?.length &&
         player.shipsShadowsCells[cellNumber]) ||
       (player.shipsCells[cellNumber] && player.possibleDirections[cellNumber])
     ) {
+      if (player.ships[currentShip].length === shipLengths[index] - 1) {
+        setShipsStatus("player", currentShip, true);
+        setLegendLineOne(
+          strings.battle.completed.replace("{}", shipNicknames[index])
+        );
+        setLegendLineTwo(
+          strings.battle.proposition.replace("{}", shipNicknames[index + 1])
+        );
+      }
       if (
         (index === 0 && ships[currentShip]?.length < shipLengths[index]) ||
         (index > 0 &&
@@ -682,6 +690,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       ) {
         setShip("player", shipNames[index], [cellNumber]);
         setShipsCells("player", cellNumber);
+
         if (ships[currentShip]?.length === shipLengths[index] - 1) {
           const currentShipShadow = fillShipArrayWithShadows([
             ...ships[currentShip],
@@ -700,6 +709,16 @@ const Battle: React.FC<BattleProps> = (props) => {
           );
           directions.forEach((dir) =>
             fillPossibleDirection(currentShip, [cellNumber], dir)
+          );
+        }
+        if (
+          ships[currentShip]?.length > 0 &&
+          ships[currentShip]?.length < shipLengths[index] - 1 &&
+          index < 6
+        ) {
+          setLegendLineOne("Good job!");
+          setLegendLineTwo(
+            `Keep working on placing the ${shipNicknames[index]} on the map`
           );
         }
         if (ships[currentShip]?.length === 1 && index < 6) {
@@ -788,30 +807,6 @@ const Battle: React.FC<BattleProps> = (props) => {
       : String.fromCharCode(cellFirst[0].charCodeAt(0) - 1) === cellSecond[0]
       ? "left"
       : "right";
-  };
-
-  // method to draw possible directions of ship once start position is determined
-  // right now only provides information in legend
-  const drawPossibleDirections = () => {
-    const { ships } = player;
-    const shipObj = determineCurrentShip(ships);
-    const currentShip = shipObj.currentShip;
-    const index = shipObj.index;
-    console.log(player.ships[currentShip]);
-    if (player.ships[currentShip]?.length === shipLengths[index]) {
-      if (index < shipNames.length - 1) {
-        setLegendLineOne(
-          strings.battle.completed.replace("{}", shipNicknames[index])
-        );
-        setLegendLineTwo(
-          strings.battle.proposition.replace("{}", shipNicknames[index + 1])
-        );
-      } else {
-        setLegendLineOne(strings.battle.placementCompleted);
-        setLegendLineTwo("");
-      }
-      setShipsStatus("player", currentShip, true);
-    }
   };
 
   // setLegendLineOne("Good job!");
