@@ -324,8 +324,9 @@ const Battle: React.FC<BattleProps> = (props) => {
   const whatTheShip = (side: string, value: string) => {
     const sideObj = whatTheSide(side);
     let currShip = "";
+    console.log(sideObj);
     shipNames.forEach((ship) => {
-      if (sideObj[ship].includes(value)) currShip = ship;
+      if (sideObj.ships[ship].includes(value)) currShip = ship;
     });
     return currShip;
   };
@@ -338,7 +339,7 @@ const Battle: React.FC<BattleProps> = (props) => {
   // method to check was ship completely destroyed or not
   const isShipDestroyed = (side: string, ship: string) => {
     const sideObj = whatTheSide(side);
-    return sideObj[ship].length === 1 ? true : false;
+    return sideObj.ships[ship].length === 1 ? true : false;
   };
 
   // method to remove cell from attempt from corresponding ship array
