@@ -161,6 +161,7 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineOne(strings.battle.lose);
       setLegendLineTwo("");
       setPlayAgain(true);
+      setOpen(true);
       setIsBattle(false);
       setScore("computer");
     }
@@ -176,9 +177,12 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineOne(strings.battle.win);
       setLegendLineTwo("");
       setPlayAgain(true);
+      setOpen(true);
       setScore("player");
     }
   }, [computer.shipsStatus, firstTime]);
+
+  console.log(playAgain, computer.shipsStatus, computer.attempts);
 
   useEffect(() => {
     if (player.ships.battleShip.length === 4) setFirstTime(false);
@@ -324,7 +328,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   const whatTheShip = (side: string, value: string) => {
     const sideObj = whatTheSide(side);
     let currShip = "";
-    console.log(sideObj);
     shipNames.forEach((ship) => {
       if (sideObj.ships[ship].includes(value)) currShip = ship;
     });
@@ -815,10 +818,6 @@ const Battle: React.FC<BattleProps> = (props) => {
       : "right";
   };
 
-  // setLegendLineOne("Good job!");
-  // setLegendLineTwo(
-  //   `Keep working on placing the ${shipNicknames[index]} on the map`
-  // );
   ///////////////////////////////////////////////////////////////////////////////////////
   // front-end methods
 
@@ -850,20 +849,18 @@ const Battle: React.FC<BattleProps> = (props) => {
         <Typography style={{ color: "white" }} variant="h5">
           {score[0]}:{score[1]}
         </Typography>
-        {playAgain && !firstTime ? (
-          <Modal
-            open={open}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PlayAgain oneMoreGame={oneMoreTimeGame} handleOpen={setOpen} />
-          </Modal>
-        ) : null}
+        <Modal
+          open={open}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <PlayAgain oneMoreGame={oneMoreTimeGame} handleOpen={setOpen} />
+        </Modal>
       </Grid>
       <Grid
         container
