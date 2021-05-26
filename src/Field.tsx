@@ -27,7 +27,7 @@ type FieldProps = {
   computer: ComputerStateProps;
   side: string;
   showComputer: boolean;
-  placeShipOnMap?: (cellNumber: string) => void;
+  placeShipOnMap: (cellNumber: string) => void;
 };
 
 const Field: React.FC<FieldProps> = (props) => {
@@ -88,11 +88,7 @@ const Field: React.FC<FieldProps> = (props) => {
                           : null
                       })`,
                     }}
-                    onClick={
-                      side === "player" && placeShipOnMap
-                        ? () => placeShipOnMap(cellNumber)
-                        : null
-                    }
+                    onClick={() => placeShipOnMap(cellNumber)}
                   >
                     <Typography style={{ fontSize: "0.85rem" }}>
                       {cellNumber}

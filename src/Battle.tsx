@@ -711,11 +711,7 @@ const Battle: React.FC<BattleProps> = (props) => {
             fillPossibleDirection(currentShip, [cellNumber], dir)
           );
         }
-        if (
-          ships[currentShip]?.length > 0 &&
-          ships[currentShip]?.length < shipLengths[index] - 1 &&
-          index < 6
-        ) {
+        if (ships[currentShip]?.length < shipLengths[index] - 1 && index < 6) {
           setLegendLineOne("Good job!");
           setLegendLineTwo(
             `Keep working on placing the ${shipNicknames[index]} on the map`
@@ -741,6 +737,15 @@ const Battle: React.FC<BattleProps> = (props) => {
     ) {
       setLegendLineOne(
         "Make sure that you don't place ship close to another one"
+      );
+      setLegendLineTwo("");
+    }
+  };
+
+  const clickOnComputerField = () => {
+    if (!isBattle) {
+      setLegendLineOne(
+        "Make sure that you are not trying to place your ship on computer field"
       );
       setLegendLineTwo("");
     }
@@ -926,7 +931,7 @@ const Battle: React.FC<BattleProps> = (props) => {
               style={{ marginTop: 20 }}
               variant="h6"
             >{`Attempts: ${computer.attempts}`}</Typography>
-            <Field side={"computer"} />
+            <Field side={"computer"} placeShipOnMap={clickOnComputerField} />
             {/* <Grid item style={{ marginTop: 100 }}>
               <Button
                 variant="contained"
