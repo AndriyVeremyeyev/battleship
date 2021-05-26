@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, useTheme } from "@material-ui/core";
 import { rows, columns } from "./database";
 import { makeStyles } from "@material-ui/styles";
 import cross from "./images/01.jpg";
@@ -33,6 +33,7 @@ type FieldProps = {
 const Field: React.FC<FieldProps> = (props) => {
   const { player, computer, showComputer, side, placeShipOnMap } = props;
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
     <Grid
@@ -50,22 +51,26 @@ const Field: React.FC<FieldProps> = (props) => {
                 const cellColor = () => {
                   if (side === "player") {
                     if (player.shipsCells && !player.shipsCells[`${y}${x}`])
-                      return "#696969";
+                      return theme.palette.primary.dark;
                     if (
-                      (player.possibleDirections &&
-                        player.possibleDirections[`${y}${x}`]) ||
-                      computer.wrongAttempts[`${y}${x}`]
+                      player.possibleDirections &&
+                      player.possibleDirections[`${y}${x}`]
                     )
-                      return "#D3D3D3";
-                    if (!player.shipsShadowsCells[`${y}${x}`]) return "#DCDCDC";
+                      return theme.palette.primary.main;
+                    if (computer.wrongAttempts[`${y}${x}`])
+                      return theme.palette.secondary.light;
+                    if (!player.shipsShadowsCells[`${y}${x}`])
+                      return theme.palette.primary.light;
                   }
                   if (side === "computer") {
                     if (showComputer) {
-                      if (!computer.shipsCells[`${y}${x}`]) return "#696969";
+                      if (!computer.shipsCells[`${y}${x}`])
+                        return theme.palette.primary.dark;
                       if (!computer.shipsShadowsCells[`${y}${x}`])
-                        return "#D3D3D3";
+                        return theme.palette.primary.light;
                     } else {
-                      if (player.wrongAttempts[`${y}${x}`]) return "#D3D3D3";
+                      if (player.wrongAttempts[`${y}${x}`])
+                        return theme.palette.secondary.light;
                     }
                   }
                   return null;

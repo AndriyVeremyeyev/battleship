@@ -50,6 +50,7 @@ import {
   TypeNineAction,
   TypeTenAction,
 } from "./types";
+import CustomButton from "./components/CustomButton";
 
 type BattleProps = {
   setShip: (player: string, ship: string, position: string[]) => TypeTenAction;
@@ -928,15 +929,10 @@ const Battle: React.FC<BattleProps> = (props) => {
       </Grid>
       <Grid container direction="row" spacing={2}>
         <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setTest(!test)}
-          >
+          <CustomButton onClick={() => setTest(!test)}>
             Testing Buttons
-          </Button>
+          </CustomButton>
         </Grid>
-
         {test ? (
           <Fragment>
             <Grid item>
