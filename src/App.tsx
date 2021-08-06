@@ -2,7 +2,7 @@ import React from "react";
 import GameController from "./GameController";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-import { lime, brown } from "@material-ui/core/colors";
+import { amber, brown } from "@material-ui/core/colors";
 
 const App: React.FC = () => {
   const theme = createMuiTheme({
@@ -16,9 +16,9 @@ const App: React.FC = () => {
         dark: brown[700],
       },
       secondary: {
-        light: lime[100],
-        main: lime[400],
-        dark: lime[800],
+        light: amber[100],
+        main: amber[400],
+        dark: amber[800],
       },
     },
   });

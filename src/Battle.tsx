@@ -81,7 +81,6 @@ type BattleProps = {
   setShipsShadowsCellsTotal: (player: string, obj: any) => TypeSevenAction;
   removeShadows: () => TypeOneAction;
   setPlayAgain: (status: boolean) => TypeTwoAction;
-  playAgain: boolean;
   setFirstTime: (status: boolean) => TypeTwoAction;
   firstTime: boolean;
   clearEverything: () => TypeOneAction;
@@ -100,7 +99,6 @@ const Battle: React.FC<BattleProps> = (props) => {
   // to generate computer map once battle is mounted
 
   // const classes = useStyles();
-
   const {
     setShip,
     setShipsCells,
@@ -122,7 +120,6 @@ const Battle: React.FC<BattleProps> = (props) => {
     setShipsShadowsCellsTotal,
     removeShadows,
     setPlayAgain,
-    playAgain,
     setFirstTime,
     firstTime,
     clearEverything,
@@ -133,6 +130,7 @@ const Battle: React.FC<BattleProps> = (props) => {
     score,
     playerName,
   } = props;
+
   const [firstRender, setFirstRender] = useState(false);
   const [open, setOpen] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(true);
@@ -179,11 +177,10 @@ const Battle: React.FC<BattleProps> = (props) => {
       setLegendLineTwo("");
       setPlayAgain(true);
       setOpen(true);
+      setIsBattle(false);
       setScore("player");
     }
   }, [computer.shipsStatus, firstTime]);
-
-  console.log(playAgain, computer.shipsStatus, computer.attempts);
 
   useEffect(() => {
     if (player.ships.battleShip.length === 4) setFirstTime(false);
@@ -970,7 +967,6 @@ const mapStateToProps = (state: any) => {
     player,
     computer,
     showComputer,
-    playAgain,
     firstTime,
     isBattle,
     score,
@@ -981,7 +977,6 @@ const mapStateToProps = (state: any) => {
     player,
     computer,
     showComputer,
-    playAgain,
     firstTime,
     isBattle,
     score,

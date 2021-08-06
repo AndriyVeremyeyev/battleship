@@ -5,8 +5,8 @@
 <!-- [![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive) -->
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-![LastCommit](https://img.shields.io/github/last-commit/BelyyBrat/battleship)
-![Languages](https://img.shields.io/github/languages/top/BelyyBrat/battleship)
+![LastCommit](https://img.shields.io/github/last-commit/AndriyVeremyeyev/battleship)
+![Languages](https://img.shields.io/github/languages/top/AndriyVeremyeyev/battleship)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://lbesson.mit-license.org/)
 
 ---
