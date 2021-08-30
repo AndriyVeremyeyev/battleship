@@ -58,6 +58,9 @@ const EnterName: React.FC<EnterNameProps> = (props) => {
         variant="outlined"
         onChange={(event) => setName(event.target.value)}
         InputProps={{ className: classes.input }}
+        onKeyDown={(e) => {
+          if (e.keyCode === 13) handleOnClick();
+        }}
       ></TextField>
       <Grid item style={{ marginTop: 90 }}>
         <Button variant="contained" color="primary" onClick={handleOnClick}>

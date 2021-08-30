@@ -140,15 +140,19 @@ const reducer = (state = initialState, action) => {
       };
     case "REMOVE_SHIP_CELL":
       // @ts-ignore
-      const newArray = state[action.payload.player][action.payload.ship].filter(
-        (cell: string) => cell !== action.payload.cell
-      );
+      const newArray = state[action.payload.player].ships[
+        action.payload.ship
+      ].filter((cell: string) => cell !== action.payload.cell);
       return {
         ...state,
         [action.payload.player]: {
           // @ts-ignore
           ...state[action.payload.player],
-          [action.payload.ship]: newArray,
+          ships: {
+            // @ts-ignore
+            ...state[action.payload.player].ships,
+            [action.payload.ship]: newArray,
+          },
         },
       };
     case "SET_PAGE_STATUS":
